@@ -6,13 +6,15 @@ import { Tab, Content} from "@/src/Types/Tab";
 function Tabs() {
     const [activeTab, setActiveTab] = useState(0);
     const [tabs, setTabs] = useState<Tab[]>([]);
-    const [viewableTabs, setViewableTabs] = useState<Tab[]>([]);
     const [hoverLast, setHoverLast] = useState(false);
+    
+    const viewableIndex: number = tabs.length - 15;
 
     const createNewTab = () => {
         const newTab : Tab = 
     {
       label:"18:36",
+      id: tabs.length,
       content: {
         paragraph:`The content will be displayed here, tab ${tabs.length} for now we have this and lets make it different for each tab somehow, this is 18:36 we like that time a lot`
       }
@@ -41,8 +43,13 @@ function Tabs() {
     // ];
 
     setTabs([...tabs, newTab]);
-    setViewableTabs([...tabs.slice(-14), newTab]);
-    setActiveTab(viewableTabs.length < 15? viewableTabs.length : 14);
+    setActiveTab(tabs.length)
+    }
+
+    const closeTab = (closedIndex:number) => {
+       const tabArr = tabs.filter((_, index) => index !== closedIndex)
+       setTabs(tabArr)
+
     }
 
     const renderContent = (content:Content) => {
@@ -65,18 +72,18 @@ function Tabs() {
     return (
     <div className="max-w-full">
         <div className="flex flex-wrap border-b border-gray-800">
-            {viewableTabs.map((tab : Tab, index : number) => (
-            <div key = {`tab${index}`} className={`flex justify-between mt-2 rounded-t-lg focus:outline-none transition-colors font-medium text-sm duration-200 ${activeTab === index ? "border-b-2  border-b-gray-800 text-gray-400 bg-gray-600 bg-opacity-50": "text-gray-300 hover:text-fuchsia-700 hover:bg-gray-800 hover:bg-opacity-30"}`}>
-                    <button className={"py-3 pl-4 pr-1.5 cursor-pointer"} key = {`button${index}`} onClick = {() => setActiveTab(index)} onMouseEnter={()=> {if(index === viewableTabs.length - 1){setHoverLast(true);}}} onMouseLeave={() => {if(hoverLast){setHoverLast(false);}}}>{tab.label}</button>
+            {tabs.map((tab : Tab) => (
+            (tab.id >= viewableIndex) && <div key = {`tab${tab.id}`} className={`flex justify-between mt-2 rounded-t-lg focus:outline-none transition-colors font-medium text-sm duration-200 ${activeTab === tab.id ? "border-b-2  border-b-gray-800 text-gray-400 bg-gray-600 bg-opacity-50": "text-gray-300 hover:text-fuchsia-700 hover:bg-gray-800 hover:bg-opacity-30"}`}>
+                    <button className={"py-3 pl-4 pr-1.5 cursor-pointer"} key = {`button${tab.id}`} onClick = {() => setActiveTab(tab.id)} onMouseEnter={()=> {if(tab.id === tabs.length -1){setHoverLast(true);}}} onMouseLeave={() => {if(hoverLast){setHoverLast(false);}}}>{tab.label}</button>
                     <button className={"flex justify-center items-center w-6 h-6 py-4 my-2 mx-1 rounded-full font-semibold  text-center cursor-pointer hover:bg-fuchsia-700 hover:bg-opacity-30 hover:text-gray-50"}>X</button>
             </div>
-                ))}
+        ))}
 
-            <div className={`flex ml-0.5 h-1/4 translate-y-1/3 transition-colors duration-100 items-center ${(activeTab != viewableTabs.length -1 && hoverLast === false) ? "border-l-gray-800 border-l-2" : "border-gray-500"}`}>
-                {viewableTabs.length > 0 && <button className={"text-2xl text-gray-50 text-center px-3 pb-1 mx-0.5 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer hover:bg-gray-600 bg-opacity-30"} key={"newTabButton"} onClick={createNewTab}>+</button>}
+            <div className={`flex ml-0.5 h-1/4 translate-y-1/3 transition-colors duration-100 items-center ${(activeTab != tabs.length -1 && hoverLast === false) ? "border-l-gray-800 border-l-2" : "border-gray-500"}`}>
+                {tabs.length > 0 && <button className={"text-2xl text-gray-50 text-center px-3 pb-1 mx-0.5 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer hover:bg-gray-600 bg-opacity-30"} key={"newTabButton"} onClick={createNewTab}>+</button>}
             </div>
         </div>
-        <div className="mt-3">{viewableTabs[activeTab] ? renderContent(viewableTabs[activeTab].content) : renderEmpty()}</div>
+        <div className="mt-3">{tabs[activeTab] ? renderContent(tabs[activeTab].content) : renderEmpty()}</div>
     </div>
     );
 };

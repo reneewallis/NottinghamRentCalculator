@@ -3,6 +3,7 @@ export type Content = {
 }
 
 export type Tab = {
+    id: number;
     label: string;
     content: Content;
 }
