@@ -6,6 +6,7 @@ import { Tab, Content} from "@/src/Types/Tab";
 function Tabs() {
     const [activeTab, setActiveTab] = useState(0);
     const [tabs, setTabs] = useState<Tab[]>([]);
+    const [tabID, setTabID] = useState(1);
     const [hoverLast, setHoverLast] = useState(false);
     
     const viewableIndex: number = tabs.length - 15;
@@ -14,9 +15,9 @@ function Tabs() {
         const newTab : Tab = 
     {
       label:"18:36",
-      id: tabs.length,
+      id: tabID,
       content: {
-        paragraph:`The content will be displayed here, tab ${tabs.length} for now we have this and lets make it different for each tab somehow, this is 18:36 we like that time a lot`
+        paragraph:`The content will be displayed here, tab ${tabID} for now we have this and lets make it different for each tab somehow, this is 18:36 we like that time a lot`
       }
     };
 
@@ -43,13 +44,21 @@ function Tabs() {
     // ];
 
     setTabs([...tabs, newTab]);
-    setActiveTab(tabs.length)
+    setActiveTab(tabs.length);
+    setTabID(tabID+1);
     }
 
     const closeTab = (closedIndex:number) => {
-       const tabArr = tabs.filter((_, index) => index !== closedIndex)
-       setTabs(tabArr)
+        if (activeTab !== 0 && closedIndex <= activeTab){
+            setActiveTab(activeTab-1);
+        }
 
+        if (hoverLast && activeTab !== tabs.length - 1){
+            setHoverLast(false);
+        }
+
+        const tabArr = tabs.filter((_, index:number) => index!== closedIndex);
+        setTabs(tabArr);
     }
 
     const renderContent = (content:Content) => {
@@ -72,16 +81,16 @@ function Tabs() {
     return (
     <div className="max-w-full">
         <div className="flex flex-wrap items-center border-b border-gray-800">
-            {tabs.map((tab : Tab) => (
-            (tab.id >= viewableIndex) && <div key = {`tab${tab.id}`} className={`flex justify-between mt-2 rounded-t-lg focus:outline-none transition-colors font-medium text-sm duration-200 ${activeTab === tab.id ? "border-b-2  border-b-gray-800 text-gray-400 bg-gray-600 bg-opacity-50": "text-gray-300 hover:text-fuchsia-700 hover:bg-gray-800 hover:bg-opacity-30"}`} onMouseEnter={()=> {if(tab.id === tabs.length -1){setHoverLast(true);}}} onMouseLeave={() => {if(hoverLast){setHoverLast(false);}}}>
-                    <button className={"py-3 pl-4 pr-1.5 cursor-pointer"} key = {`button${tab.id}`} onClick = {() => setActiveTab(tab.id)}>{tab.label}</button>
-                    <button className={"flex justify-center items-center w-6 h-6 py-4 my-2 mx-1 rounded-full font-semibold  text-center cursor-pointer hover:bg-fuchsia-700 hover:bg-opacity-30 hover:text-gray-50"}>X</button>
+            {tabs.map((tab : Tab, index:number) => (
+            (index >= viewableIndex) && <div key = {`tab${index}`} className={`flex justify-between items-center mt-2 rounded-t-lg focus:outline-none transition-colors font-medium text-sm duration-200 ${activeTab === index ? "border-b-2  border-b-gray-800 text-gray-400 bg-gray-600 bg-opacity-50": "text-gray-300 hover:text-fuchsia-700 hover:bg-gray-800 hover:bg-opacity-30"}`} onMouseEnter={()=> {if(index === tabs.length -1){setHoverLast(true);}}} onMouseLeave={() => {if(hoverLast){setHoverLast(false);}}}>
+                    <button className={"py-3 pl-4 pr-1.5 cursor-pointer transition-colors duration-200"} key = {`button${index}`} onClick = {() => setActiveTab(index)}>{tab.label}</button>
+                    <button className={"flex justify-center items-center w-6 h-6 my-2 mx-0.5 rounded-full font-semibold  text-center cursor-pointer transition-colors duration-200 hover:bg-fuchsia-700 hover:bg-opacity-30 hover:text-gray-50"} key={`closeButton${index}`} onClick={() => closeTab(index)}>X</button>
             </div>
         ))}
 
-            <div className={`flex ml-0.5 h-7 mt-3 transition-colors duration-100 items-center ${(activeTab != tabs.length -1 && hoverLast === false) ? "border-l-gray-800 border-l-2" : "border-gray-500"}`}>
-                {tabs.length > 0 && <button className={"text-2xl text-gray-50 text-center h-9 w-9 pb-2 mx-0.5 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer hover:bg-gray-600 bg-opacity-30"} key={"newTabButton"} onClick={createNewTab}>+</button>}
-            </div>
+            {tabs.length > 0 && <div className={`flex items-center ml-0.5 h-7 mt-3 transition-colors duration-100 ${((activeTab === tabs.length -1 || hoverLast === true)) ? "border-gray-500": "border-l-gray-800 border-l-2"}`}>
+                <button className={"flex justify-center items-center h-9 w-9 mx-0.5 my-1 pb-1.5 text-2xl text-gray-50 text-center rounded-full transition-colors duration-200 focus:outline-none cursor-pointer hover:bg-gray-600 bg-opacity-30"} key={"newTabButton"} onClick={createNewTab}>+</button>
+            </div>}
         </div>
         <div className="mt-3">{tabs[activeTab] ? renderContent(tabs[activeTab].content) : renderEmpty()}</div>
     </div>
