@@ -71,16 +71,16 @@ function Tabs() {
 
     return (
     <div className="max-w-full">
-        <div className="flex flex-wrap border-b border-gray-800">
+        <div className="flex flex-wrap items-center border-b border-gray-800">
             {tabs.map((tab : Tab) => (
-            (tab.id >= viewableIndex) && <div key = {`tab${tab.id}`} className={`flex justify-between mt-2 rounded-t-lg focus:outline-none transition-colors font-medium text-sm duration-200 ${activeTab === tab.id ? "border-b-2  border-b-gray-800 text-gray-400 bg-gray-600 bg-opacity-50": "text-gray-300 hover:text-fuchsia-700 hover:bg-gray-800 hover:bg-opacity-30"}`}>
-                    <button className={"py-3 pl-4 pr-1.5 cursor-pointer"} key = {`button${tab.id}`} onClick = {() => setActiveTab(tab.id)} onMouseEnter={()=> {if(tab.id === tabs.length -1){setHoverLast(true);}}} onMouseLeave={() => {if(hoverLast){setHoverLast(false);}}}>{tab.label}</button>
+            (tab.id >= viewableIndex) && <div key = {`tab${tab.id}`} className={`flex justify-between mt-2 rounded-t-lg focus:outline-none transition-colors font-medium text-sm duration-200 ${activeTab === tab.id ? "border-b-2  border-b-gray-800 text-gray-400 bg-gray-600 bg-opacity-50": "text-gray-300 hover:text-fuchsia-700 hover:bg-gray-800 hover:bg-opacity-30"}`} onMouseEnter={()=> {if(tab.id === tabs.length -1){setHoverLast(true);}}} onMouseLeave={() => {if(hoverLast){setHoverLast(false);}}}>
+                    <button className={"py-3 pl-4 pr-1.5 cursor-pointer"} key = {`button${tab.id}`} onClick = {() => setActiveTab(tab.id)}>{tab.label}</button>
                     <button className={"flex justify-center items-center w-6 h-6 py-4 my-2 mx-1 rounded-full font-semibold  text-center cursor-pointer hover:bg-fuchsia-700 hover:bg-opacity-30 hover:text-gray-50"}>X</button>
             </div>
         ))}
 
-            <div className={`flex ml-0.5 h-1/4 translate-y-1/3 transition-colors duration-100 items-center ${(activeTab != tabs.length -1 && hoverLast === false) ? "border-l-gray-800 border-l-2" : "border-gray-500"}`}>
-                {tabs.length > 0 && <button className={"text-2xl text-gray-50 text-center px-3 pb-1 mx-0.5 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer hover:bg-gray-600 bg-opacity-30"} key={"newTabButton"} onClick={createNewTab}>+</button>}
+            <div className={`flex ml-0.5 h-7 mt-3 transition-colors duration-100 items-center ${(activeTab != tabs.length -1 && hoverLast === false) ? "border-l-gray-800 border-l-2" : "border-gray-500"}`}>
+                {tabs.length > 0 && <button className={"text-2xl text-gray-50 text-center h-9 w-9 pb-2 mx-0.5 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer hover:bg-gray-600 bg-opacity-30"} key={"newTabButton"} onClick={createNewTab}>+</button>}
             </div>
         </div>
         <div className="mt-3">{tabs[activeTab] ? renderContent(tabs[activeTab].content) : renderEmpty()}</div>
