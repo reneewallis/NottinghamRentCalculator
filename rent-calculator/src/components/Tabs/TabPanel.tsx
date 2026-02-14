@@ -9,4 +9,4 @@ function TabPanel({content}:PanelProps){
             </div>)
 }
 
-export default TabPanel
+export default TabPanel;
