@@ -1,14 +1,14 @@
 "use client";
 
-import { DropdownProps, DropdownItem } from "@/src/Types/Dropdown";
+import { DropdownMenuProps, DropdownItem } from "@/src/Types/Dropdown";
 import React, {useState} from "react";
 
-function DropdownMenu({items}:DropdownProps){
+function DropdownMenu({items}:DropdownMenuProps){
     const [showMenu, setShowMenu] = useState(false);
 
     return(
         <div className="relative">
-            <button key={"menuButton"} className={"flex justify-center items-center h-9 w-9 my-1 text-gray-200 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer hover:bg-fuchsia-700 hover:text-gray-50 bg-opacity-30"} onClick={() => {showMenu? setShowMenu(false) : setShowMenu(true)}}>
+            <button key={"menuButton"} className={"flex justify-center items-center h-9 w-9 my-1 text-gray-200 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer hover:bg-fuchsia-700 hover:text-gray-50 bg-opacity-30"} onClick={() => {setShowMenu(!showMenu)}}>
                 {showMenu?
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
