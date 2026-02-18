@@ -10,7 +10,6 @@ export type PanelProps = {
 
 export type TabProps = {
     label: string;
-    id?: number;
     active?: boolean;
     onClick?: () => void;
     onClose?: () => void;
