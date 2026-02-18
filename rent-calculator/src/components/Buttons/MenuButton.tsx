@@ -21,7 +21,7 @@ function DropdownMenu({items}:DropdownProps){
             </button>
             {showMenu&&<div className="absolute right-0 z-10 inline-flex flex-col rounded-lg bg-gray-600 inset-shadow-sm border-2 border-gray-200">
                 {items.map((menuItem:DropdownItem, index:number) =>(
-                    <button key={`item${index}`} className="whitespace-nowrap pt-0.5 pb-1 pl-1.5 pr-4 text-left text-gray-200 rounded-lg hover:bg-fuchsia-700 hover:text-gray-50" onClick={() => {menuItem.onClick()}} >{menuItem.label}</button>
+                    <button key={`item${index}`} className="whitespace-nowrap pt-0.5 pb-1 pl-1.5 pr-4 text-left text-gray-200 rounded-lg hover:bg-fuchsia-700 hover:text-gray-50" onClick={() => {if(menuItem.onClick){menuItem.onClick();} setShowMenu(false)}} >{menuItem.label}</button>
                 ))}
             </div>}
         </div>
