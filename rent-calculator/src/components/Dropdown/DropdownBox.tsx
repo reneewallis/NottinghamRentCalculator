@@ -11,8 +11,8 @@ function CustomDropdownBox({label, boxText, items}:DropdownBoxProps){
     console.log("Button Width: ", buttonWidth);
 
     return(
-        <div className="relative inline-flex flex-col">
-            <button style={{ minWidth : `${buttonWidth}rem`}} key={`dropdown ${label}`} className="inline-flex justify-between items-center p-2 bg-gray-700 border-2 border-gray-200 rounded-2xl whitespace-nowrap cursor-pointer" onClick={() => setShowItems(!showItems)}>
+        <div className="relative w-fit">
+            <button style={{ minWidth : `${buttonWidth}rem`}} key={`dropdown ${label}`} className="flex justify-between items-center p-2 bg-gray-900 border-2 border-gray-200 rounded-2xl whitespace-nowrap cursor-pointer" onClick={() => setShowItems(!showItems)}>
                 <div className="text-2xl font-semibold text-left p-2">
                     {boxText}
                 </div>
@@ -22,9 +22,9 @@ function CustomDropdownBox({label, boxText, items}:DropdownBoxProps){
                     </svg>
                 </div>
             </button>
-            {showItems&&<div className="z-10 mt-1 inline-flex flex-col rounded-2xl bg-gray-600 inset-shadow-sm border-2 border-gray-200">
+            {showItems&&<div className="absolute z-10 mt-1.5 p-1 w-full flex flex-col rounded-2xl bg-gray-900 inset-shadow-sm border-2 border-gray-200 opacity-90">
                 {items.map((item:DropdownItem, index:number) =>(
-                    <button key={`item${index}`} className="whitespace-nowrap pt-0.5 pb-1 pl-1 pr-2 text-left text-gray-200 rounded-2xl hover:bg-fuchsia-700 hover:text-gray-50" onClick={() => {item.onClick(); setShowItems(false)}} >{item.label}</button>
+                    <button key={`item${index}`} className="whitespace-nowrap pt-0.5 pb-1 pl-2 pr-2 text-left text-gray-200 rounded-2xl hover:bg-fuchsia-700 hover:text-gray-50" onClick={() => {if (item.onClick){item.onClick()}; setShowItems(false)}}>{item.label}</button>
                 ))}
             </div>}
         </div>
