@@ -1,21 +1,27 @@
 import React from "react";
 import { CalculatorBoxProps } from "@/src/Types/PanelElements";
 import CustomDropdownBox from "../Dropdown/DropdownBox";
-import TextBox from "../TextBox/TextBox";
+import TextBox from "../InputFields/TextBox";
 
-function CalculatorBox({dropDownProps, inputTextBoxProps, resultTextBoxes}: CalculatorBoxProps){
+function CalculatorBox({dropDownProps, inputTextBoxProps, resultTextBoxes, flipResultTextBoxes = false}: CalculatorBoxProps){
     return(
-    <div className="inline-flex flex-row">
-        <div className="inline-flex flex-col bg-gray-950 opacity-70 rounded-lg shadow-lg border-2 border-gray-50 py-9 pl-5 pr-8 w-fit">
-            <CustomDropdownBox {...dropDownProps}></CustomDropdownBox>
-            <div className="mt-10">
-                <TextBox {...inputTextBoxProps}></TextBox>
-            </div>
-        </div>
-        <div className="px-2 pb-3 ml-1 inline-flex flex-col justify-between items-center">
+    <div className="flex flex-row">
+        {flipResultTextBoxes && 
+        <div className="px-2 pb-3 mr-2 inline-flex flex-col justify-between">
             {resultTextBoxes.map((props, index) => 
-            <TextBox key={`${props.label}-${index}`} {...props}></TextBox>)}
+            <TextBox key={`${props.label}-${index}`} {...props} alignment="right" width={12}></TextBox>)}
         </div>
+        }
+        <div className="inline-flex flex-col justify-between gap-20.5 bg-gray-800 rounded-xl shadow-lg border-4 border-gray-300 pt-12 pb-13 pl-9 pr-18">
+            <CustomDropdownBox {...dropDownProps}></CustomDropdownBox>
+            <TextBox {...inputTextBoxProps} width={13}></TextBox>
+        </div>
+        {!flipResultTextBoxes && 
+        <div className="px-2 pb-3 ml-2 inline-flex flex-col justify-between">
+            {resultTextBoxes.map((props, index) => 
+            <TextBox key={`${props.label}-${index}`} {...props} width={12}></TextBox>)}
+        </div>
+        }
     </div>
     )
 }
