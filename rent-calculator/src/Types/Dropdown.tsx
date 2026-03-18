@@ -9,6 +9,8 @@ export type DropdownProps = {
 
 export type DropdownBoxProps = {
     label: string;
-    boxText: string;
     items: DropdownItem[];
+    small?: boolean;
+    minWidth?: number;
+    valid?: boolean;
 }
