@@ -1,11 +1,7 @@
 import React from "react";
 
-export type Panel = {
-    paragraph: string;
-}
-
 export type PanelProps = {
-    content:Panel;
+    today:string
 }
 
 export type TabProps = {
@@ -46,19 +42,11 @@ type TabsActionOther = {
 
 export type TabsAction = TabsActionOther | TabsActionHoverLast | TabsActionCloseTab | TabsActionSetActiveTab;
 
-type TabsChildWrapperTab = {
-    isTab: true;
+export type TabsTabWrapper = {
     id: number;
-    node: React.ReactElement<TabProps>;
+    time: string;
+    today: string;
 }
-
-type TabsChildWrapperNonTab = {
-    isTab: false;
-    id: number;
-    node: React.ReactNode;
-}
-
-export type TabsChildrenWrapper = TabsChildWrapperTab | TabsChildWrapperNonTab;
 
 export type TabsState = {
     nextTabID:number;
@@ -67,9 +55,5 @@ export type TabsState = {
     viewableIndex: number;
     hoverLast: boolean;
     lastTabActive: boolean;
-    children: TabsChildrenWrapper[];
-}
-
-export type TabsProps = {
-    children?: React.ReactNode;
+    wrappedTabArr: TabsTabWrapper[];
 }
