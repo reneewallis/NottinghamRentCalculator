@@ -314,6 +314,7 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
     switch (action.type){
         case CalculatorActions.CHANGE_RENT_FREQUENCY : {
             rent.rentFrequency = action.newRentFrequency;
+            rent.rentFrequencyIsValid = true;
 
             if (rent.rentAmount !== ''){
                 rent = calculateRent(rent.rentFrequency, rent.rentAmount)
@@ -349,13 +350,7 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
             rent.rentAmount = action.amount;
             rent = calculateRent(rent.rentFrequency, rent.rentAmount);
 
-            if (shortfall.benefitAmount === ''){
-                shortfall.benefitAmountIsValid = true;
-                if (shortfall.benefitType === BenefitType.UNSELECTED){
-                    shortfall.benefitTypeIsValid = true;
-                }
-            }
-            else {
+            if (shortfall.benefitAmount !== ''){
                 shortfall = calculateShortfall(shortfall.benefitType, shortfall.benefitAmount, rent.weeklyRent, rent.fourWeeklyRent, rent.monthlyRent);
             }
 
@@ -420,10 +415,9 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
             }
 
             else {
-
                 shortfall.benefitAmountIsValid = true;
                 shortfall.benefitTypeIsValid = true;
-                if (rent.rentAmount === ''){
+                if (shortfall.benefitType === BenefitType.UNSELECTED && rent.rentAmount === ''){
                     rent.rentAmountIsValid = true;
                     if (rent.rentFrequency === RentFrequency.UNSELECTED){
                         rent.rentFrequencyIsValid = true;
