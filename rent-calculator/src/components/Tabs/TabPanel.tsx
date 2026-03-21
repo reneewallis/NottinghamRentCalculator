@@ -9,7 +9,7 @@ import DateBox from "../InputFields/DateBox";
 import CalculatorPanel from "../PanelElements/CalculatorPanel";
 import TextBox from "../InputFields/TextBox";
 import InstallementScroller from "../PanelElements/InstallmentScroller";
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 import CustomDropdownBox from "../Dropdown/DropdownBox";
 
 function ceil2DP(value: number): number {
@@ -296,6 +296,7 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
         daysUntilStartDate: state.daysUntilStartDate,
         weeksUntilStartDate: state.weeksUntilStartDate,
         currentBalance: state.currentBalance,
+        currentBalanceIsValid: state.currentBalanceIsValid,
         startingBalance: state.startingBalance
     }
 
@@ -338,12 +339,7 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
 
             }
 
-            return({
-                ...rent,
-                ...shortfall,
-                ...balance,
-                ...forecast
-            });
+            break;
         }
 
         case CalculatorActions.CALCULATE_RENT: {
@@ -368,12 +364,7 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
                 rent.rentAmountIsValid = true;
             }
 
-            return({
-                ...rent,
-                ...shortfall,
-                ...balance,
-                ...forecast
-            });
+            break;
         }
 
         case CalculatorActions.CHANGE_BENEFIT_TYPE:{
@@ -391,12 +382,7 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
                 rent.rentAmountIsValid = false;
             }
 
-            return({
-                ...rent,
-                ...shortfall,
-                ...balance,
-                ...forecast
-            });
+            break;
         }
 
         case CalculatorActions.CALCULATE_SHORTFALL:{
@@ -425,34 +411,25 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
                 }
             }
 
-            return({
-                ...rent,
-                ...shortfall,
-                ...balance,
-                ...forecast
-            });
+            break;
         }
 
         case CalculatorActions.SET_START_DATE:{
             balance.startDate = action.date;
+            break;
+        }
 
-            if (!balance.startDate || !balance.startDate.isValid() || balance.startDate.isBefore(balance.minStartDate)) {
-                balance.startDateIsValid = false;
-                balance.daysUntilStartDate = -1;
-                balance.weeksUntilStartDate = -1;
-                balance.startingBalance = '';
-                forecast.balanceRemaining = '';
-                forecast.installmentNumber = 0;
-                forecast.forecastPaid = '';
-                forecast.totalInstallments = -1;
-            }
+        case CalculatorActions.ON_START_DATE_ERROR:{
+            balance.startDateIsValid = false;
+            balance.daysUntilStartDate = -1;
+            balance.weeksUntilStartDate = -1;
+            balance.startingBalance = '';
+            forecast.balanceRemaining = '';
+            forecast.installmentNumber = 0;
+            forecast.forecastPaid = '';
+            forecast.totalInstallments = -1;
 
-            return({
-                ...rent,
-                ...shortfall,
-                ...balance,
-                ...forecast
-            });
+            break;
         }
 
         case CalculatorActions.CHANGE_START_DATE:{
@@ -474,16 +451,12 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
                 }
             }
             
-            return({
-                ...rent,
-                ...shortfall,
-                ...balance,
-                ...forecast
-            });
+            break;
         }
 
         case CalculatorActions.CALCULATE_STARTING_BALANCE:{
             balance.currentBalance = action.newCurrentBalance;
+            balance.currentBalanceIsValid = isValidNumberEntry(balance.currentBalance);
 
             balance.startingBalance = calculateStartingBalance(balance.weeksUntilStartDate, balance.currentBalance, rent.weeklyRent);
             
@@ -497,6 +470,10 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
                 if (rent.rentAmount === ''){
                     rent.rentAmountIsValid = false;
                 }
+
+                if (balance.startDate === null){
+                    balance.startDateIsValid = false;
+                }
             }
             else {
                 if (rent.rentAmount === ''){
@@ -505,42 +482,29 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
                         rent.rentFrequencyIsValid = true;
                     }
                 }
+
+                if (balance.startDate === null){
+                    balance.startDateIsValid = true;
+                }
             }
 
-            return({
-                ...rent,
-                ...shortfall,
-                ...balance,
-                ...forecast
-            });
+            break;
         }
 
         case CalculatorActions.CHANGE_PAYMENT_FREQUENCY:{
-            forecast.paymentFrequency = action.frequency;
-            
+            forecast.paymentFrequency = action.frequency;   
             forecast = calculateForecast(balance.startingBalance, balance.startDate, balance.startDateIsValid, forecast);
-
-            return({
-                ...rent,
-                ...shortfall,
-                ...balance,
-                ...forecast
-            });
+            break;
         }
 
         case CalculatorActions.SET_FORECAST_DATE:{
             forecast.forecastDate = action.date;
+            break;
+        }
 
-            if (!forecast.forecastDate || !forecast.forecastDate.isValid() || forecast.forecastDate.isBefore(forecast.minForecastDate)) {
-                forecast.forecastDateIsValid = false;
-            }
-
-            return({
-                ...rent,
-                ...shortfall,
-                ...balance,
-                ...forecast
-            });
+        case CalculatorActions.ON_FORECAST_DATE_ERROR:{
+            forecast.forecastDateIsValid = false;
+            break;
         }
 
         case CalculatorActions.CHANGE_FORCAST_DATE:{
@@ -548,12 +512,19 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
 
             forecast = calculateForecast(balance.startingBalance, balance.startDate, balance.startDateIsValid, forecast);
 
-            return({
-                ...rent,
-                ...shortfall,
-                ...balance,
-                ...forecast
-            });
+            if (forecast.forecastDate !== null){
+                if (balance.startDate === null){
+                    balance.startDateIsValid = false;
+                }
+            }
+
+            else {
+                if (balance.startDate === null){
+                    balance.startDateIsValid = true;
+                }
+            }
+
+            break;
         }
 
         case CalculatorActions.CHANGE_DEFAULT_AMOUNT:{
@@ -567,6 +538,10 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
                 if (rent.rentAmount === ''){
                     rent.rentAmountIsValid = false;
                 }
+
+                if (balance.startDate === null){
+                    balance.startDateIsValid = false;
+                }
             }
             
             else {
@@ -576,16 +551,15 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
                         rent.rentFrequencyIsValid = true;
                     }
                 }
+
+                if (balance.startDate === null){
+                    balance.startDateIsValid = true;
+                }
             }
             
             forecast = calculateForecast(balance.startingBalance, balance.startDate, balance.startDateIsValid, forecast);
 
-            return({
-                ...rent,
-                ...shortfall,
-                ...balance,
-                ...forecast
-            });
+            break;
         }
 
         case CalculatorActions.CHANGE_INSTALLMENT_NUMBER:{
@@ -600,14 +574,16 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
 
             forecast = calculateForecast(balance.startingBalance, balance.startDate, balance.startDateIsValid, forecast);
 
-            return({
-                ...rent,
-                ...shortfall,
-                ...balance,
-                ...forecast
-            });
+            break;
         }
     }
+
+    return({
+        ...rent,
+        ...shortfall,
+        ...balance,
+        ...forecast
+    });
 }
 
 function initCalculatorState(today: Dayjs): CalculatorState{
@@ -628,16 +604,17 @@ function initCalculatorState(today: Dayjs): CalculatorState{
         monthlyShortfall: '',
         startDate: null,
         minStartDate: today,
-        startDateIsValid: false,
+        startDateIsValid: true,
         daysUntilStartDate: -1,
         weeksUntilStartDate: -1,
         currentBalance: '',
+        currentBalanceIsValid: true,
         startingBalance: '',
         paymentFrequency: InstallmentFrequency.UNSELECTED,
         totalInstallments: -1,
         installmentNumber: 0,
         forecastDate: null,
-        forecastDateIsValid: false,
+        forecastDateIsValid: true,
         minForecastDate: today,
         defaultAmount: '',
         forecastPaid: '',
@@ -646,13 +623,9 @@ function initCalculatorState(today: Dayjs): CalculatorState{
 }
 
 
-function TabPanel({today}:PanelProps){
-    const todayArr = today.split("/");
-    const todayDaysjs = dayjs(`${todayArr[2]}-${todayArr[1]}-${todayArr[0]}`);
+function TabPanel({today, todayString}:PanelProps){
 
-    const [calculatorState, calculatorDispatch] = useReducer(reducer, todayDaysjs, initCalculatorState);
-
-    console.log(today);
+    const [calculatorState, calculatorDispatch] = useReducer(reducer, today, initCalculatorState);
 
     const calculatorBoxes : ({name:string} & CalculatorBoxProps)[] = [
         {
@@ -760,11 +733,11 @@ function TabPanel({today}:PanelProps){
                         circleLabel={balanceCircleString}
                         flipPanel={true}
                         mainPanelBoxes={[
-                            <TextBox key={"todayDate"} label="Today's Date" text={today} readOnly={true} width = {13.536} alignment="center"></TextBox>,
-                            <DateBox key={"startDate"} label="Start Date" controlled={true} value={calculatorState.startDate} setValue={value => calculatorDispatch({type: CalculatorActions.SET_START_DATE, date: value})} onChange={() => calculatorDispatch({type: CalculatorActions.CHANGE_START_DATE})} alignment="center" minDate={calculatorState.minStartDate}></DateBox>
+                            <TextBox key={"todayDate"} label="Today's Date" text={todayString} readOnly={true} width = {13.536} alignment="center"></TextBox>,
+                            <DateBox key={"startDate"} label="Start Date" controlled={true} value={calculatorState.startDate} setValue={value => calculatorDispatch({type: CalculatorActions.SET_START_DATE, date: value})} onChange={() => calculatorDispatch({type: CalculatorActions.CHANGE_START_DATE})} alignment="center" minDate={calculatorState.minStartDate} onError={() => calculatorDispatch({type:CalculatorActions.ON_START_DATE_ERROR})} valid={calculatorState.startDateIsValid}></DateBox>
                         ]}
                         sidePanelBoxes={[
-                            <TextBox key={"currentBalance"} label="Current Balance" text={calculatorState.currentBalance} readOnly={false} onChange={e => calculatorDispatch({type: CalculatorActions.CALCULATE_STARTING_BALANCE, newCurrentBalance: e.target.value})}></TextBox>,
+                            <TextBox key={"currentBalance"} label="Current Balance" text={calculatorState.currentBalance} readOnly={false} onChange={e => calculatorDispatch({type: CalculatorActions.CALCULATE_STARTING_BALANCE, newCurrentBalance: e.target.value})} valid={calculatorState.currentBalanceIsValid}></TextBox>,
                             <TextBox key={"startingBalance"} label="Starting Balance" text={calculatorState.startingBalance} readOnly={true}></TextBox>
                         ]}
                         ></CalculatorPanel>
@@ -774,7 +747,7 @@ function TabPanel({today}:PanelProps){
                         flipPanel={true}
                         mainPanelBoxes={[
                             <TextBox key={"defaultAmount"} label="Default Amount" text={calculatorState.defaultAmount} readOnly={false} onChange={e =>calculatorDispatch({type:CalculatorActions.CHANGE_DEFAULT_AMOUNT, defaultAmount:e.target.value})} width = {13.536} alignment="left"></TextBox>,
-                            <DateBox key={"forecastDate"} label="Forecast Date" controlled={true} value={calculatorState.forecastDate} setValue={value => calculatorDispatch({type: CalculatorActions.SET_FORECAST_DATE, date:value})} onChange={() => calculatorDispatch({type: CalculatorActions.CHANGE_FORCAST_DATE})} alignment="left" minDate={calculatorState.minForecastDate}></DateBox>,
+                            <DateBox key={"forecastDate"} label="Forecast Date" controlled={true} value={calculatorState.forecastDate} setValue={value => calculatorDispatch({type: CalculatorActions.SET_FORECAST_DATE, date:value})} onChange={() => calculatorDispatch({type: CalculatorActions.CHANGE_FORCAST_DATE})} alignment="left" minDate={calculatorState.minForecastDate} onError={() => calculatorDispatch({type:CalculatorActions.ON_FORECAST_DATE_ERROR})} valid={calculatorState.forecastDateIsValid}></DateBox>,
                             <InstallementScroller key={"installmentScroller"} totalInstallments={calculatorState.totalInstallments} installmentNumber={calculatorState.installmentNumber} frequency={calculatorState.paymentFrequency} onChange={value => calculatorDispatch({type: CalculatorActions.CHANGE_INSTALLMENT_NUMBER, number:value})}></InstallementScroller>
                         ]}
                         sidePanelBoxes={[
