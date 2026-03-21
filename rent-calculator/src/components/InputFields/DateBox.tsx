@@ -254,7 +254,7 @@ function DateBox(props:DateBoxProps){
                                 props.setValue(value);
                             }
 
-                            if (value && context.validationError == null){
+                            if (context.validationError == null){
                                 if (onChange){
                                     onChange(value);
                                 }
@@ -264,6 +264,8 @@ function DateBox(props:DateBoxProps){
                         {...(props.minDate && {minDate : props.minDate})}
 
                         {...(props.controlled && {value : props.value})}
+
+                        {...(props.onError && {onError : props.onError})}
                         
                         slotProps={{ 
                             day: {
@@ -283,6 +285,7 @@ function DateBox(props:DateBoxProps){
 
                             textField:{
                                 variant:"outlined",
+                                error: props.valid !== undefined? !props.valid : undefined,
                                 InputProps:{
                                     sx:{
                                         height:"3.54rem",

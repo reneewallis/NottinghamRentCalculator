@@ -26,7 +26,9 @@ type CommonDateBoxProps = {
     label:string;
     alignment?:Alignment;
     minDate?:Dayjs;
-    onChange?: (value:Dayjs) => void;
+    onChange?: (value:Dayjs|null) => void;
+    valid?: boolean;
+    onError?: (error: string | null, value: Dayjs | null) => void
 }
 
 type UncontrolledDateBoxProps = CommonDateBoxProps & {
