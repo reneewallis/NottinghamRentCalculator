@@ -6,20 +6,24 @@ import TabPanel from "@/src/components/Tabs/TabPanel"
 import DropdownMenu from "@/src/components/Buttons/MenuButton"
 import HistoryButton from "../Buttons/HistoryButton";
 import NewTabButton from "../Buttons/NewTabButton";
+import dayjs from "dayjs";
 
 const MAX_TABS : number = 15;
 
 function reducer(state:TabsState, action:TabsAction): TabsState {
     switch (action.type) {
         case TabsActions.NEW_TAB: {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, "0");
-            const minutes = String(now.getMinutes()).padStart(2, "0");
+            const now = dayjs();
+            const hours = now.hour().toString().padStart(2, "0");
+            const minutes = now.minute().toString().padStart(2, "0")
             const time = `${hours}:${minutes}`;
             
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, "0");
-            const day = String(now.getDate()).padStart(2, "0");
+            const dd = now.date().toString().padStart(2, "0");
+            const mm = (now.month() +1).toString().padStart(2, "0");
+            const yyyy = now.year().toString().padStart(4, "0");
+
+            const todayString = `${dd}/${mm}/${yyyy}`;
+
 
             const viewableIndex = state.wrappedTabArr.length >= MAX_TABS? state.viewableIndex + 1 : 0;
 
@@ -34,7 +38,8 @@ function reducer(state:TabsState, action:TabsAction): TabsState {
                     {
                         id: state.nextTabID,
                         time: time,
-                        today: `${day}/${month}/${year}`
+                        today: now,
+                        todayString: todayString
                     }]
             });
         }
@@ -133,21 +138,15 @@ function reducer(state:TabsState, action:TabsAction): TabsState {
     }
 }
 
-function initTabState(): TabsState {
-    return({
+export default function Tabs(){
+    const [tabs, dispatch] = useReducer(reducer, {
         nextTabID: 0,
         activeTab: 0,
         showHistory: false,
         viewableIndex: 0,
         hoverLast: false,
         lastTabActive: false,
-        wrappedTabArr: []
-    })
-
-}
-
-export default function Tabs(){
-    const [tabs, dispatch] = useReducer(reducer, null, initTabState);
+        wrappedTabArr: []});
     return (
     <div className="mt-2 w-full">
         <div className="flex flex-wrap items-center border-b border-gray-800">
@@ -177,7 +176,7 @@ export default function Tabs(){
                     // TO:DO => return panel for non Tab Tabs
                     return(
                         <div key={`tabChild${tab.id}`} hidden={tabs.activeTab !== index}>
-                            <TabPanel today={tab.today}></TabPanel>
+                            <TabPanel today={tab.today} todayString={tab.todayString}></TabPanel>
                         </div>
                     )
                 })

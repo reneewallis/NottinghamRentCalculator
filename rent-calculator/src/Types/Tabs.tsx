@@ -1,7 +1,9 @@
+import { Dayjs } from "dayjs";
 import React from "react";
 
 export type PanelProps = {
-    today:string
+    today:Dayjs,
+    todayString:string
 }
 
 export type TabProps = {
@@ -45,7 +47,8 @@ export type TabsAction = TabsActionOther | TabsActionHoverLast | TabsActionClose
 export type TabsTabWrapper = {
     id: number;
     time: string;
-    today: string;
+    today: Dayjs;
+    todayString: string;
 }
 
 export type TabsState = {
