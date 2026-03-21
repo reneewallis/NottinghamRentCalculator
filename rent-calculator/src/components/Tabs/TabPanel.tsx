@@ -126,7 +126,7 @@ function calculateShortfall(benefitType: BenefitType, benefitValue: string, week
 }
 
 function calculateStartingBalance(weeksUntilStartDate:number, currentBalance:string, weeklyRent:string): string{
-    if (weeklyRent === '' || weeksUntilStartDate === -1 || !isValidNumberEntry(currentBalance) || !isValidNumberEntry(weeklyRent)){
+    if (currentBalance === '' || weeklyRent === '' || weeksUntilStartDate === -1 || !isValidNumberEntry(currentBalance) || !isValidNumberEntry(weeklyRent)){
         return '';
     }
 
