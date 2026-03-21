@@ -46,6 +46,7 @@ export type BalanceState = {
     daysUntilStartDate: number;
     weeksUntilStartDate: number;
     currentBalance: string;
+    currentBalanceIsValid: boolean;
     startingBalance: string;
 }
 
@@ -69,10 +70,12 @@ export enum CalculatorActions{
     CHANGE_BENEFIT_TYPE,
     CALCULATE_SHORTFALL,
     SET_START_DATE,
+    ON_START_DATE_ERROR,
     CHANGE_START_DATE,
     CALCULATE_STARTING_BALANCE,
     CHANGE_PAYMENT_FREQUENCY,
     SET_FORECAST_DATE,
+    ON_FORECAST_DATE_ERROR,
     CHANGE_FORCAST_DATE,
     CHANGE_DEFAULT_AMOUNT,
     CHANGE_INSTALLMENT_NUMBER
@@ -103,6 +106,10 @@ type BalanceActionSetStartDate = {
     date: Dayjs | null;
 }
 
+type BalanceActionStartDateError = {
+    type: CalculatorActions.ON_START_DATE_ERROR;
+}
+
 type BalanceActionChangeStartDate = {
     type: CalculatorActions.CHANGE_START_DATE;
 }
@@ -122,6 +129,10 @@ type ForecastActionSetForecastDate = {
     date: Dayjs | null;
 }
 
+type ForecastActionForecastDateError = {
+    type: CalculatorActions.ON_FORECAST_DATE_ERROR;
+}
+
 type ForecastActionChangeForecastDate = {
     type: CalculatorActions.CHANGE_FORCAST_DATE;
 }
@@ -136,4 +147,7 @@ type ForecastActionChangeInstallmentNumber = {
     number: number;
 }
 
-export type CalculatorAction = RentActionCalculate | RentActionChangeFrequency | ShortfallActionChangeBenefitType | ShortfallActionCalculate | BalanceActionSetStartDate | BalanceActionChangeStartDate | BalanceActionCaluclateStartingBalance | ForecastActionChangePaymentFrequency | ForecastActionSetForecastDate | ForecastActionChangeForecastDate | ForecastActionCalculateTotalInstallments | ForecastActionChangeInstallmentNumber;
+export type CalculatorAction = RentActionCalculate | RentActionChangeFrequency | 
+ShortfallActionChangeBenefitType | ShortfallActionCalculate |
+ BalanceActionSetStartDate | BalanceActionStartDateError | BalanceActionChangeStartDate | BalanceActionCaluclateStartingBalance | 
+ ForecastActionChangePaymentFrequency | ForecastActionSetForecastDate | ForecastActionForecastDateError | ForecastActionChangeForecastDate | ForecastActionCalculateTotalInstallments | ForecastActionChangeInstallmentNumber;
