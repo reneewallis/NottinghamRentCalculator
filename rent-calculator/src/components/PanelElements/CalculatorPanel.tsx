@@ -13,8 +13,8 @@ function CalculatorPanel({circleValue, circleLabel, mainPanelBoxes, sidePanelBox
         }
         <div className="relative">
             <div className="absolute top-0 right-4.5 flex flex-col items-center text-center gap-3 px-10 py-4 justify-center self-center z-20 ml-5 w-64 h-64 rounded-full bg-gray-800 border-4 border-gray-300">
-                <div className="text-6xl">{circleValue}</div>
-                <div className="text-xl">{circleLabel}</div>
+                <div className="text-6xl text-gray-50">{circleValue}</div>
+                <div className="text-xl text-gray-200">{circleLabel}</div>
             </div>
             <div className={`w-74 mt-40 flex flex-col items-center gap-4.5 bg-gray-800 z-10 rounded-2xl shadow-lg border-4 border-gray-300 pb-11 pt-25.75`}>
                 {...mainPanelBoxes}
