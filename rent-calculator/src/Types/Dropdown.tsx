@@ -1,16 +1,16 @@
 export type DropdownItem = {
-    label: string;
-    onClick?: () => void;
-}
+  label: string;
+  onClick?: () => void;
+};
 
 export type DropdownProps = {
-    items: DropdownItem[];
-}
+  items: DropdownItem[];
+};
 
 export type DropdownBoxProps = {
-    label: string;
-    items: DropdownItem[];
-    small?: boolean;
-    minWidth?: number;
-    valid?: boolean;
-}
+  label: string;
+  items: DropdownItem[];
+  small?: boolean;
+  minWidth?: number;
+  valid?: boolean;
+};

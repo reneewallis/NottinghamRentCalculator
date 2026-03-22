@@ -5,8 +5,8 @@ import "./globals.css";
 const ubuntuFont = Ubuntu({
   variable: "--font-ubuntu",
   weight: "400",
-  subsets:["latin"],
-})
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Nottingham Rent Calculator",
@@ -20,11 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${ubuntuFont.variable} antialiased`}
-      >
-        {children}
-      </body>
+      <body className={`${ubuntuFont.variable} antialiased`}>{children}</body>
     </html>
   );
 }

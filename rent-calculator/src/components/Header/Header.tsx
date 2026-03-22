@@ -1,13 +1,13 @@
 import React from "react";
 import { HeaderProps } from "@/src/Types/Header";
 
-function Header({children}:HeaderProps){
-    return(
-        <div>
-            <h1 className="text-3xl font-bold mb-2 text-gray-200">Rent Calculator</h1>
-            {children}
-        </div>
-    );
+function Header({ children }: HeaderProps) {
+  return (
+    <div>
+      <h1 className="text-3xl font-bold mb-2 text-gray-200">Rent Calculator</h1>
+      {children}
+    </div>
+  );
 }
 
 export default Header;

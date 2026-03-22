@@ -1,15 +1,15 @@
 export type NewTabButtonProps = {
-    onClick: () => void;
-}
+  onClick: () => void;
+};
 
 export type HistoryButtonProps = {
-    showHistory: boolean;
-    onClick: () => void;
-}
+  showHistory: boolean;
+  onClick: () => void;
+};
 
 type ArrowDirection = "left" | "right";
 
 export type ArrowButtonProps = {
-    direction: ArrowDirection;
-    onClick: () => void;
-}
+  direction: ArrowDirection;
+  onClick: () => void;
+};
