@@ -1,10 +1,10 @@
 "use client";
 
 import React, {useReducer} from "react";
-import {PanelProps} from "@/src/Types/Tabs";
+import {PanelProps} from "../../Types/Tabs";
 import { CalculatorAction, CalculatorActions, RentFrequency, CalculatorState, RentState, BenefitType, ShortfallState, BalanceState, InstallmentFrequency, ForecastState } from "@/src/Types/RentCalculator";
 import CalculatorBox from "../PanelElements/CalculatorBox";
-import { CalculatorBoxProps} from "@/src/Types/PanelElements";
+import { CalculatorBoxProps} from "../../Types/PanelElements";
 import DateBox from "../InputFields/DateBox";
 import CalculatorPanel from "../PanelElements/CalculatorPanel";
 import TextBox from "../InputFields/TextBox";
@@ -235,8 +235,8 @@ function calculateForecast(startingBalance: string, startDate: Dayjs | null, sta
 
     const totalInstallments = calculateTotalInstallments(startingBalance, forecast.defaultAmount);
     let newInstallmentNumber = 0;
-    let forecastPaid = forecast.forecastPaid;
-    let balanceRemaining = forecast.balanceRemaining;
+    let forecastPaid = '';
+    let balanceRemaining = '';
 
     if (totalInstallments !== -1) {
         if (startDate && startDateIsValid && forecast.forecastDate && forecast.forecastDateIsValid && forecast.paymentFrequency !== InstallmentFrequency.UNSELECTED){
@@ -260,10 +260,12 @@ function calculateForecast(startingBalance: string, startDate: Dayjs | null, sta
         forecastPaid: forecastPaid,
         balanceRemaining: balanceRemaining,
         defaultAmount: forecast.defaultAmount,
+        defaultAmountIsValid: forecast.defaultAmountIsValid,
         forecastDate: forecast.forecastDate,
         forecastDateIsValid: forecast.forecastDateIsValid,
         minForecastDate: forecast.minForecastDate,
-        paymentFrequency: forecast.paymentFrequency
+        paymentFrequency: forecast.paymentFrequency,
+        paymentFrequencyIsValid: forecast.paymentFrequencyIsValid
     })
 
 }
@@ -302,12 +304,14 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
 
     let forecast:ForecastState = {
         paymentFrequency: state.paymentFrequency,
+        paymentFrequencyIsValid: state.paymentFrequencyIsValid,
         totalInstallments: state.totalInstallments,
         installmentNumber: state.installmentNumber,
         forecastDate: state.forecastDate,
         forecastDateIsValid: state.forecastDateIsValid,
         minForecastDate: state.minForecastDate,
         defaultAmount: state.defaultAmount,
+        defaultAmountIsValid: state.defaultAmountIsValid,
         forecastPaid: state.forecastPaid,
         balanceRemaining: state.balanceRemaining
     }
@@ -326,14 +330,7 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
                     forecast = calculateForecast(balance.startingBalance, balance.startDate, balance.startDateIsValid, forecast);
                 }
 
-                if (shortfall.benefitAmount === '') {
-                    shortfall.benefitAmountIsValid = true;
-
-                    if (shortfall.benefitType === BenefitType.UNSELECTED) {
-                        shortfall.benefitTypeIsValid = true;
-                    }
-                }
-                else {
+                if (shortfall.benefitAmount !== '') {
                     shortfall = calculateShortfall(shortfall.benefitType, shortfall.benefitAmount, rent.weeklyRent, rent.fourWeeklyRent, rent.monthlyRent);
                 }
 
@@ -358,8 +355,8 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
 
             if (rent.rentAmount === '' && rent.rentFrequency === RentFrequency.UNSELECTED && 
                 shortfall.benefitAmount === '' && shortfall.benefitType === BenefitType.UNSELECTED && 
-                !balance.startDate &&
-                forecast.defaultAmount === ''){
+                balance.startDate === null && balance.currentBalance === '' &&
+                forecast.defaultAmount === '' && forecast.forecastDate === null && forecast.paymentFrequency === InstallmentFrequency.UNSELECTED){
                 rent.rentFrequencyIsValid = true;
                 rent.rentAmountIsValid = true;
             }
@@ -402,11 +399,16 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
 
             else {
                 shortfall.benefitAmountIsValid = true;
-                shortfall.benefitTypeIsValid = true;
-                if (shortfall.benefitType === BenefitType.UNSELECTED && rent.rentAmount === ''){
-                    rent.rentAmountIsValid = true;
-                    if (rent.rentFrequency === RentFrequency.UNSELECTED){
-                        rent.rentFrequencyIsValid = true;
+                if (shortfall.benefitType === BenefitType.UNSELECTED){
+                    shortfall.benefitTypeIsValid = true;
+                    if(rent.rentAmount === '' &&
+                        balance.currentBalance === '' && balance.startDate === null &&
+                        forecast.forecastDate === null && forecast.defaultAmount === '' && forecast.paymentFrequency === InstallmentFrequency.UNSELECTED
+                    ){
+                        rent.rentAmountIsValid = true;
+                        if (rent.rentFrequency === RentFrequency.UNSELECTED){
+                            rent.rentFrequencyIsValid = true;
+                        }
                     }
                 }
             }
@@ -420,27 +422,26 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
         }
 
         case CalculatorActions.ON_START_DATE_ERROR:{
-            balance.startDateIsValid = false;
-            balance.daysUntilStartDate = -1;
-            balance.weeksUntilStartDate = -1;
-            balance.startingBalance = '';
-            forecast.balanceRemaining = '';
-            forecast.installmentNumber = 0;
-            forecast.forecastPaid = '';
-            forecast.totalInstallments = -1;
-
+            if (action.error){
+                balance.startDateIsValid = false;
+                balance.daysUntilStartDate = -1;
+                balance.weeksUntilStartDate = -1;
+                balance.startingBalance = '';
+                forecast.balanceRemaining = '';
+                forecast.installmentNumber = 0;
+                forecast.forecastPaid = '';
+                forecast.totalInstallments = -1;
+                console.log(`start date error:${action.error}\nvalue:${action.value}`);
+            }
             break;
         }
 
         case CalculatorActions.CHANGE_START_DATE:{
-            balance.startDateIsValid = true;
-    
-            if (balance.startDate){
+            if (balance.startDate !== null){
+                balance.startDateIsValid = true;
                 balance.daysUntilStartDate = balance.startDate.diff(balance.minStartDate, 'days');
                 balance.weeksUntilStartDate = Math.ceil(balance.daysUntilStartDate / 7);
                 balance.startingBalance = calculateStartingBalance(balance.weeksUntilStartDate, balance.currentBalance, rent.weeklyRent);
-
-                forecast = calculateForecast(balance.startingBalance, balance.startDate, balance.startDateIsValid, forecast);
                 
                 if (rent.rentFrequency === RentFrequency.UNSELECTED){
                     rent.rentFrequencyIsValid = false;
@@ -451,18 +452,43 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
                 }
             }
             
+            else {
+                balance.daysUntilStartDate = -1;
+                balance.weeksUntilStartDate = -1;
+                balance.startingBalance = '';
+
+                if (balance.currentBalance === '' &&
+                    forecast.defaultAmount === '' && forecast.forecastDate === null && forecast.paymentFrequency === InstallmentFrequency.UNSELECTED
+                ){
+                    balance.startDateIsValid = true;
+                    if (rent.rentAmount === '' &&
+                        balance.currentBalance === '' && balance.startDate === null &&
+                        shortfall.benefitType === BenefitType.UNSELECTED && shortfall.benefitAmount === '' &&
+                        forecast.defaultAmount === '' && forecast.forecastDate === null && forecast.paymentFrequency === InstallmentFrequency.UNSELECTED
+                    ){
+                        rent.rentAmountIsValid = true;
+                        if (rent.rentFrequency === RentFrequency.UNSELECTED){
+                            rent.rentFrequencyIsValid = true;
+                        }
+                    }
+                } else {
+                    balance.startDateIsValid = false;
+                }
+            }
+
+            forecast = calculateForecast(balance.startingBalance, balance.startDate, balance.startDateIsValid, forecast);
+
             break;
         }
 
         case CalculatorActions.CALCULATE_STARTING_BALANCE:{
             balance.currentBalance = action.newCurrentBalance;
-            balance.currentBalanceIsValid = isValidNumberEntry(balance.currentBalance);
-
-            balance.startingBalance = calculateStartingBalance(balance.weeksUntilStartDate, balance.currentBalance, rent.weeklyRent);
             
+            balance.startingBalance = calculateStartingBalance(balance.weeksUntilStartDate, balance.currentBalance, rent.weeklyRent);
             forecast = calculateForecast(balance.startingBalance, balance.startDate, balance.startDateIsValid, forecast);
 
             if (balance.currentBalance !== ''){
+                balance.currentBalanceIsValid = isValidNumberEntry(balance.currentBalance);
                 if (rent.rentFrequency === RentFrequency.UNSELECTED){
                     rent.rentFrequencyIsValid = false;
                 }
@@ -476,15 +502,22 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
                 }
             }
             else {
-                if (rent.rentAmount === ''){
-                    rent.rentAmountIsValid = true;
-                    if (rent.rentFrequency === RentFrequency.UNSELECTED){
-                        rent.rentFrequencyIsValid = true;
+                if (forecast.forecastDate === null && forecast.defaultAmount === '' && forecast.paymentFrequency === InstallmentFrequency.UNSELECTED
+                ){
+                    balance.currentBalanceIsValid = true;
+                    if(balance.startDate === null){
+                        balance.startDateIsValid = true;
+                        if (rent.rentAmount === '' &&
+                            shortfall.benefitType === BenefitType.UNSELECTED && shortfall.benefitAmount === ''
+                        ){
+                            rent.rentAmountIsValid = true;
+                            if (rent.rentFrequency === RentFrequency.UNSELECTED){
+                                rent.rentFrequencyIsValid = true;
+                            }
+                        }
                     }
-                }
-
-                if (balance.startDate === null){
-                    balance.startDateIsValid = true;
+                } else {
+                    balance.currentBalanceIsValid = false;
                 }
             }
 
@@ -492,8 +525,31 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
         }
 
         case CalculatorActions.CHANGE_PAYMENT_FREQUENCY:{
-            forecast.paymentFrequency = action.frequency;   
+            forecast.paymentFrequency = action.frequency;
+            forecast.paymentFrequencyIsValid = true;
             forecast = calculateForecast(balance.startingBalance, balance.startDate, balance.startDateIsValid, forecast);
+
+            if (forecast.defaultAmount === ''){
+                forecast.defaultAmountIsValid = false;
+            }
+
+            if (balance.currentBalance === ''){
+                balance.currentBalanceIsValid = false;
+            }
+
+            if (balance.startDate === null){
+                balance.startDateIsValid = false;
+            }
+
+            if (rent.rentFrequency === RentFrequency.UNSELECTED){
+                rent.rentFrequencyIsValid = false;
+            }
+
+            if (rent.rentAmount === ''){
+                rent.rentAmountIsValid = false;
+            }
+
+
             break;
         }
 
@@ -503,24 +559,61 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
         }
 
         case CalculatorActions.ON_FORECAST_DATE_ERROR:{
-            forecast.forecastDateIsValid = false;
+            if (action.error){
+                forecast.forecastDateIsValid = false;
+                console.log(`forcast date error:${action.error}\nvalue:${action.value}`);
+            }
             break;
         }
 
         case CalculatorActions.CHANGE_FORCAST_DATE:{
             forecast.forecastDateIsValid = true;
-
             forecast = calculateForecast(balance.startingBalance, balance.startDate, balance.startDateIsValid, forecast);
 
             if (forecast.forecastDate !== null){
                 if (balance.startDate === null){
                     balance.startDateIsValid = false;
                 }
-            }
 
-            else {
-                if (balance.startDate === null){
-                    balance.startDateIsValid = true;
+                if (balance.currentBalance === ''){
+                    balance.currentBalanceIsValid = false;
+                }
+
+                if (rent.rentFrequency === RentFrequency.UNSELECTED){
+                    rent.rentFrequencyIsValid = false;
+                }
+
+                if (rent.rentAmount === ''){
+                    rent.rentAmountIsValid = false;
+                }
+
+                if (forecast.paymentFrequency === InstallmentFrequency.UNSELECTED){
+                    forecast.paymentFrequencyIsValid = false;
+                }
+
+                if (forecast.defaultAmount === ''){
+                    forecast.defaultAmountIsValid = false;
+                }
+            } else {
+                if (forecast.paymentFrequency === InstallmentFrequency.UNSELECTED){
+                    forecast.paymentFrequencyIsValid = true;
+                    if(forecast.defaultAmount === ''){
+                        forecast.defaultAmountIsValid = true;
+                        if(balance.currentBalance === ''){
+                            balance.currentBalanceIsValid = true;
+                            if (balance.startDate === null) {
+                                balance.startDateIsValid = true;
+                                if (rent.rentAmount === '' &&
+                                    shortfall.benefitType === BenefitType.UNSELECTED && shortfall.benefitAmount === ''
+                                ){
+                                    rent.rentAmountIsValid = true;
+                                    if (rent.rentFrequency === RentFrequency.UNSELECTED){
+                                        rent.rentFrequencyIsValid = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
@@ -529,8 +622,10 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
 
         case CalculatorActions.CHANGE_DEFAULT_AMOUNT:{
             forecast.defaultAmount = action.defaultAmount;
+            forecast = calculateForecast(balance.startingBalance, balance.startDate, balance.startDateIsValid, forecast);
             
             if (forecast.defaultAmount !== ''){
+                forecast.defaultAmountIsValid = isValidNumberEntry(forecast.defaultAmount);
                 if (rent.rentFrequency === RentFrequency.UNSELECTED){
                     rent.rentFrequencyIsValid = false;
                 }
@@ -542,22 +637,33 @@ function reducer(state:CalculatorState, action:CalculatorAction): CalculatorStat
                 if (balance.startDate === null){
                     balance.startDateIsValid = false;
                 }
+
+                if (balance.currentBalance === ''){
+                    balance.currentBalanceIsValid = false;
+                }
             }
             
             else {
-                if (rent.rentAmount === ''){
-                    rent.rentAmountIsValid = true;
-                    if (rent.rentFrequency === RentFrequency.UNSELECTED){
-                        rent.rentFrequencyIsValid = true;
+                if (forecast.forecastDate === null && forecast.paymentFrequency === InstallmentFrequency.UNSELECTED){
+                    forecast.defaultAmountIsValid = true;
+                    if (balance.currentBalance === ''){
+                        balance.currentBalanceIsValid = true;
+                        if (balance.startDate === null){
+                            balance.startDateIsValid = true;
+                            if (rent.rentAmount === '' &&
+                                shortfall.benefitType === BenefitType.UNSELECTED && shortfall.benefitAmount === ''
+                            ){
+                                rent.rentAmountIsValid = true;
+                                if (rent.rentFrequency === RentFrequency.UNSELECTED){
+                                    rent.rentFrequencyIsValid = true;
+                                }
+                            }
+                        }
                     }
-                }
-
-                if (balance.startDate === null){
-                    balance.startDateIsValid = true;
+                } else {
+                    forecast.defaultAmountIsValid = false;
                 }
             }
-            
-            forecast = calculateForecast(balance.startingBalance, balance.startDate, balance.startDateIsValid, forecast);
 
             break;
         }
@@ -611,12 +717,14 @@ function initCalculatorState(today: Dayjs): CalculatorState{
         currentBalanceIsValid: true,
         startingBalance: '',
         paymentFrequency: InstallmentFrequency.UNSELECTED,
+        paymentFrequencyIsValid: true,
         totalInstallments: -1,
         installmentNumber: 0,
         forecastDate: null,
         forecastDateIsValid: true,
         minForecastDate: today,
         defaultAmount: '',
+        defaultAmountIsValid: true,
         forecastPaid: '',
         balanceRemaining: '',
     })
@@ -734,7 +842,7 @@ function TabPanel({today, todayString}:PanelProps){
                         flipPanel={true}
                         mainPanelBoxes={[
                             <TextBox key={"todayDate"} label="Today's Date" text={todayString} readOnly={true} width = {13.536} alignment="center"></TextBox>,
-                            <DateBox key={"startDate"} label="Start Date" controlled={true} value={calculatorState.startDate} setValue={value => calculatorDispatch({type: CalculatorActions.SET_START_DATE, date: value})} onChange={() => calculatorDispatch({type: CalculatorActions.CHANGE_START_DATE})} alignment="center" minDate={calculatorState.minStartDate} onError={() => calculatorDispatch({type:CalculatorActions.ON_START_DATE_ERROR})} valid={calculatorState.startDateIsValid}></DateBox>
+                            <DateBox key={"startDate"} label="Start Date" controlled={true} value={calculatorState.startDate} setValue={value => calculatorDispatch({type: CalculatorActions.SET_START_DATE, date: value})} onChange={() => calculatorDispatch({type: CalculatorActions.CHANGE_START_DATE})} alignment="center" minDate={calculatorState.minStartDate} onError={(error: string | null, value: Dayjs | null) => calculatorDispatch({type:CalculatorActions.ON_START_DATE_ERROR, error:error, value:value})} valid={calculatorState.startDateIsValid}></DateBox>
                         ]}
                         sidePanelBoxes={[
                             <TextBox key={"currentBalance"} label="Current Balance" text={calculatorState.currentBalance} readOnly={false} onChange={e => calculatorDispatch({type: CalculatorActions.CALCULATE_STARTING_BALANCE, newCurrentBalance: e.target.value})} valid={calculatorState.currentBalanceIsValid}></TextBox>,
@@ -746,15 +854,16 @@ function TabPanel({today, todayString}:PanelProps){
                         circleLabel={forcastCircleLabel}
                         flipPanel={true}
                         mainPanelBoxes={[
-                            <TextBox key={"defaultAmount"} label="Default Amount" text={calculatorState.defaultAmount} readOnly={false} onChange={e =>calculatorDispatch({type:CalculatorActions.CHANGE_DEFAULT_AMOUNT, defaultAmount:e.target.value})} width = {13.536} alignment="left"></TextBox>,
-                            <DateBox key={"forecastDate"} label="Forecast Date" controlled={true} value={calculatorState.forecastDate} setValue={value => calculatorDispatch({type: CalculatorActions.SET_FORECAST_DATE, date:value})} onChange={() => calculatorDispatch({type: CalculatorActions.CHANGE_FORCAST_DATE})} alignment="left" minDate={calculatorState.minForecastDate} onError={() => calculatorDispatch({type:CalculatorActions.ON_FORECAST_DATE_ERROR})} valid={calculatorState.forecastDateIsValid}></DateBox>,
+                            <TextBox key={"defaultAmount"} label="Default Amount" text={calculatorState.defaultAmount} readOnly={false} onChange={e =>calculatorDispatch({type:CalculatorActions.CHANGE_DEFAULT_AMOUNT, defaultAmount:e.target.value})} width = {13.536} alignment="left" valid={calculatorState.defaultAmountIsValid}></TextBox>,
+                            <DateBox key={"forecastDate"} label="Forecast Date" controlled={true} value={calculatorState.forecastDate} setValue={value => calculatorDispatch({type: CalculatorActions.SET_FORECAST_DATE, date:value})} onChange={() => calculatorDispatch({type: CalculatorActions.CHANGE_FORCAST_DATE})} alignment="left" minDate={calculatorState.minForecastDate} onError={(error: string | null, value: Dayjs | null) => calculatorDispatch({type:CalculatorActions.ON_FORECAST_DATE_ERROR, error: error, value: value})} valid={calculatorState.forecastDateIsValid}></DateBox>,
                             <InstallementScroller key={"installmentScroller"} totalInstallments={calculatorState.totalInstallments} installmentNumber={calculatorState.installmentNumber} frequency={calculatorState.paymentFrequency} onChange={value => calculatorDispatch({type: CalculatorActions.CHANGE_INSTALLMENT_NUMBER, number:value})}></InstallementScroller>
                         ]}
                         sidePanelBoxes={[
                             <CustomDropdownBox key={"paymentFrequency"} small={true} label="Payment Frequency" items={[
                                 {label: "Weekly", onClick: () => {calculatorDispatch({type: CalculatorActions.CHANGE_PAYMENT_FREQUENCY, frequency: InstallmentFrequency.WEEKLY})}},
                                 {label: "Monthly", onClick: () => {calculatorDispatch({type: CalculatorActions.CHANGE_PAYMENT_FREQUENCY, frequency: InstallmentFrequency.MONTHLY})}}
-                            ]}></CustomDropdownBox>,
+                            ]}
+                            valid={calculatorState.paymentFrequencyIsValid}></CustomDropdownBox>,
                             <TextBox key={"totalPaid"} label="Total Paid" text={calculatorState.forecastPaid} readOnly={true}></TextBox>,
                             <TextBox key={"balanceRemaining"} label="Balance Remaining" text={calculatorState.balanceRemaining} readOnly={true}></TextBox>
                         ]}></CalculatorPanel>
