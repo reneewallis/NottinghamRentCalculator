@@ -255,7 +255,7 @@ function DateBox(props:DateBoxProps){
                             }
 
                             if (context.validationError == null){
-                                if (onChange){
+                                if (onChange !== undefined){
                                     onChange(value);
                                 }
                             }
