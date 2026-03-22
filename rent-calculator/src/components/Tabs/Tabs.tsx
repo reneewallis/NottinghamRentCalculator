@@ -1,9 +1,9 @@
 "use client";
 import React, {useReducer} from "react";
-import { TabsAction, TabsActions, TabsState,} from "@/src/Types/Tabs";
-import Tab from "@/src/components/Tabs/Tab"
-import TabPanel from "@/src/components/Tabs/TabPanel"
-import DropdownMenu from "@/src/components/Buttons/MenuButton"
+import { TabsAction, TabsActions, TabsState,} from "../../Types/Tabs";
+import Tab from "../../components/Tabs/Tab"
+import TabPanel from "../../components/Tabs/TabPanel"
+import DropdownMenu from "../../components/Buttons/MenuButton"
 import HistoryButton from "../Buttons/HistoryButton";
 import NewTabButton from "../Buttons/NewTabButton";
 import dayjs from "dayjs";

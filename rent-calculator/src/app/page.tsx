@@ -1,6 +1,6 @@
 import React from "react";
-import Header from "@/src/components/Header/Header";
-import Tabs from "@/src/components/Tabs/Tabs";
+import Header from "../components/Header/Header";
+import Tabs from "../components/Tabs/Tabs";
 
 export default function Home() {
   return (

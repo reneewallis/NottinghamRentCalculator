@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CalculatorPanelProps } from "@/src/Types/PanelElements";
+import { CalculatorPanelProps } from "../../Types/PanelElements";
 
 function CalculatorPanel({circleValue, circleLabel, mainPanelBoxes, sidePanelBoxes, flipPanel = false}:CalculatorPanelProps){
     return(

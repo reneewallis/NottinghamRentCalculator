@@ -1,6 +1,6 @@
 import React from "react";
 import ArrowButton from "../Buttons/ArrowButton";
-import { InstallementScrollerProps } from "@/src/Types/PanelElements";
+import { InstallementScrollerProps } from "../../Types/PanelElements";
 
 function InstallementScroller({totalInstallments, installmentNumber, frequency, onChange}: InstallementScrollerProps){
 
