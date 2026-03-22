@@ -52,12 +52,14 @@ export type BalanceState = {
 
 export type ForecastState = {
     paymentFrequency: InstallmentFrequency;
+    paymentFrequencyIsValid: boolean;
     totalInstallments: number;
     installmentNumber: number;
     forecastDate: Dayjs | null;
     forecastDateIsValid: boolean;
     minForecastDate: Dayjs;
     defaultAmount: string;
+    defaultAmountIsValid: boolean;
     forecastPaid: string;
     balanceRemaining: string;
 }
@@ -108,6 +110,8 @@ type BalanceActionSetStartDate = {
 
 type BalanceActionStartDateError = {
     type: CalculatorActions.ON_START_DATE_ERROR;
+    error: string | null;
+    value: Dayjs | null;
 }
 
 type BalanceActionChangeStartDate = {
@@ -131,6 +135,8 @@ type ForecastActionSetForecastDate = {
 
 type ForecastActionForecastDateError = {
     type: CalculatorActions.ON_FORECAST_DATE_ERROR;
+    error: string | null;
+    value: Dayjs | null;
 }
 
 type ForecastActionChangeForecastDate = {
