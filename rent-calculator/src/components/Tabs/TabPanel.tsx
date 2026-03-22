@@ -897,6 +897,10 @@ function reducer(
     case CalculatorActions.CHANGE_INSTALLMENT_NUMBER: {
       forecast.installmentNumber = action.number;
 
+      if (forecast.paymentFrequency === InstallmentFrequency.UNSELECTED) {
+        forecast.paymentFrequencyIsValid = false;
+      }
+
       if (balance.startDate && balance.startDateIsValid) {
         const forecastDate = calculateForecastDate(
           balance.startDate,
