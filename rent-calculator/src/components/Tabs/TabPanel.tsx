@@ -588,6 +588,23 @@ function reducer(
           rent.weeklyRent,
         );
 
+        if (
+          forecast.paymentFrequency !== InstallmentFrequency.UNSELECTED &&
+          forecast.forecastDate === null
+        ) {
+          if (balance.startDate && balance.startDateIsValid) {
+            const forecastDate = calculateForecastDate(
+              balance.startDate,
+              forecast.minForecastDate,
+              forecast.paymentFrequency,
+              forecast.installmentNumber,
+            );
+            if (forecastDate) {
+              forecast.forecastDate = forecastDate;
+            }
+          }
+        }
+
         if (rent.rentFrequency === RentFrequency.UNSELECTED) {
           rent.rentFrequencyIsValid = false;
         }
@@ -698,6 +715,21 @@ function reducer(
     case CalculatorActions.CHANGE_PAYMENT_FREQUENCY: {
       forecast.paymentFrequency = action.frequency;
       forecast.paymentFrequencyIsValid = true;
+      if (
+        forecast.forecastDate === null &&
+        balance.startDate &&
+        balance.startDateIsValid
+      ) {
+        const forecastDate = calculateForecastDate(
+          balance.startDate,
+          forecast.minForecastDate,
+          forecast.paymentFrequency,
+          forecast.installmentNumber,
+        );
+        if (forecastDate) {
+          forecast.forecastDate = forecastDate;
+        }
+      }
       forecast = calculateForecast(
         balance.startingBalance,
         balance.startDate,
@@ -1050,16 +1082,19 @@ function TabPanel({ today, todayString }: PanelProps) {
           label: "Weekly Shortfall",
           text: calculatorState.weeklyShortfall,
           readOnly: true,
+          valid: +calculatorState.weeklyShortfall >= 0,
         },
         {
           label: "4-Weekly Shortfall",
           text: calculatorState.fourWeeklyShortfall,
           readOnly: true,
+          valid: +calculatorState.fourWeeklyShortfall >= 0,
         },
         {
           label: "Monthly Shortfall",
           text: calculatorState.monthlyShortfall,
           readOnly: true,
+          valid: +calculatorState.monthlyShortfall >= 0,
         },
       ],
     },
