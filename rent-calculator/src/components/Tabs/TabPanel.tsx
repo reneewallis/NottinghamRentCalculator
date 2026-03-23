@@ -577,10 +577,9 @@ function reducer(
     case CalculatorActions.CHANGE_START_DATE: {
       if (balance.startDate !== null) {
         balance.startDateIsValid = true;
-        balance.daysUntilStartDate = balance.startDate.diff(
-          balance.minStartDate,
-          "days",
-        );
+        balance.daysUntilStartDate = balance.startDate
+          .startOf("day")
+          .diff(balance.minStartDate.startOf("day"), "days");
         balance.weeksUntilStartDate = Math.ceil(balance.daysUntilStartDate / 7);
         balance.startingBalance = calculateStartingBalance(
           balance.weeksUntilStartDate,
