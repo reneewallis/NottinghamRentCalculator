@@ -157,7 +157,7 @@ function calculateStartingBalance(
 ): string {
   if (
     currentBalance === "" ||
-    weeklyRent === "" ||
+    (weeklyRent === "" && weeksUntilStartDate !== 0) ||
     weeksUntilStartDate === -1 ||
     !isValidNumberEntry(currentBalance) ||
     !isValidNumberEntry(weeklyRent)
@@ -605,12 +605,25 @@ function reducer(
           }
         }
 
-        if (rent.rentFrequency === RentFrequency.UNSELECTED) {
-          rent.rentFrequencyIsValid = false;
-        }
+        if (balance.weeksUntilStartDate !== 0) {
+          if (rent.rentFrequency === RentFrequency.UNSELECTED) {
+            rent.rentFrequencyIsValid = false;
+          }
 
-        if (rent.rentAmount === "") {
-          rent.rentAmountIsValid = false;
+          if (rent.rentAmount === "") {
+            rent.rentAmountIsValid = false;
+          }
+        } else {
+          if (
+            rent.rentAmount === "" &&
+            shortfall.benefitAmount === "" &&
+            shortfall.benefitType === BenefitType.UNSELECTED
+          ) {
+            rent.rentAmountIsValid = true;
+            if (rent.rentFrequency === RentFrequency.UNSELECTED) {
+              rent.rentFrequencyIsValid = true;
+            }
+          }
         }
       } else {
         balance.daysUntilStartDate = -1;
@@ -673,12 +686,26 @@ function reducer(
         balance.currentBalanceIsValid = isValidNumberEntry(
           balance.currentBalance,
         );
-        if (rent.rentFrequency === RentFrequency.UNSELECTED) {
-          rent.rentFrequencyIsValid = false;
-        }
 
-        if (rent.rentAmount === "") {
-          rent.rentAmountIsValid = false;
+        if (balance.weeksUntilStartDate !== 0) {
+          if (rent.rentFrequency === RentFrequency.UNSELECTED) {
+            rent.rentFrequencyIsValid = false;
+          }
+
+          if (rent.rentAmount === "") {
+            rent.rentAmountIsValid = false;
+          }
+        } else {
+          if (
+            rent.rentAmount === "" &&
+            shortfall.benefitAmount === "" &&
+            shortfall.benefitType === BenefitType.UNSELECTED
+          ) {
+            rent.rentAmountIsValid = true;
+            if (rent.rentFrequency === RentFrequency.UNSELECTED) {
+              rent.rentFrequencyIsValid = true;
+            }
+          }
         }
 
         if (balance.startDate === null) {
@@ -749,12 +776,14 @@ function reducer(
         balance.startDateIsValid = false;
       }
 
-      if (rent.rentFrequency === RentFrequency.UNSELECTED) {
-        rent.rentFrequencyIsValid = false;
-      }
+      if (balance.weeksUntilStartDate !== 0) {
+        if (rent.rentFrequency === RentFrequency.UNSELECTED) {
+          rent.rentFrequencyIsValid = false;
+        }
 
-      if (rent.rentAmount === "") {
-        rent.rentAmountIsValid = false;
+        if (rent.rentAmount === "") {
+          rent.rentAmountIsValid = false;
+        }
       }
 
       break;
@@ -793,12 +822,14 @@ function reducer(
           balance.currentBalanceIsValid = false;
         }
 
-        if (rent.rentFrequency === RentFrequency.UNSELECTED) {
-          rent.rentFrequencyIsValid = false;
-        }
+        if (balance.weeksUntilStartDate !== 0) {
+          if (rent.rentFrequency === RentFrequency.UNSELECTED) {
+            rent.rentFrequencyIsValid = false;
+          }
 
-        if (rent.rentAmount === "") {
-          rent.rentAmountIsValid = false;
+          if (rent.rentAmount === "") {
+            rent.rentAmountIsValid = false;
+          }
         }
 
         if (forecast.paymentFrequency === InstallmentFrequency.UNSELECTED) {
@@ -849,12 +880,14 @@ function reducer(
         forecast.defaultAmountIsValid = isValidNumberEntry(
           forecast.defaultAmount,
         );
-        if (rent.rentFrequency === RentFrequency.UNSELECTED) {
-          rent.rentFrequencyIsValid = false;
-        }
+        if (balance.weeksUntilStartDate !== 0) {
+          if (rent.rentFrequency === RentFrequency.UNSELECTED) {
+            rent.rentFrequencyIsValid = false;
+          }
 
-        if (rent.rentAmount === "") {
-          rent.rentAmountIsValid = false;
+          if (rent.rentAmount === "") {
+            rent.rentAmountIsValid = false;
+          }
         }
 
         if (balance.startDate === null) {
