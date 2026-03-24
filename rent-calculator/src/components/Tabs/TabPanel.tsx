@@ -301,6 +301,7 @@ function calculateForecast(
   startDate: Dayjs | null,
   startDateIsValid: boolean,
   forecast: ForecastState,
+  calcInstallment: boolean = true,
 ): ForecastState {
   const totalInstallments = calculateTotalInstallments(
     startingBalance,
@@ -316,7 +317,8 @@ function calculateForecast(
       startDateIsValid &&
       forecast.forecastDate &&
       forecast.forecastDateIsValid &&
-      forecast.paymentFrequency !== InstallmentFrequency.UNSELECTED
+      forecast.paymentFrequency !== InstallmentFrequency.UNSELECTED &&
+      calcInstallment
     ) {
       newInstallmentNumber = calculateInstallment(
         startDate,
@@ -575,6 +577,7 @@ function reducer(
     }
 
     case CalculatorActions.CHANGE_START_DATE: {
+      let calcForecastInstallment = true;
       if (balance.startDate !== null) {
         balance.startDateIsValid = true;
         balance.daysUntilStartDate = balance.startDate
@@ -600,6 +603,7 @@ function reducer(
             );
             if (forecastDate) {
               forecast.forecastDate = forecastDate;
+              calcForecastInstallment = false;
             }
           }
         }
@@ -661,6 +665,7 @@ function reducer(
         balance.startDate,
         balance.startDateIsValid,
         forecast,
+        calcForecastInstallment,
       );
 
       break;
@@ -741,6 +746,7 @@ function reducer(
     case CalculatorActions.CHANGE_PAYMENT_FREQUENCY: {
       forecast.paymentFrequency = action.frequency;
       forecast.paymentFrequencyIsValid = true;
+      let calcForecastInstallment = true;
       if (
         forecast.forecastDate === null &&
         balance.startDate &&
@@ -754,6 +760,7 @@ function reducer(
         );
         if (forecastDate) {
           forecast.forecastDate = forecastDate;
+          calcForecastInstallment = false;
         }
       }
       forecast = calculateForecast(
@@ -761,6 +768,7 @@ function reducer(
         balance.startDate,
         balance.startDateIsValid,
         forecast,
+        calcForecastInstallment,
       );
 
       if (forecast.defaultAmount === "") {
@@ -950,6 +958,7 @@ function reducer(
         balance.startDate,
         balance.startDateIsValid,
         forecast,
+        false,
       );
 
       break;
