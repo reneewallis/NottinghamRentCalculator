@@ -50,11 +50,11 @@ function DropdownMenu({ items }: MenuButtonProps) {
         )}
       </button>
       {showMenu && (
-        <div className="absolute right-0 z-10 inline-flex flex-col rounded-lg bg-gray-600 inset-shadow-sm border-2 border-gray-200">
+        <div className="absolute right-0 p-1 z-10 inline-flex flex-col rounded-3xl bg-gray-600 inset-shadow-sm border-2 border-gray-200">
           {items.map((menuItem, index) => (
             <button
               key={`item${index}`}
-              className="whitespace-nowrap pt-0.5 pb-1 pl-1.5 pr-4 text-left text-gray-200 rounded-lg hover:bg-fuchsia-700 hover:text-gray-50"
+              className="whitespace-nowrap pt-0.5 pb-1 pl-2 pr-2 text-left text-gray-200 rounded-2xl hover:bg-fuchsia-700 hover:text-gray-50 cursor-pointer"
               onClick={() => {
                 if (menuItem.onClick) {
                   menuItem.onClick();
