@@ -3,13 +3,13 @@
 import React from "react";
 import { CalculatorPanelProps } from "../../Types/PanelElements";
 
-function CalculatorPanel({
+function CalculatorPanel<TLabel extends string>({
   circleValue,
   circleLabel,
   mainPanelBoxes,
   sidePanelBoxes,
   flipPanel = false,
-}: CalculatorPanelProps) {
+}: CalculatorPanelProps<TLabel>) {
   return (
     <div
       className={`inline-flex items-center ${flipPanel ? "justify-end" : "justify-start"}`}
