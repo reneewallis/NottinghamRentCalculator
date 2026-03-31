@@ -1,15 +1,11 @@
-export type DropdownItem = {
-  label: string;
+export type DropdownItem<TLabel extends string | number> = {
+  label: TLabel;
   onClick?: () => void;
 };
 
-export type DropdownProps = {
-  items: DropdownItem[];
-};
-
-export type DropdownBoxProps = {
-  label: string;
-  items: DropdownItem[];
+export type DropdownBoxProps<TLabel extends string> = {
+  label: TLabel;
+  items: DropdownItem<TLabel>[];
   small?: boolean;
   minWidth?: number;
   valid?: boolean;
