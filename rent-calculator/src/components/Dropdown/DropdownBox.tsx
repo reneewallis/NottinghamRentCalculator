@@ -1,15 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
-import { DropdownItem, DropdownBoxProps } from "@/src/Types/Dropdown";
+import { DropdownBoxProps } from "@/src/Types/Dropdown";
 
-function CustomDropdownBox({
+function CustomDropdownBox<TLabel extends string>({
   label,
   items,
   minWidth,
   small = false,
   valid = true,
-}: DropdownBoxProps) {
+}: DropdownBoxProps<TLabel>) {
   const [showItems, setShowItems] = useState(false);
   const [boxText, setBoxText] = useState(label);
   let buttonWidth;
@@ -77,7 +77,7 @@ function CustomDropdownBox({
       </button>
       {showItems && (
         <div className="absolute top-full z-10 mt-1.5 p-1 w-full flex flex-col rounded-3xl bg-gray-800 inset-shadow-sm border-2 border-gray-100 hover:border-gray-50 opacity-90">
-          {items.map((item: DropdownItem, index: number) => (
+          {items.map((item, index) => (
             <button
               key={`item${index}`}
               className="whitespace-nowrap text-xl pt-0.5 pb-1 pl-2 pr-2 text-left text-gray-100 rounded-2xl hover:bg-fuchsia-700 hover:text-gray-50 hover:font-semibold cursor-pointer"
