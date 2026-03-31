@@ -130,7 +130,7 @@ function TabPanel({ today, todayString }: PanelProps) {
   return (
     <div className="mt-6 px-6 w-full">
       <div className="grid grid-cols-[repeat(2,minmax(35.5rem,1fr))] grid-flow-row-dense overflow-x-auto justify-start items-center gap-12 pb-5">
-        <div key={"rent"} className="col-start-1 mt-37.75">
+        <div key={"rent"} className="col-start-1 mt-38">
           <CalculatorBox
             dropDownProps={{
               ...calcBoxDropdowns.rent,
@@ -167,7 +167,7 @@ function TabPanel({ today, todayString }: PanelProps) {
             ]}
           ></CalculatorBox>
         </div>
-        <div key={"shortfall"} className="col-start-1 mt-37.75">
+        <div key={"shortfall"} className="col-start-1 mt-40">
           <CalculatorBox
             dropDownProps={{
               ...calcBoxDropdowns.shortfall,
