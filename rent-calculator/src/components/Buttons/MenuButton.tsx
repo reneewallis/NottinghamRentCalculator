@@ -1,9 +1,9 @@
 "use client";
 
-import { DropdownProps, DropdownItem } from "@/src/Types/Dropdown";
+import { MenuButtonProps } from "@/src/Types/Buttons";
 import React, { useState } from "react";
 
-function DropdownMenu({ items }: DropdownProps) {
+function DropdownMenu({ items }: MenuButtonProps) {
   const [showMenu, setShowMenu] = useState(false);
 
   return (
@@ -51,7 +51,7 @@ function DropdownMenu({ items }: DropdownProps) {
       </button>
       {showMenu && (
         <div className="absolute right-0 z-10 inline-flex flex-col rounded-lg bg-gray-600 inset-shadow-sm border-2 border-gray-200">
-          {items.map((menuItem: DropdownItem, index: number) => (
+          {items.map((menuItem, index) => (
             <button
               key={`item${index}`}
               className="whitespace-nowrap pt-0.5 pb-1 pl-1.5 pr-4 text-left text-gray-200 rounded-lg hover:bg-fuchsia-700 hover:text-gray-50"
