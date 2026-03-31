@@ -6,10 +6,19 @@ import {
   ReadOnlyTextBoxProps,
   TextBoxProps,
 } from "./InputFields";
-import { InstallmentFrequency } from "./RentCalculator";
+import {
+  BenefitType,
+  InstallmentFrequency,
+  RentFrequency,
+} from "./RentCalculator";
+
+export type CalculatorBoxDropdownBoxes = {
+  rent: DropdownBoxProps<RentFrequency>;
+  shortfall: DropdownBoxProps<BenefitType>;
+};
 
 export type CalculatorBoxProps = {
-  dropDownProps: DropdownBoxProps;
+  dropDownProps: DropdownBoxProps<string>;
   inputTextBoxProps: InputTextBoxProps;
   resultTextBoxes: ReadOnlyTextBoxProps[];
   flipResultTextBoxes?: boolean;
@@ -26,14 +35,14 @@ type MainPanelElement =
   | ReactElement<TextBoxProps>
   | ReactElement<DateBoxProps>
   | ReactElement<InstallementScrollerProps>;
-type SidePanelElement =
+type SidePanelElement<TLabel extends string> =
   | ReactElement<TextBoxProps>
-  | ReactElement<DropdownBoxProps>;
+  | ReactElement<DropdownBoxProps<TLabel>>;
 
-export type CalculatorPanelProps = {
+export type CalculatorPanelProps<TLabel extends string> = {
   circleValue: string;
   circleLabel: string;
   mainPanelBoxes: MainPanelElement[];
-  sidePanelBoxes: SidePanelElement[];
+  sidePanelBoxes: SidePanelElement<TLabel>[];
   flipPanel?: boolean;
 };
