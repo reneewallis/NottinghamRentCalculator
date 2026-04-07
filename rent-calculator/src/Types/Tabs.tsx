@@ -1,10 +1,5 @@
-import { Dayjs } from "dayjs";
 import React from "react";
-
-export type PanelProps = {
-  today: Dayjs;
-  todayString: string;
-};
+import { CalculatorAction, CalculatorState } from "./RentCalculator";
 
 export type TabProps = {
   label: string;
@@ -21,6 +16,7 @@ export enum TabsActions {
   SET_ACTIVE_TAB,
   HOVER_LAST,
   VIEW_HISTORY,
+  USE_RENT_CALCULATOR,
 }
 
 type TabsActionCloseTab = {
@@ -38,6 +34,11 @@ type TabsActionSetActiveTab = {
   index: number;
 };
 
+type TabsActionUseRentCalculator = {
+  type: TabsActions.USE_RENT_CALCULATOR;
+  action: CalculatorAction;
+};
+
 type TabsActionOther = {
   type:
     | TabsActions.CLOSE_ALL_TABS
@@ -49,21 +50,31 @@ export type TabsAction =
   | TabsActionOther
   | TabsActionHoverLast
   | TabsActionCloseTab
-  | TabsActionSetActiveTab;
+  | TabsActionSetActiveTab
+  | TabsActionUseRentCalculator;
 
 export type TabsTabWrapper = {
   id: number;
   time: string;
-  today: Dayjs;
+  calculatorState: CalculatorState;
   todayString: string;
 };
 
 export type TabsState = {
   nextTabID: number;
-  activeTab: number;
+  activeTabIndex: number;
   showHistory: boolean;
   viewableIndex: number;
   hoverLast: boolean;
   lastTabActive: boolean;
   wrappedTabArr: TabsTabWrapper[];
+};
+
+export type TabsContextType = {
+  tabsState: TabsState;
+  tabsDispatch: React.ActionDispatch<[action: TabsAction]>;
+};
+
+export type TabsProviderProps = {
+  children?: React.ReactNode;
 };

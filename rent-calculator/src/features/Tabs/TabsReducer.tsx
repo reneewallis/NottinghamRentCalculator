@@ -1,5 +1,9 @@
 import { TabsAction, TabsActions, TabsState } from "../../Types/Tabs";
 import dayjs from "dayjs";
+import {
+  initCalculatorState,
+  rentCalculatorReducer,
+} from "../RentCalculator/RentCalculatorReducer";
 
 const MAX_TABS: number = 15;
 
@@ -10,11 +14,9 @@ export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
       const hours = now.hour().toString().padStart(2, "0");
       const minutes = now.minute().toString().padStart(2, "0");
       const time = `${hours}:${minutes}`;
-
       const dd = now.date().toString().padStart(2, "0");
       const mm = (now.month() + 1).toString().padStart(2, "0");
       const yyyy = now.year().toString().padStart(4, "0");
-
       const todayString = `${dd}/${mm}/${yyyy}`;
 
       const viewableIndex =
@@ -22,7 +24,7 @@ export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
 
       return {
         nextTabID: state.nextTabID + 1,
-        activeTab: state.wrappedTabArr.length,
+        activeTabIndex: state.wrappedTabArr.length,
         showHistory: state.showHistory,
         viewableIndex: viewableIndex,
         hoverLast: state.hoverLast,
@@ -32,7 +34,7 @@ export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
           {
             id: state.nextTabID,
             time: time,
-            today: now,
+            calculatorState: initCalculatorState(now),
             todayString: todayString,
           },
         ],
@@ -40,7 +42,7 @@ export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
     }
 
     case TabsActions.CLOSE_TAB: {
-      let activeTab = state.activeTab;
+      let activeTab = state.activeTabIndex;
       let lastTabActive = state.lastTabActive;
       let viewableIndex = state.viewableIndex;
       let showHistory = state.showHistory;
@@ -66,7 +68,7 @@ export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
 
       return {
         nextTabID: state.nextTabID,
-        activeTab: activeTab,
+        activeTabIndex: activeTab,
         showHistory: showHistory,
         viewableIndex: viewableIndex,
         hoverLast: state.hoverLast,
@@ -78,7 +80,7 @@ export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
     case TabsActions.CLOSE_ALL_TABS: {
       return {
         nextTabID: state.nextTabID,
-        activeTab: 0,
+        activeTabIndex: 0,
         showHistory: false,
         viewableIndex: 0,
         hoverLast: false,
@@ -90,7 +92,7 @@ export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
     case TabsActions.HOVER_LAST: {
       return {
         nextTabID: state.nextTabID,
-        activeTab: state.activeTab,
+        activeTabIndex: state.activeTabIndex,
         showHistory: state.showHistory,
         viewableIndex: state.viewableIndex,
         hoverLast: action.hoverLast,
@@ -110,7 +112,7 @@ export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
 
       return {
         nextTabID: state.nextTabID,
-        activeTab: state.activeTab,
+        activeTabIndex: state.activeTabIndex,
         showHistory: showHistory,
         viewableIndex: state.viewableIndex,
         hoverLast: state.hoverLast,
@@ -122,12 +124,29 @@ export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
     case TabsActions.SET_ACTIVE_TAB: {
       return {
         nextTabID: state.nextTabID,
-        activeTab: action.index,
+        activeTabIndex: action.index,
         showHistory: state.showHistory,
         viewableIndex: state.viewableIndex,
         hoverLast: state.hoverLast,
         lastTabActive: state.lastTabActive,
         wrappedTabArr: [...state.wrappedTabArr],
+      };
+    }
+
+    case TabsActions.USE_RENT_CALCULATOR: {
+      return {
+        ...state,
+        wrappedTabArr: state.wrappedTabArr.map((tab, index) =>
+          index === state.activeTabIndex
+            ? {
+                ...tab,
+                calculatorState: rentCalculatorReducer(
+                  tab.calculatorState,
+                  action.action,
+                ),
+              }
+            : tab,
+        ),
       };
     }
   }
