@@ -184,7 +184,7 @@ function calculateInstallment(
   forecastDate: Dayjs,
   paymentFrequency: InstallmentFrequency,
 ): number {
-  if (forecastDate.isBefore(startDate)) {
+  if (forecastDate.startOf("day").isBefore(startDate.startOf("day"))) {
     return 0;
   }
 
@@ -196,12 +196,16 @@ function calculateInstallment(
     }
 
     case InstallmentFrequency.WEEKLY: {
-      installment += forecastDate.diff(startDate, "weeks");
+      installment += forecastDate
+        .startOf("day")
+        .diff(startDate.startOf("day"), "weeks");
       break;
     }
 
     case InstallmentFrequency.MONTHLY: {
-      installment += forecastDate.diff(startDate, "months");
+      installment += forecastDate
+        .startOf("day")
+        .diff(startDate.startOf("day"), "months");
       break;
     }
   }
@@ -222,17 +226,21 @@ export function calculateForecastDate(
     }
 
     case InstallmentFrequency.WEEKLY: {
-      forecastDate = startDate.add(installmentNumber - 1, "weeks");
+      forecastDate = startDate
+        .startOf("day")
+        .add(installmentNumber - 1, "weeks");
       break;
     }
 
     case InstallmentFrequency.MONTHLY: {
-      forecastDate = startDate.add(installmentNumber - 1, "months");
+      forecastDate = startDate
+        .startOf("day")
+        .add(installmentNumber - 1, "months");
       break;
     }
   }
 
-  return forecastDate.isBefore(minForecastDate)
+  return forecastDate.startOf("day").isBefore(minForecastDate.startOf("day"))
     ? minForecastDate
     : forecastDate;
 }
