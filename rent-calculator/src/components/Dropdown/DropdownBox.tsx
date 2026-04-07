@@ -3,15 +3,21 @@
 import React, { useState } from "react";
 import { DropdownBoxProps } from "@/src/Types/Dropdown";
 
-function CustomDropdownBox<TLabel extends string>({
-  label,
-  items,
-  minWidth,
-  small = false,
-  valid = true,
-}: DropdownBoxProps<TLabel>) {
+function CustomDropdownBox<TLabel extends string>(
+  props: DropdownBoxProps<TLabel>,
+) {
+  const {
+    label,
+    items,
+    minWidth,
+    small = false,
+    valid = true,
+    controlled,
+  } = props;
+
   const [showItems, setShowItems] = useState(false);
   const [boxText, setBoxText] = useState(label);
+
   let buttonWidth;
   if (minWidth) {
     buttonWidth = minWidth;
@@ -39,7 +45,7 @@ function CustomDropdownBox<TLabel extends string>({
           key={"boxLabel"}
           className={`${small ? "text-2xl wrap-break-word" : "text-3xl whitespace-nowrap"} text-left`}
         >
-          {boxText}
+          {controlled ? props.value : boxText}
         </div>
         <div key={"arrow"} className="translate-y-1 pr-1.5 mr-2.5">
           {showItems ? (
@@ -85,7 +91,9 @@ function CustomDropdownBox<TLabel extends string>({
                 if (item.onClick) {
                   item.onClick();
                 }
-                setBoxText(item.label);
+                if (!controlled) {
+                  setBoxText(item.label);
+                }
                 setShowItems(false);
               }}
             >
