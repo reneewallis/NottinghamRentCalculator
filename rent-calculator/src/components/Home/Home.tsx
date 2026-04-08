@@ -1,6 +1,6 @@
 "use client";
 
-import { useTabsContext } from "@/src/features/Tabs/TabsContext";
+import { useTabsContext } from "@/src/utils/Tabs/TabsContext";
 import { TabsActions } from "@/src/types/Tabs";
 import React from "react";
 

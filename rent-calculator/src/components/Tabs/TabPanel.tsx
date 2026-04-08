@@ -16,7 +16,7 @@ import TextBox from "../InputFields/TextBox";
 import InstallementScroller from "../PanelElements/InstallmentScroller";
 import { Dayjs } from "dayjs";
 import CustomDropdownBox from "../Dropdown/DropdownBox";
-import { useTabsContext } from "@/src/features/Tabs/TabsContext";
+import { useTabsContext } from "@/src/utils/Tabs/TabsContext";
 
 function TabPanel() {
   const { tabsState, tabsDispatch } = useTabsContext();

@@ -6,7 +6,7 @@ import DropdownMenu from "../../components/Buttons/MenuButton";
 import HistoryButton from "../Buttons/HistoryButton";
 import NewTabButton from "../Buttons/NewTabButton";
 import { MenuItems } from "@/src/types/Buttons";
-import { useTabsContext } from "@/src/features/Tabs/TabsContext";
+import { useTabsContext } from "@/src/utils/Tabs/TabsContext";
 
 export default function Tabs() {
   const { tabsState, tabsDispatch: dispatch } = useTabsContext();

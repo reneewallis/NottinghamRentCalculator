@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "../components/Header/Header";
 import Tabs from "../components/Tabs/Tabs";
-import TabsProvider from "../features/Tabs/TabsContext";
+import TabsProvider from "../utils/Tabs/TabsContext";
 import Home from "../components/Home/Home";
 import TabPanel from "../components/Tabs/TabPanel";
 
