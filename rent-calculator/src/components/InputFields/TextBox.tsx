@@ -1,4 +1,4 @@
-import { TextBoxProps } from "../../Types/InputFields";
+import { TextBoxProps } from "../../types/InputFields";
 import React from "react";
 
 function TextBox(props: TextBoxProps) {

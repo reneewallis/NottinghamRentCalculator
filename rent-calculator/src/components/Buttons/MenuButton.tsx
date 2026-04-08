@@ -1,6 +1,6 @@
 "use client";
 
-import { MenuButtonProps } from "@/src/Types/Buttons";
+import { MenuButtonProps } from "@/src/types/Buttons";
 import React, { useState } from "react";
 
 function DropdownMenu({ items }: MenuButtonProps) {

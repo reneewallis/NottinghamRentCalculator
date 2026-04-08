@@ -1,5 +1,5 @@
 import React from "react";
-import { HeaderProps } from "@/src/Types/Header";
+import { HeaderProps } from "@/src/types/Header";
 
 function Header({ children }: HeaderProps) {
   return (

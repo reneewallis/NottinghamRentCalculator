@@ -1,4 +1,4 @@
-import { TabProps } from "../../Types/Tabs";
+import { TabProps } from "../../types/Tabs";
 import React from "react";
 
 function Tab({ label, active = false, onClick, onClose }: TabProps) {

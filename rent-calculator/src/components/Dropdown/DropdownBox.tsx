@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { DropdownBoxProps } from "@/src/Types/Dropdown";
+import { DropdownBoxProps } from "@/src/types/Dropdown";
 
 function CustomDropdownBox<TLabel extends string>(
   props: DropdownBoxProps<TLabel>,

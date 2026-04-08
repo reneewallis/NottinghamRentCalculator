@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CalculatorPanelProps } from "../../Types/PanelElements";
+import { CalculatorPanelProps } from "../../types/PanelElements";
 
 function CalculatorPanel<TLabel extends string>({
   circleValue,

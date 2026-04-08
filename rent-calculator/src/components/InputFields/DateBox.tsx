@@ -5,7 +5,7 @@ import "dayjs/locale/en-gb";
 import { createTheme } from "@mui/material/styles";
 import type {} from "@mui/x-date-pickers/themeAugmentation";
 import { ThemeProvider } from "@mui/material/styles";
-import { DateBoxProps } from "@/src/Types/InputFields";
+import { DateBoxProps } from "@/src/types/InputFields";
 
 const dateTheme = createTheme({
   components: {

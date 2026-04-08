@@ -1,15 +1,15 @@
 "use client";
 
 import React from "react";
-import { TabsActions } from "../../Types/Tabs";
+import { TabsActions } from "../../types/Tabs";
 import {
   CalculatorActions,
   RentFrequency,
   BenefitType,
   InstallmentFrequency,
-} from "@/src/Types/RentCalculator";
+} from "@/src/types/RentCalculator";
 import CalculatorBox from "../PanelElements/CalculatorBox";
-import { CalculatorBoxDropdownBoxes } from "../../Types/PanelElements";
+import { CalculatorBoxDropdownBoxes } from "../../types/PanelElements";
 import DateBox from "../InputFields/DateBox";
 import CalculatorPanel from "../PanelElements/CalculatorPanel";
 import TextBox from "../InputFields/TextBox";

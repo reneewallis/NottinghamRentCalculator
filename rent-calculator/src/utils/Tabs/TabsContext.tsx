@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useReducer } from "react";
 import { tabsReducer } from "./TabsReducer";
-import { TabsContextType, TabsProviderProps } from "@/src/Types/Tabs";
+import { TabsContextType, TabsProviderProps } from "@/src/types/Tabs";
 
 const TabsContext = createContext<TabsContextType | null>(null);
 

@@ -1,11 +1,11 @@
 "use client";
 import React from "react";
-import { TabsActions } from "../../Types/Tabs";
+import { TabsActions } from "../../types/Tabs";
 import Tab from "../../components/Tabs/Tab";
 import DropdownMenu from "../../components/Buttons/MenuButton";
 import HistoryButton from "../Buttons/HistoryButton";
 import NewTabButton from "../Buttons/NewTabButton";
-import { MenuItems } from "@/src/Types/Buttons";
+import { MenuItems } from "@/src/types/Buttons";
 import { useTabsContext } from "@/src/features/Tabs/TabsContext";
 
 export default function Tabs() {

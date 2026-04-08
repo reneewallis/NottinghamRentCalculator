@@ -1,4 +1,4 @@
-import { HistoryButtonProps } from "@/src/Types/Buttons";
+import { HistoryButtonProps } from "@/src/types/Buttons";
 import React from "react";
 
 function HistoryButton({ showHistory, onClick }: HistoryButtonProps) {

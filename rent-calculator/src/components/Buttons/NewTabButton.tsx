@@ -1,5 +1,5 @@
 import React from "react";
-import { NewTabButtonProps } from "@/src/Types/Buttons";
+import { NewTabButtonProps } from "@/src/types/Buttons";
 
 function NewTabButton({ onClick }: NewTabButtonProps) {
   return (
