@@ -63,33 +63,35 @@ export default function Tabs() {
                             </div>
                         ),
                 )}
-                <div
-                    className={`flex items-center mx-0.5 h-7 mt-3 transition-colors duration-100 ${tabsState.activeTabIndex === tabsState.wrappedTabArr.length - 1 || tabsState.hoverLast === true ? "border-gray-500" : "border-l-gray-800 border-l-2"}`}
-                >
-                    <NewTabButton
-                        onClick={() => {
-                            dispatch({ type: TabsActions.NEW_TAB });
-                        }}
-                    ></NewTabButton>
-                    <HistoryButton
-                        showHistory={tabsState.showHistory}
-                        onClick={() => {
-                            dispatch({ type: TabsActions.VIEW_HISTORY });
-                        }}
-                    ></HistoryButton>
-                    <DropdownMenu
-                        items={[
-                            {
-                                label: MenuItems.CLOSE_ALL_TABS,
-                                onClick: () => {
-                                    dispatch({
-                                        type: TabsActions.CLOSE_ALL_TABS,
-                                    });
+                {tabsState.wrappedTabArr.length > 0 && (
+                    <div
+                        className={`flex items-center mx-0.5 h-7 mt-3 transition-colors duration-100 ${tabsState.activeTabIndex === tabsState.wrappedTabArr.length - 1 || tabsState.hoverLast === true ? "border-gray-500" : "border-l-gray-800 border-l-2"}`}
+                    >
+                        <NewTabButton
+                            onClick={() => {
+                                dispatch({ type: TabsActions.NEW_TAB });
+                            }}
+                        ></NewTabButton>
+                        <HistoryButton
+                            showHistory={tabsState.showHistory}
+                            onClick={() => {
+                                dispatch({ type: TabsActions.VIEW_HISTORY });
+                            }}
+                        ></HistoryButton>
+                        <DropdownMenu
+                            items={[
+                                {
+                                    label: MenuItems.CLOSE_ALL_TABS,
+                                    onClick: () => {
+                                        dispatch({
+                                            type: TabsActions.CLOSE_ALL_TABS,
+                                        });
+                                    },
                                 },
-                            },
-                        ]}
-                    ></DropdownMenu>
-                </div>
+                            ]}
+                        ></DropdownMenu>
+                    </div>
+                )}
             </div>
         </div>
     );
