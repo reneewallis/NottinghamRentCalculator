@@ -5,7 +5,7 @@ import {
   ShortfallState,
   InstallmentFrequency,
   ForecastState,
-} from "@/src/Types/RentCalculator";
+} from "@/src/types/RentCalculator";
 
 import { Dayjs } from "dayjs";
 

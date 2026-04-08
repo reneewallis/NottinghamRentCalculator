@@ -9,7 +9,7 @@ import {
   BalanceState,
   InstallmentFrequency,
   ForecastState,
-} from "@/src/Types/RentCalculator";
+} from "@/src/types/RentCalculator";
 
 import {
   isValidNumberEntry,

@@ -1,4 +1,4 @@
-import { TabsAction, TabsActions, TabsState } from "../../Types/Tabs";
+import { TabsAction, TabsActions, TabsState } from "../../types/Tabs";
 import dayjs from "dayjs";
 import {
   initCalculatorState,
