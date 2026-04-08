@@ -60,13 +60,16 @@ export type TabsTabWrapper = {
     todayString: string;
 };
 
-export type TabsState = {
+export type TabsMetadata = {
     nextTabID: number;
     activeTabIndex: number;
     showHistory: boolean;
     viewableIndex: number;
     hoverLast: boolean;
     lastTabActive: boolean;
+};
+
+export type TabsState = TabsMetadata & {
     wrappedTabArr: TabsTabWrapper[];
 };
 
