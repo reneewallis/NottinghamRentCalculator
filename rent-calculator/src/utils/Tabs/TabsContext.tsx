@@ -7,31 +7,33 @@ import { TabsContextType, TabsProviderProps } from "@/src/types/Tabs";
 const TabsContext = createContext<TabsContextType | null>(null);
 
 function TabsProvider({ children }: TabsProviderProps) {
-  const [tabs, dispatch] = useReducer(tabsReducer, {
-    nextTabID: 0,
-    activeTabIndex: 0,
-    showHistory: false,
-    viewableIndex: 0,
-    hoverLast: false,
-    lastTabActive: false,
-    wrappedTabArr: [],
-  });
+    const [tabs, dispatch] = useReducer(tabsReducer, {
+        nextTabID: 0,
+        activeTabIndex: 0,
+        showHistory: false,
+        viewableIndex: 0,
+        hoverLast: false,
+        lastTabActive: false,
+        wrappedTabArr: [],
+    });
 
-  return (
-    <TabsContext.Provider value={{ tabsState: tabs, tabsDispatch: dispatch }}>
-      {children}
-    </TabsContext.Provider>
-  );
+    return (
+        <TabsContext.Provider
+            value={{ tabsState: tabs, tabsDispatch: dispatch }}
+        >
+            {children}
+        </TabsContext.Provider>
+    );
 }
 
 export function useTabsContext() {
-  const context = useContext(TabsContext);
+    const context = useContext(TabsContext);
 
-  if (context === null) {
-    throw new Error("Tabs Context was null\n");
-  }
+    if (context === null) {
+        throw new Error("Tabs Context was null\n");
+    }
 
-  return context;
+    return context;
 }
 
 export default TabsProvider;

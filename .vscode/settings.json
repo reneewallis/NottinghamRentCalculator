@@ -1,0 +1,8 @@
+{
+  "eslint.workingDirectories": [
+    {
+      "directory": "${workspaceFolder}/rent-calculator",
+      "changeProcessCWD": true
+    }
+  ]
+}
