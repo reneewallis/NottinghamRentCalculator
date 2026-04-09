@@ -1,5 +1,6 @@
 import React from "react";
 import { CalculatorAction, CalculatorState } from "./RentCalculator";
+import { SerialisedTabsTabWrapper } from "./Storage";
 
 export type TabProps = {
     label: string;
@@ -14,6 +15,7 @@ export enum TabsActions {
     CLOSE_TAB,
     CLOSE_ALL_TABS,
     SET_ACTIVE_TAB,
+    LOAD_TABS,
     HOVER_LAST,
     VIEW_HISTORY,
     USE_RENT_CALCULATOR,
@@ -39,6 +41,12 @@ type TabsActionUseRentCalculator = {
     action: CalculatorAction;
 };
 
+type TabsActionLoadTabs = {
+    type: TabsActions.LOAD_TABS;
+    metadata: TabsMetadata;
+    storedTabs: SerialisedTabsTabWrapper[];
+};
+
 type TabsActionOther = {
     type:
         | TabsActions.CLOSE_ALL_TABS
@@ -51,7 +59,8 @@ export type TabsAction =
     | TabsActionHoverLast
     | TabsActionCloseTab
     | TabsActionSetActiveTab
-    | TabsActionUseRentCalculator;
+    | TabsActionUseRentCalculator
+    | TabsActionLoadTabs;
 
 export type TabsTabWrapper = {
     id: number;
@@ -67,6 +76,7 @@ export type TabsMetadata = {
     viewableIndex: number;
     hoverLast: boolean;
     lastTabActive: boolean;
+    hydrated: boolean;
 };
 
 export type TabsState = TabsMetadata & {
