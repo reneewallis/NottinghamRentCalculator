@@ -31,6 +31,7 @@ export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
                 viewableIndex: viewableIndex,
                 hoverLast: state.hoverLast,
                 lastTabActive: true,
+                hydrated: state.hydrated,
                 wrappedTabArr: [
                     ...state.wrappedTabArr,
                     {
@@ -69,11 +70,10 @@ export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
             }
 
             return {
-                nextTabID: state.nextTabID,
+                ...state,
                 activeTabIndex: activeTab,
                 showHistory: showHistory,
                 viewableIndex: viewableIndex,
-                hoverLast: state.hoverLast,
                 lastTabActive: lastTabActive,
                 wrappedTabArr: newTabArr,
             };
@@ -87,19 +87,15 @@ export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
                 viewableIndex: 0,
                 hoverLast: false,
                 lastTabActive: false,
+                hydrated: state.hydrated,
                 wrappedTabArr: [],
             };
         }
 
         case TabsActions.HOVER_LAST: {
             return {
-                nextTabID: state.nextTabID,
-                activeTabIndex: state.activeTabIndex,
-                showHistory: state.showHistory,
-                viewableIndex: state.viewableIndex,
+                ...state,
                 hoverLast: action.hoverLast,
-                lastTabActive: state.lastTabActive,
-                wrappedTabArr: [...state.wrappedTabArr],
             };
         }
 
@@ -113,25 +109,15 @@ export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
             }
 
             return {
-                nextTabID: state.nextTabID,
-                activeTabIndex: state.activeTabIndex,
+                ...state,
                 showHistory: showHistory,
-                viewableIndex: state.viewableIndex,
-                hoverLast: state.hoverLast,
-                lastTabActive: state.lastTabActive,
-                wrappedTabArr: [...state.wrappedTabArr],
             };
         }
 
         case TabsActions.SET_ACTIVE_TAB: {
             return {
-                nextTabID: state.nextTabID,
+                ...state,
                 activeTabIndex: action.index,
-                showHistory: state.showHistory,
-                viewableIndex: state.viewableIndex,
-                hoverLast: state.hoverLast,
-                lastTabActive: state.lastTabActive,
-                wrappedTabArr: [...state.wrappedTabArr],
             };
         }
 
@@ -149,6 +135,34 @@ export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
                           }
                         : tab,
                 ),
+            };
+        }
+
+        case TabsActions.LOAD_TABS: {
+            return {
+                ...state,
+                ...action.metadata,
+                hydrated: true,
+                wrappedTabArr: action.storedTabs.map((tab) => {
+                    return {
+                        ...tab,
+                        calculatorState: {
+                            ...tab.calculatorState,
+                            minStartDate: dayjs(
+                                tab.calculatorState.minStartDate,
+                            ),
+                            minForecastDate: dayjs(
+                                tab.calculatorState.minForecastDate,
+                            ),
+                            startDate: tab.calculatorState.startDate
+                                ? dayjs(tab.calculatorState.startDate)
+                                : null,
+                            forecastDate: tab.calculatorState.forecastDate
+                                ? dayjs(tab.calculatorState.forecastDate)
+                                : null,
+                        },
+                    };
+                }),
             };
         }
     }
