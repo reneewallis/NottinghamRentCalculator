@@ -3,11 +3,12 @@ export function getSessionStorageItem<T>(key: string): T | null {
         const item = sessionStorage.getItem(key);
         if (item) {
             return JSON.parse(item);
+        } else {
+            console.log(`${key} not found in session storage\n`);
         }
     } catch (error) {
         console.log(error);
     }
-    console.log(`${key} not found in session storage\n`);
     return null;
 }
 
