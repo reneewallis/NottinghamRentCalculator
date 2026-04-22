@@ -9,9 +9,9 @@ function Home() {
 
     if (tabsState.wrappedTabArr.length === 0) {
         return (
-            <div className="flex flex-col items-center mt-20 mx-auto w-fit h-fit p-10 bg-gray-800 border-solid border-gray-200 border-3 inset-shadow-sm ring-2 ring-gray-100/60 rounded-2xl">
+            <div className="inline-flex flex-col items-center m-auto p-10 bg-gray-800 border-solid border-gray-200 border-3 inset-shadow-sm ring-2 ring-gray-100/60 rounded-2xl">
                 <h1 className="font-bold text-center whitespace-nowrap text-4xl text-gray-50 text-shadow-lg/20 pt-10">
-                    Welcome to Nottigham&#39;s Rent Calculator
+                    Welcome to Nottingham&#39;s Rent Calculator
                 </h1>
                 <button
                     key={"startNewTabButton"}
