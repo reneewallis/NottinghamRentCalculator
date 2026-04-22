@@ -19,8 +19,8 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en-GB">
-            <body className={`${ubuntuFont.variable} antialiased`}>
+        <html lang="en-GB" className="h-full">
+            <body className={`${ubuntuFont.variable} antialiased h-full`}>
                 {children}
             </body>
         </html>
