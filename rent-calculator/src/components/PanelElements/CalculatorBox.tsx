@@ -10,7 +10,7 @@ function CalculatorBox({
     flipResultTextBoxes = false,
 }: CalculatorBoxProps) {
     return (
-        <div className="flex flex-row">
+        <div className="inline-flex flex-row">
             {flipResultTextBoxes && (
                 <div className="px-2 pb-3 mr-2 inline-flex flex-col justify-between">
                     {resultTextBoxes.map((props, index) => (
