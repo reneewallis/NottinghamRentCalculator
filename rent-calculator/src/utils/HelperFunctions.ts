@@ -9,6 +9,19 @@ import {
 
 import { Dayjs } from "dayjs";
 
+export function fluidCSSWidthScale(min:string, pref:string, max:string):string{
+    const minScreen = "360px";
+    const devScreen = "1536px";
+
+    return (`clamp(
+    ${min},
+    calc(
+        ${min} + (${pref} - ${min}) * ((100vw - ${minScreen}) / (${devScreen} - ${minScreen}))
+    ),
+    ${max}
+    )`);
+}
+
 function ceil2DP(value: number): number {
     return Math.ceil(value * 100) / 100;
 }
