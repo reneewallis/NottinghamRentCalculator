@@ -150,8 +150,8 @@ function TabPanel() {
                 ]),
             ) * 1.15;
         return (
-                <div className="grid grid-cols-[repeat(2,minmax(auto,1fr))] min-w-fit grid-flow-row-dense overflow-auto justify-items-end justify-center items-end content-center p-8 gap-12">
-                    <div key={"rent"} className="col-start-1 justify-self-start">
+                <div className="flex-1 grid grid-cols-[repeat(2,minmax(auto,1fr))] grid-flow-row-dense overflow-x-auto justify-items-center items-end content-center p-8 gap-12">
+                    <div key={"rent"} className="col-start-1">
                         <CalculatorBox
                             dropDownProps={{
                                 ...calcBoxDropdowns.rent,
@@ -191,7 +191,7 @@ function TabPanel() {
                             ]}
                         ></CalculatorBox>
                     </div>
-                    <div key={"shortfall"} className="col-start-1 justify-self-start pb-8">
+                    <div key={"shortfall"} className="col-start-1 pb-8">
                         <CalculatorBox
                             dropDownProps={{
                                 ...calcBoxDropdowns.shortfall,
@@ -453,6 +453,7 @@ function TabPanel() {
                 </div>
         );
     }
+    return null;
 }
 
 export default TabPanel;
