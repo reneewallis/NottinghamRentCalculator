@@ -17,6 +17,7 @@ import InstallementScroller from "../PanelElements/InstallmentScroller";
 import { Dayjs } from "dayjs";
 import CustomDropdownBox from "../Dropdown/DropdownBox";
 import { useTabsContext } from "@/src/utils/Tabs/TabsContext";
+import { DATE_BOX_WIDTH, SIDE_PANEL_TEXT_BOX_WIDTH } from "../InputFields/InputFieldConsts";
 
 function TabPanel() {
     const { tabsState, tabsDispatch } = useTabsContext();
@@ -249,7 +250,7 @@ function TabPanel() {
                                 label="Today's Date"
                                 text={activeTab.todayString}
                                 readOnly={true}
-                                width={13.536}
+                                width={DATE_BOX_WIDTH}
                                 alignment="center"
                             ></TextBox>,
                             <DateBox
@@ -308,12 +309,14 @@ function TabPanel() {
                                     })
                                 }
                                 valid={calculatorState.currentBalanceIsValid}
+                                width={SIDE_PANEL_TEXT_BOX_WIDTH}
                             ></TextBox>,
                             <TextBox
                                 key={"startingBalance"}
                                 label="Starting Balance"
                                 text={calculatorState.startingBalance}
                                 readOnly={true}
+                                width={SIDE_PANEL_TEXT_BOX_WIDTH}
                             ></TextBox>,
                         ]}
                     ></CalculatorPanel>
@@ -336,7 +339,7 @@ function TabPanel() {
                                         },
                                     })
                                 }
-                                width={13.536}
+                                width={DATE_BOX_WIDTH}
                                 alignment="left"
                                 valid={calculatorState.defaultAmountIsValid}
                             ></TextBox>,
@@ -441,12 +444,14 @@ function TabPanel() {
                                 label="Total Paid"
                                 text={calculatorState.forecastPaid}
                                 readOnly={true}
+                                width={SIDE_PANEL_TEXT_BOX_WIDTH}
                             ></TextBox>,
                             <TextBox
                                 key={"balanceRemaining"}
                                 label="Balance Remaining"
                                 text={calculatorState.balanceRemaining}
                                 readOnly={true}
+                                width={SIDE_PANEL_TEXT_BOX_WIDTH}
                             ></TextBox>,
                         ]}
                     ></CalculatorPanel>
