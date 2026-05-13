@@ -14,9 +14,9 @@ export enum BenefitType {
 }
 
 export enum InstallmentFrequency {
-    UNSELECTED = "Installment",
-    MONTHLY = "Month",
-    WEEKLY = "Week",
+    UNSELECTED = "Payment Frequency",
+    MONTHLY = "Monthly",
+    WEEKLY = "Weekly",
 }
 
 export type RentState = {

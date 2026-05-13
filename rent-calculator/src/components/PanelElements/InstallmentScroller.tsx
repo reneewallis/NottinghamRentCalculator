@@ -1,11 +1,12 @@
 import React from "react";
 import ArrowButton from "../Buttons/ArrowButton";
 import { InstallementScrollerProps } from "../../types/PanelElements";
+import { InstallmentFrequency } from "@/src/types/RentCalculator";
 
 function InstallementScroller({
     totalInstallments,
     installmentNumber,
-    frequency,
+    paymentFrequency,
     onChange,
 }: InstallementScrollerProps) {
     const weekDown = () => {
@@ -23,11 +24,28 @@ function InstallementScroller({
             }
         }
     };
+
+    let installmentUnit;
+
+    switch(paymentFrequency){
+        case InstallmentFrequency.UNSELECTED : {
+            installmentUnit = "Installment";
+            break;
+        }
+        case InstallmentFrequency.MONTHLY : {
+            installmentUnit = "Month";
+            break;
+        }
+        case InstallmentFrequency.WEEKLY: {
+            installmentUnit = "Week"
+            break;
+        }
+    }
     return (
         <div className="flex items-center justify-between gap-4 pt-4">
             <ArrowButton direction="left" onClick={weekDown}></ArrowButton>
             <h1 className="text-2xl text-gray-200">
-                {frequency} {installmentNumber}
+                {installmentUnit} {installmentNumber}
             </h1>
             <ArrowButton direction="right" onClick={weekUp}></ArrowButton>
         </div>

@@ -27,7 +27,7 @@ export type CalculatorBoxProps = {
 export type InstallementScrollerProps = {
     totalInstallments: number;
     installmentNumber: number;
-    frequency: InstallmentFrequency;
+    paymentFrequency: InstallmentFrequency;
     onChange?: (installment: number) => void;
 };
 

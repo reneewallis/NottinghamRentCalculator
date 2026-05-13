@@ -390,7 +390,7 @@ function TabPanel() {
                                 installmentNumber={
                                     calculatorState.installmentNumber
                                 }
-                                frequency={calculatorState.paymentFrequency}
+                                paymentFrequency={calculatorState.paymentFrequency}
                                 onChange={(value) =>
                                     tabsDispatch({
                                         type: TabsActions.USE_RENT_CALCULATOR,
@@ -406,12 +406,11 @@ function TabPanel() {
                             <CustomDropdownBox
                                 controlled={true}
                                 value={calculatorState.paymentFrequency}
-                                key={"paymentFrequency"}
                                 small={true}
-                                label="Payment Frequency"
+                                label={InstallmentFrequency.UNSELECTED}
                                 items={[
                                     {
-                                        label: "Weekly",
+                                        label: InstallmentFrequency.WEEKLY,
                                         onClick: () => {
                                             tabsDispatch({
                                                 type: TabsActions.USE_RENT_CALCULATOR,
@@ -424,7 +423,7 @@ function TabPanel() {
                                         },
                                     },
                                     {
-                                        label: "Monthly",
+                                        label: InstallmentFrequency.MONTHLY,
                                         onClick: () => {
                                             tabsDispatch({
                                                 type: TabsActions.USE_RENT_CALCULATOR,
