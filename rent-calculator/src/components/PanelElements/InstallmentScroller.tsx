@@ -42,9 +42,9 @@ function InstallementScroller({
         }
     }
     return (
-        <div className="flex items-center justify-between gap-4 pt-4">
+        <div className="flex items-center justify-between gap-3 pt-4">
             <ArrowButton direction="left" onClick={weekDown}></ArrowButton>
-            <h1 className="text-2xl text-gray-200">
+            <h1 className="text-base md:text-lg lg:text-2xl text-gray-200">
                 {installmentUnit} {installmentNumber}
             </h1>
             <ArrowButton direction="right" onClick={weekUp}></ArrowButton>
