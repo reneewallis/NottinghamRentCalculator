@@ -6,17 +6,43 @@ import { createTheme } from "@mui/material/styles";
 import type {} from "@mui/x-date-pickers/themeAugmentation";
 import { ThemeProvider } from "@mui/material/styles";
 import { DateBoxProps } from "@/src/types/InputFields";
+import { fluidCSSWidthScale } from "@/src/utils/HelperFunctions";
+import { DATE_BOX_HEIGHT, DATE_BOX_WIDTH, MAX_TEXT_BOX_WIDTH_SCALE, MIN_TEXT_BOX_WIDTH_SCALE } from "./InputFieldConsts";
 
 const dateTheme = createTheme({
+    breakpoints: {
+        unit:"rem",
+        values: {
+            xs: 0,
+            sm: 40,
+            md: 48,
+            lg: 64,
+            xl: 80,
+        },
+    },
     components: {
         MuiPickersOutlinedInput: {
             styleOverrides: {
-                root: {
+                root:({theme}) => ({
                     borderRadius: "1rem",
                     backgroundColor: "#364153",
                     color: "#e5e7eb",
-                    fontSize: "1.5rem",
-                    lineHeight: 2 / 1.5,
+                    fontSize: "1rem",
+                    lineHeight: 1.5,
+
+                    [theme.breakpoints.up("md")]:{
+                        fontSize: "1.125rem",
+                        lineHeight: 1.75 / 1.125,
+                    },
+
+                    [theme.breakpoints.up("lg")]: {
+                        fontSize: "1.5rem",
+                        lineHeight: 2 / 1.5,
+                    },
+
+                    "& input":{
+                        font: "inherit",
+                    },
 
                     transition: "background-color 200ms ease, color 200ms ease",
 
@@ -92,7 +118,7 @@ const dateTheme = createTheme({
                             },
                         },
                     },
-                },
+                }),
             },
         },
 
@@ -289,8 +315,8 @@ function DateBox(props: DateBoxProps) {
                                         : undefined,
                                 InputProps: {
                                     sx: {
-                                        height: "3.54rem",
-                                        width: "13.536rem",
+                                        height: `${DATE_BOX_HEIGHT}rem`,
+                                        width: fluidCSSWidthScale(`${DATE_BOX_WIDTH * MIN_TEXT_BOX_WIDTH_SCALE}rem`,`${DATE_BOX_WIDTH}rem`, `${DATE_BOX_WIDTH*MAX_TEXT_BOX_WIDTH_SCALE}rem`),
                                     },
                                 },
                                 sx: {},
