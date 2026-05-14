@@ -1,0 +1,4 @@
+export const DEFAULT_DROPDOWN_LABEL_SCALE = 1.15;
+export const SMALL_DROPDOWN_LABEL_SCALE = 0.7;
+export const MIN_DROPDOWN_WIDTH_SCALE = 0.65;
+export const MAX_DROPDOWN_WIDTH_SCALE = 1.1;
