@@ -1,7 +1,7 @@
 import { TextBoxProps } from "../../types/InputFields";
 import React from "react";
 import { fluidCSSWidthScale } from "@/src/utils/HelperFunctions";
-import { DEFAULT_TEXT_BOX_WIDTH, MAX_TEXT_BOX_WIDTH_SCALE, MIN_TEXT_BOX_WIDTH_SCALE } from "./InputFieldConsts";
+import { DEFAULT_TEXT_BOX_WIDTH, MAX_TEXT_BOX_WIDTH_SCALE, MIN_TEXT_BOX_WIDTH_SCALE } from "./inputFieldConsts";
 
 function TextBox(props: TextBoxProps) {
     const {
