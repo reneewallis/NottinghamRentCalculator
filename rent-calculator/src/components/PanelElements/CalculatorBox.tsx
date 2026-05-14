@@ -23,7 +23,7 @@ function CalculatorBox({
                     ))}
                 </div>
             )}
-            <div className="inline-flex flex-col justify-between gap-20.5 bg-gray-800 rounded-xl shadow-lg border-4 border-gray-300 pt-12 pb-12 pl-9 pr-12">
+            <div className="inline-flex flex-col justify-between gap-18.5 lg:gap-20.5 bg-gray-800 rounded-xl shadow-lg border-4 border-gray-300 pt-12 pb-12 pl-9 pr-12">
                 <CustomDropdownBox {...dropDownProps}></CustomDropdownBox>
                 <TextBox {...inputTextBoxProps} width={13}></TextBox>
             </div>
