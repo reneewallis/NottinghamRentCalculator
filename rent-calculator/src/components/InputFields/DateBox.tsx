@@ -7,7 +7,7 @@ import type {} from "@mui/x-date-pickers/themeAugmentation";
 import { ThemeProvider } from "@mui/material/styles";
 import { DateBoxProps } from "@/src/types/InputFields";
 import { fluidCSSWidthScale } from "@/src/utils/HelperFunctions";
-import { DATE_BOX_HEIGHT, DATE_BOX_WIDTH, MAX_TEXT_BOX_WIDTH_SCALE, MIN_TEXT_BOX_WIDTH_SCALE } from "./InputFieldConsts";
+import { DATE_BOX_HEIGHT, DATE_BOX_WIDTH, MAX_TEXT_BOX_WIDTH_SCALE, MIN_TEXT_BOX_WIDTH_SCALE } from "./inputFieldConsts";
 
 const dateTheme = createTheme({
     breakpoints: {
