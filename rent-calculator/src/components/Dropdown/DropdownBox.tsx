@@ -44,7 +44,7 @@ function CustomDropdownBox<TLabel extends string>(
             <button
                 style={{ minWidth: fluidCSSWidthScale(`${buttonWidth * MIN_DROPDOWN_WIDTH_SCALE}rem`, `${buttonWidth}rem`, `${buttonWidth * MAX_DROPDOWN_WIDTH_SCALE}rem`) }}
                 key={`dropdown ${label}`}
-                className={`flex justify-between items-center ${small ? "py-3 gap-1" : "py-6 gap-2"} pl-4 border-2 rounded-3xl cursor-pointer transition-colors ${showItems ? `text-gray-100 font-semibold bg-gray-800 hover:bg-gray-900 hover:text-gray-50 ${valid ? "border-gray-100 hover:border-gray-50" : "border-red-500"}` : `text-gray-200 bg-gray-700 hover:bg-gray-800 hover:text-gray-100 ${valid ? "border-gray-300 hover:border-gray-200" : "border-red-600"}`}`}
+                className={`inline-flex justify-between items-center ${small ? "py-2 lg:py-3 gap-1" : "py-5 lg:py-6 gap-2"} pl-4 border-2 rounded-3xl cursor-pointer transition-colors ${showItems ? `text-gray-100 font-semibold bg-gray-800 hover:bg-gray-900 hover:text-gray-50 ${valid ? "border-gray-100 hover:border-gray-50" : "border-red-500"}` : `text-gray-200 bg-gray-700 hover:bg-gray-800 hover:text-gray-100 ${valid ? "border-gray-300 hover:border-gray-200" : "border-red-600"}`}`}
                 onClick={() => setShowItems(!showItems)}
             >
                 <div
