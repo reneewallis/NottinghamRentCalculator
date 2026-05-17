@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { DropdownBoxProps } from "@/src/types/Dropdown";
-import { fluidCSSWidthScale } from "@/src/utils/HelperFunctions";
+import { fluidCSSWidthScale } from "@/src/utils/helperFunctions";
 import { DEFAULT_DROPDOWN_LABEL_SCALE, MAX_DROPDOWN_WIDTH_SCALE, MIN_DROPDOWN_WIDTH_SCALE, SMALL_DROPDOWN_LABEL_SCALE } from "./dropdownConstants";
 
 function CustomDropdownBox<TLabel extends string>(

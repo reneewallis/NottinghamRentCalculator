@@ -2,7 +2,7 @@
 
 import React from "react";
 import { CalculatorPanelProps } from "../../types/PanelElements";
-import { fluidCSSWidthScale } from "@/src/utils/HelperFunctions";
+import { fluidCSSWidthScale } from "@/src/utils/helperFunctions";
 import { CIRCLE_RIGHT_DISTANCE, DEFAULT_CIRCLE_SIZE, ELEMENT_MAX_SCALE, ELEMENT_MIN_SCALE, PANELS_MARGIN_TOP, MAIN_PANEL_PADDING_TOP, MAIN_PANEL_WIDTH, SIDE_PANEL_PADDING_VISIBLE_SIDE } from "./elementConsts";
 
 function CalculatorPanel<TLabel extends string>({

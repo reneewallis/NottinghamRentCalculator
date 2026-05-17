@@ -18,7 +18,7 @@ import {
     calculateStartingBalance,
     calculateForecast,
     calculateForecastDate,
-} from "../HelperFunctions";
+} from "../helperFunctions";
 
 import { Dayjs } from "dayjs";
 
