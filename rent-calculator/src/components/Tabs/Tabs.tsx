@@ -65,7 +65,7 @@ export default function Tabs() {
                 )}
                 {tabsState.wrappedTabArr.length > 0 && (
                     <div
-                        className={`flex items-center mx-0.5 h-7 mt-3 transition-colors duration-100 ${tabsState.activeTabIndex === tabsState.wrappedTabArr.length - 1 || tabsState.hoverLast === true ? "border-gray-500" : "border-l-gray-800 border-l-2"}`}
+                        className={`flex items-center mx-0.5 h-7 mt-3 ${tabsState.activeTabIndex === tabsState.wrappedTabArr.length - 1 || tabsState.hoverLast === true ? "border-gray-500" : "border-l-gray-800 border-l-2"}`}
                     >
                         <NewTabButton
                             onClick={() => {
