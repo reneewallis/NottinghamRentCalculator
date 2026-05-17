@@ -29,15 +29,20 @@ const dateTheme = createTheme({
                     color: "#e5e7eb",
                     fontSize: "1rem",
                     lineHeight: 1.5,
+                    height: `${DATE_BOX_HEIGHT - 0.5}rem`,
+
+                    width: fluidCSSWidthScale(`${DATE_BOX_WIDTH * MIN_TEXT_BOX_WIDTH_SCALE}rem`,`${DATE_BOX_WIDTH}rem`, `${DATE_BOX_WIDTH*MAX_TEXT_BOX_WIDTH_SCALE}rem`), 
 
                     [theme.breakpoints.up("md")]:{
                         fontSize: "1.125rem",
                         lineHeight: 1.75 / 1.125,
+                        height: `${DATE_BOX_HEIGHT - 0.25}rem`,
                     },
 
                     [theme.breakpoints.up("lg")]: {
                         fontSize: "1.5rem",
                         lineHeight: 2 / 1.5,
+                        height: `${DATE_BOX_HEIGHT}rem`,
                     },
 
                     "& input":{
@@ -119,6 +124,15 @@ const dateTheme = createTheme({
                         },
                     },
                 }),
+                
+            },
+        },
+
+        MuiPickersInputBase: {
+            styleOverrides: {
+                root: {
+                padding: "0 0.75rem !important",
+                },
             },
         },
 
@@ -272,7 +286,7 @@ function DateBox(props: DateBoxProps) {
             >
                 <label className="flex flex-col font-normal focus-within:font-semibold focus-within:text-gray-50 transition-colors">
                     <span
-                        className={`text-gray-200 whitespace-nowrap ${alignmentMap[alignment]}  hover:text-gray-100 text-2xl mb-2 cursor-pointer`}
+                        className={`text-gray-200 whitespace-nowrap ${alignmentMap[alignment]} text-base md:text-lg lg:text-2xl hover:text-gray-100 mb-2 cursor-pointer`}
                     >
                         {label}
                     </span>
@@ -313,12 +327,6 @@ function DateBox(props: DateBoxProps) {
                                     props.valid !== undefined
                                         ? !props.valid
                                         : undefined,
-                                InputProps: {
-                                    sx: {
-                                        height: `${DATE_BOX_HEIGHT}rem`,
-                                        width: fluidCSSWidthScale(`${DATE_BOX_WIDTH * MIN_TEXT_BOX_WIDTH_SCALE}rem`,`${DATE_BOX_WIDTH}rem`, `${DATE_BOX_WIDTH*MAX_TEXT_BOX_WIDTH_SCALE}rem`),
-                                    },
-                                },
                                 sx: {},
                             },
                         }}
