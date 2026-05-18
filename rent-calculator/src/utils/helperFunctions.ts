@@ -6,8 +6,15 @@ import {
     InstallmentFrequency,
     ForecastState,
 } from "@/src/types/RentCalculator";
-
+import { TAB_BUTTONS_CONTAINER_WIDTH, TAB_CONTAINER_WIDTH } from "../components/Tabs/tabConsts";
 import { Dayjs } from "dayjs";
+
+
+export function getMaxTabs(viewportWidth:number){
+    viewportWidth >= (TAB_BUTTONS_CONTAINER_WIDTH+TAB_CONTAINER_WIDTH) ?
+        Math.floor((viewportWidth - TAB_BUTTONS_CONTAINER_WIDTH) / TAB_CONTAINER_WIDTH):
+        1
+}
 
 export function fluidCSSWidthScale(min:string, pref:string, max:string):string{
     const minScreen = "360px";
