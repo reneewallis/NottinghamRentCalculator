@@ -10,10 +10,12 @@ import { TAB_BUTTONS_CONTAINER_WIDTH, TAB_CONTAINER_WIDTH } from "../components/
 import { Dayjs } from "dayjs";
 
 
-export function getMaxTabs(viewportWidth:number){
-    viewportWidth >= (TAB_BUTTONS_CONTAINER_WIDTH+TAB_CONTAINER_WIDTH) ?
-        Math.floor((viewportWidth - TAB_BUTTONS_CONTAINER_WIDTH) / TAB_CONTAINER_WIDTH):
+export function getMaxTabs(viewportWidthRem:number){
+    return(
+        viewportWidthRem >= (TAB_BUTTONS_CONTAINER_WIDTH+TAB_CONTAINER_WIDTH) ?
+        Math.floor((viewportWidthRem - TAB_BUTTONS_CONTAINER_WIDTH) / TAB_CONTAINER_WIDTH):
         1
+    );
 }
 
 export function fluidCSSWidthScale(min:string, pref:string, max:string):string{
