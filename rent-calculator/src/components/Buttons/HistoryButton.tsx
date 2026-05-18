@@ -1,12 +1,14 @@
 import { HistoryButtonProps } from "@/src/types/Buttons";
 import React from "react";
+import { DEFAULT_BUTTON_SIZE } from "./buttonConsts";
 
 function HistoryButton({ showHistory, onClick }: HistoryButtonProps) {
     return (
         <button
             key={"historyButton"}
+            style={{height: `${DEFAULT_BUTTON_SIZE}rem`, width:`${DEFAULT_BUTTON_SIZE}rem`}}
             className={
-                "flex justify-center items-center h-9 w-9 my-1 text-gray-200 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer hover:bg-fuchsia-700 hover:text-gray-50"
+                "flex justify-center items-center my-1 text-gray-200 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer hover:bg-fuchsia-700 hover:text-gray-50"
             }
             onClick={onClick}
         >

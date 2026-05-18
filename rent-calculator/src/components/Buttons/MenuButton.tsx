@@ -2,6 +2,7 @@
 
 import { MenuButtonProps } from "@/src/types/Buttons";
 import React, { useState } from "react";
+import { DEFAULT_BUTTON_SIZE } from "./buttonConsts";
 
 function DropdownMenu({ items }: MenuButtonProps) {
     const [showMenu, setShowMenu] = useState(false);
@@ -10,8 +11,9 @@ function DropdownMenu({ items }: MenuButtonProps) {
         <div className="relative">
             <button
                 key={"menuButton"}
+                style={{height: `${DEFAULT_BUTTON_SIZE}rem`, width:`${DEFAULT_BUTTON_SIZE}rem`}}
                 className={
-                    "flex justify-center items-center h-9 w-9 my-1 text-gray-200 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer hover:bg-fuchsia-700 hover:text-gray-50"
+                    "flex justify-center items-center my-1 text-gray-200 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer hover:bg-fuchsia-700 hover:text-gray-50"
                 }
                 onClick={() => {
                     setShowMenu(!showMenu);
