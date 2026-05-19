@@ -9,7 +9,6 @@ import {
 import { TAB_BUTTONS_CONTAINER_WIDTH, TAB_CONTAINER_WIDTH } from "../components/Tabs/tabConsts";
 import { Dayjs } from "dayjs";
 
-
 export function getMaxTabs(viewportWidthRem:number){
     return(
         viewportWidthRem >= (TAB_BUTTONS_CONTAINER_WIDTH+TAB_CONTAINER_WIDTH) ?
@@ -17,18 +16,104 @@ export function getMaxTabs(viewportWidthRem:number){
         1
     );
 }
+const CSS_WIDTH_UNITS = [
+    // absolute lengths
+    "px",
+    "pt",
+    "pc",
+    "in",
+    "cm",
+    "mm",
+
+    // relative lengths
+    "em",
+    "rem",
+    "ex",
+    "ch",
+
+    // viewport units
+    "vw",
+    "vh",
+    "vmin",
+    "vmax",
+
+    // container query units
+    "cqw",
+    "cqh",
+    "cqi",
+    "cqb",
+    "cqmin",
+    "cqmax",
+
+    // percentage
+    "%",
+];
+
+export class UnsupportedUnitError extends Error {
+    constructor(unit: string) {
+        super(`unit "${unit}" is valid but it is unsupported`);
+        this.name = "UnsupportedUnitError";
+    }
+}
+
+export function calcPx(value:string){
+    const match = value.match(/^([\d.]+)([a-zA-Z%]+)$/);
+    if (!match){
+        throw new Error("value was invalid: expected number followed by unit (e.g. 12px, 1.5rem)");
+    }
+
+    const [, size, unit] = match;
+    const sizeNumber = Number(size);
+
+    if (unit !== "px" && unit !== "rem") {
+        if (CSS_WIDTH_UNITS.includes(unit)){
+            throw new UnsupportedUnitError(unit);
+        };
+        throw new Error(`Invalid unit: ${unit}`);
+    }
+
+    if (isNaN(sizeNumber)){
+        throw new Error(`start of value "${size}" was not a valid number`);
+    }
+
+
+    let rootFontSize = 0;
+
+    try {
+        rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    } catch {
+        rootFontSize = 16;
+    }
+    
+    return unit === "rem"? sizeNumber * rootFontSize : sizeNumber;
+        
+}
 
 export function fluidCSSWidthScale(min:string, pref:string, max:string):string{
-    const minScreen = "360px";
-    const devScreen = "1536px";
+    const minScreen = "22.5rem";
+    const devScreen = "96rem";
 
-    return (`clamp(
-    ${min},
-    calc(
-        ${min} + (${pref} - ${min}) * ((100vw - ${minScreen}) / (${devScreen} - ${minScreen}))
-    ),
-    ${max}
-    )`);
+    try {
+        const minPx = calcPx(min);
+        const maxPx = calcPx(max);
+        const prefPx = calcPx(pref);
+        const minScreenPx = calcPx(minScreen);
+        const devScreenPx = calcPx(devScreen);
+
+        if (minPx > prefPx){
+            throw new Error(`min "${min}" is larger than pref "${pref}"`);
+        } else if (minPx > maxPx){
+            throw new Error(`min "${min}" is larger than max "${max}"`);
+        } else if (prefPx > maxPx){
+            throw new Error(`pref "${pref}" is larger than max "${max}"`);
+        }
+    } catch(error:unknown){
+        if (!(error instanceof UnsupportedUnitError)){
+            throw error;
+        }
+    }
+
+    return (`clamp(${min}, calc(${min} + (${pref} - ${min}) * ((100vw - ${minScreen}) / (${devScreen} - ${minScreen}))), ${max})`);
 }
 
 function ceil2DP(value: number): number {
