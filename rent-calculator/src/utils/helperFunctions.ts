@@ -8,6 +8,7 @@ import {
 } from "@/src/types/RentCalculator";
 import { TAB_BUTTONS_CONTAINER_WIDTH, TAB_CONTAINER_WIDTH } from "../components/Tabs/tabConsts";
 import { Dayjs } from "dayjs";
+import Decimal from "decimal.js";
 
 export function getMaxTabs(viewportWidthRem:number){
     return(
@@ -116,8 +117,18 @@ export function fluidCSSWidthScale(min:string, pref:string, max:string):string{
     return (`clamp(${min}, calc(${min} + (${pref} - ${min}) * ((100vw - ${minScreen}) / (${devScreen} - ${minScreen}))), ${max})`);
 }
 
-function ceil2DP(value: number): number {
-    return Math.ceil(value * 100) / 100;
+export function ceil2DP(value: number | Decimal): number {
+    const castValue = (value instanceof Decimal)? value : new Decimal(value);
+    return castValue
+    .toDecimalPlaces(2, Decimal.ROUND_CEIL)
+    .toNumber();
+}
+
+export function floor2DP(value: number | Decimal): number {
+    const castValue = (value instanceof Decimal)? value : new Decimal(value);
+    return castValue
+    .toDecimalPlaces(2, Decimal.ROUND_FLOOR)
+    .toNumber();
 }
 
 export function isValidNumberEntry(value: string): boolean {
@@ -149,37 +160,37 @@ export function calculateRent(
     let monthly = "";
 
     if (value !== "" && isValidNumberEntry(value)) {
-        const rentAmount = +value;
+        const rentAmount = new Decimal(+value);
 
         switch (frequency) {
             case RentFrequency.WEEKLY: {
                 weekly = rentAmount.toFixed(2);
-                fourWeekly = (rentAmount * 4).toFixed(2);
-                monthly = ceil2DP((rentAmount * 52) / 12).toFixed(2);
+                fourWeekly = rentAmount.times(4).toFixed(2);
+                monthly = ceil2DP(rentAmount.times(52).div(12)).toFixed(2);
                 break;
             }
 
             case RentFrequency.FOUR_WEEKLY: {
-                weekly = ceil2DP(rentAmount / 4).toFixed(2);
+                weekly = ceil2DP(rentAmount.div(4)).toFixed(2);
                 fourWeekly = rentAmount.toFixed(2);
-                monthly = ceil2DP((rentAmount * 13) / 12).toFixed(2);
+                monthly = ceil2DP(rentAmount.times(13).div(12)).toFixed(2);
                 break;
             }
             case RentFrequency.MONTHLY: {
-                weekly = ceil2DP((rentAmount * 12) / 52).toFixed(2);
-                fourWeekly = ceil2DP((rentAmount * 12) / 13).toFixed(2);
+                weekly = ceil2DP(rentAmount.times(12).div(52)).toFixed(2);
+                fourWeekly = ceil2DP(rentAmount.times(12).div(13)).toFixed(2);
                 monthly = rentAmount.toFixed(2);
                 break;
             }
         }
     } else {
-        valueIsValid = false;
+        valueIsValid = value === "" ? true : false;
     }
 
     return {
         rentFrequency: frequency,
         rentAmount: value,
-        rentFrequencyIsValid: frequencySelected,
+        rentFrequencyIsValid: value === "" || frequencySelected,
         rentAmountIsValid: valueIsValid,
         weeklyRent: weekly,
         fourWeeklyRent: fourWeekly,
@@ -194,32 +205,34 @@ export function calculateShortfall(
     fourWeeklyRent: string,
     monthlyRent: string,
 ): ShortfallState {
-    const benefitValueIsValid =
-        benefitValue !== "" && isValidNumberEntry(benefitValue);
-    const benefitTypeIsValid = benefitType !== BenefitType.UNSELECTED;
+    const benefitValueIsValid = isValidNumberEntry(benefitValue);
+    const benefitTypeIsValid = benefitValue === "" || benefitType !== BenefitType.UNSELECTED;
 
     let weeklyShortfall = "";
     let fourWeeklyShortfall = "";
     let monthlyShortfall = "";
 
     if (
-        benefitValueIsValid &&
+        benefitValue !== "" && benefitValueIsValid &&
         weeklyRent !== "" &&
         fourWeeklyRent !== "" &&
         monthlyRent !== ""
     ) {
-        const benefitAmount = +benefitValue;
+        const benefitAmount = new Decimal(+benefitValue);
+        const weeklyDecimal = new Decimal(+weeklyRent);
+        const fourWeeklyDecimal = new Decimal(+fourWeeklyRent);
+        const monthlyDecimal = new Decimal(+monthlyRent);
 
         switch (benefitType) {
             case BenefitType.HOUSING_BENEFIT: {
                 weeklyShortfall = (
-                    ceil2DP(benefitAmount / 4) - +weeklyRent
+                    floor2DP(benefitAmount.div(4).minus(weeklyDecimal))
                 ).toFixed(2);
-                fourWeeklyShortfall = (benefitAmount - +fourWeeklyRent).toFixed(
+                fourWeeklyShortfall = (benefitAmount.minus(fourWeeklyDecimal)).toFixed(
                     2,
                 );
                 monthlyShortfall = (
-                    ceil2DP((benefitAmount * 13) / 12) - +monthlyRent
+                    floor2DP(benefitAmount.times(13).div(12).minus(monthlyDecimal))
                 ).toFixed(2);
 
                 break;
@@ -227,12 +240,12 @@ export function calculateShortfall(
 
             case BenefitType.UNIVERSAL_CREDIT: {
                 weeklyShortfall = (
-                    ceil2DP((benefitAmount * 12) / 52) - +weeklyRent
+                    floor2DP(benefitAmount.times(12).div(52).minus(weeklyDecimal))
                 ).toFixed(2);
                 fourWeeklyShortfall = (
-                    ceil2DP((benefitAmount * 12) / 13) - +fourWeeklyRent
+                    floor2DP(benefitAmount.times(12).div(13).minus(fourWeeklyDecimal))
                 ).toFixed(2);
-                monthlyShortfall = (benefitAmount - +monthlyRent).toFixed(2);
+                monthlyShortfall = benefitAmount.minus(monthlyDecimal).toFixed(2);
 
                 break;
             }
@@ -265,10 +278,10 @@ export function calculateStartingBalance(
         return "";
     }
 
-    const balance = +currentBalance;
-    const rent = +weeklyRent;
+    const balance = new Decimal(+currentBalance);
+    const rent = new Decimal(+weeklyRent);
 
-    return (weeksUntilStartDate * rent + balance).toFixed(2);
+    return (rent.times(weeksUntilStartDate).add(balance)).toFixed(2);
 }
 
 function calculateTotalInstallments(
@@ -284,10 +297,10 @@ function calculateTotalInstallments(
         return -1;
     }
 
-    const balance = +startingBalance;
-    const amount = +defaultAmount;
+    const balance = new Decimal(+startingBalance);
+    const amount = new Decimal(+defaultAmount);
 
-    return Math.ceil(balance / amount);
+    return balance.div(amount).ceil().toNumber();
 }
 
 function calculateInstallment(
@@ -374,11 +387,11 @@ function calculateForecastPaid(
         return "0.00";
     }
 
-    const amount = +defaultAmount;
-    const balance = +startingBalance;
-    const paid = amount * installmentNumber;
+    const amount = new Decimal(+defaultAmount);
+    const balance = new Decimal(+startingBalance);
+    const paid = amount.times(installmentNumber);
 
-    if (paid > balance) {
+    if (paid.greaterThan(balance)) {
         return startingBalance;
     } else {
         return paid.toFixed(2);
@@ -398,10 +411,10 @@ function calculateBalanceRemaining(
         return "";
     }
 
-    const balance = +startingBalance;
-    const paid = +totalPaid;
+    const balance = new Decimal(+startingBalance);
+    const paid = new Decimal(+totalPaid);
 
-    return (balance - paid).toFixed(2);
+    return (balance.minus(paid)).toFixed(2);
 }
 
 export function calculateForecast(
