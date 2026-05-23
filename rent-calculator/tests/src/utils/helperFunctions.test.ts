@@ -1,6 +1,6 @@
 import { BenefitType, ForecastState, InstallmentFrequency, RentFrequency, RentState, ShortfallState } from "@/src/types/RentCalculator";
 import { calcPx, calculateBalanceRemaining, calculateForecast, calculateForecastDate, calculateForecastPaid, calculateInstallment, calculateRent, calculateShortfall, calculateStartingBalance, calculateTotalInstallments, ceil2DP, floor2DP, fluidCSSWidthScale, getMaxTabs, isValidNumberEntry, UnsupportedUnitError } from "@/src/utils/helperFunctions";
-import {afterEach, beforeEach, describe, expect, jest, test} from "@jest/globals"
+import {afterEach, beforeEach, describe, expect, jest, test} from "@jest/globals";
 import dayjs, { Dayjs } from "dayjs";
 import Decimal from "decimal.js";
 
