@@ -272,8 +272,7 @@ export function calculateStartingBalance(
         currentBalance === "" ||
         (weeklyRent === "" && weeksUntilStartDate !== 0) ||
         weeksUntilStartDate === -1 ||
-        !isValidNumberEntry(currentBalance) ||
-        !isValidNumberEntry(weeklyRent)
+        !isValidNumberEntry(currentBalance)
     ) {
         return "";
     }
@@ -284,7 +283,7 @@ export function calculateStartingBalance(
     return (rent.times(weeksUntilStartDate).add(balance)).toFixed(2);
 }
 
-function calculateTotalInstallments(
+export function calculateTotalInstallments(
     startingBalance: string,
     defaultAmount: string,
 ): number {
@@ -303,7 +302,7 @@ function calculateTotalInstallments(
     return balance.div(amount).ceil().toNumber();
 }
 
-function calculateInstallment(
+export function calculateInstallment(
     startDate: Dayjs,
     forecastDate: Dayjs,
     paymentFrequency: InstallmentFrequency,
@@ -369,7 +368,7 @@ export function calculateForecastDate(
         : forecastDate;
 }
 
-function calculateForecastPaid(
+export function calculateForecastPaid(
     installmentNumber: number,
     defaultAmount: string,
     startingBalance: string,
@@ -377,8 +376,7 @@ function calculateForecastPaid(
     if (
         defaultAmount === "" ||
         startingBalance === "" ||
-        !isValidNumberEntry(defaultAmount) ||
-        !isValidNumberEntry(startingBalance)
+        !isValidNumberEntry(defaultAmount)
     ) {
         return "";
     }
@@ -398,7 +396,7 @@ function calculateForecastPaid(
     }
 }
 
-function calculateBalanceRemaining(
+export function calculateBalanceRemaining(
     startingBalance: string,
     totalPaid: string,
 ): string {
