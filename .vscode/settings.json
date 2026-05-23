@@ -4,5 +4,7 @@
       "directory": "${workspaceFolder}/rent-calculator",
       "changeProcessCWD": true
     }
-  ]
+  ],
+  "jest.rootPath": "rent-calculator",
+  "jest.jestCommandLine": "npm run test --",
 }
