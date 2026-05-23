@@ -1,6 +1,7 @@
-import { BenefitType, RentFrequency, RentState, ShortfallState } from "@/src/types/RentCalculator";
-import { calcPx, calculateRent, calculateShortfall, ceil2DP, floor2DP, fluidCSSWidthScale, getMaxTabs, isValidNumberEntry, UnsupportedUnitError } from "@/src/utils/helperFunctions";
+import { BenefitType, ForecastState, InstallmentFrequency, RentFrequency, RentState, ShortfallState } from "@/src/types/RentCalculator";
+import { calcPx, calculateBalanceRemaining, calculateForecast, calculateForecastDate, calculateForecastPaid, calculateInstallment, calculateRent, calculateShortfall, calculateStartingBalance, calculateTotalInstallments, ceil2DP, floor2DP, fluidCSSWidthScale, getMaxTabs, isValidNumberEntry, UnsupportedUnitError } from "@/src/utils/helperFunctions";
 import {afterEach, beforeEach, describe, expect, jest, test} from "@jest/globals"
+import dayjs, { Dayjs } from "dayjs";
 import Decimal from "decimal.js";
 
 describe("getMaxTabs test, viewportWidth is in Rem, minimum size is 0", () => {
@@ -519,6 +520,29 @@ describe("Rent Calculator helper function tests", ()=>{
 
             expect(calculateShortfall(benefitType, value, weekly, fourWeekly, monthly)).toEqual(expected);
         });
+          test("value is negative, should not be valid", ()=>{
+            const value = "-900.60";
+            const benefitType = BenefitType.HOUSING_BENEFIT;
+            const weekly = "221.70";
+            const fourWeekly = "886.80";
+            const monthly = "960.70";
+
+            const weeklyShortfall = "";
+            const fourWeeklyShortfall = "";
+            const monthlyShortfall = "";
+
+            const expected: ShortfallState = {
+                benefitType: benefitType,
+                benefitAmount: value,
+                benefitTypeIsValid: true,
+                benefitAmountIsValid: false,
+                weeklyShortfall: weeklyShortfall,
+                fourWeeklyShortfall: fourWeeklyShortfall,
+                monthlyShortfall: monthlyShortfall,
+            };
+
+            expect(calculateShortfall(benefitType, value, weekly, fourWeekly, monthly)).toEqual(expected);
+        });
         test("values are non-empty and valid, benefit type is Housing Benefit, benefit amount is above four weekly", ()=>{
             const value = "900.60";
             const benefitType = BenefitType.HOUSING_BENEFIT;
@@ -529,10 +553,6 @@ describe("Rent Calculator helper function tests", ()=>{
             const weeklyShortfall = "3.45";
             const fourWeeklyShortfall = "13.80";
             const monthlyShortfall = "14.95";
-
-            console.log(ceil2DP((+value * 13) / 12));
-            console.log(ceil2DP((+value  * 13) / 12) - +monthly);
-            console.log((ceil2DP((+value  * 13) / 12) - +monthly).toFixed(2));
 
             const expected: ShortfallState = {
                 benefitType: benefitType,
@@ -546,6 +566,7 @@ describe("Rent Calculator helper function tests", ()=>{
 
             expect(calculateShortfall(benefitType, value, weekly, fourWeekly, monthly)).toEqual(expected);
         });
+      
         test("values are non-empty and valid, benefit type is Housing Benefit, benefit amount is the same as four weekly", ()=>{
             const value = "886.80";
             const benefitType = BenefitType.HOUSING_BENEFIT;
@@ -660,6 +681,333 @@ describe("Rent Calculator helper function tests", ()=>{
             };
 
             expect(calculateShortfall(benefitType, value, weekly, fourWeekly, monthly)).toEqual(expected);
+        });
+    });
+    describe("calculateStaringBalance tests", ()=>{
+        test("start date unselected, weeks until start date is -1", ()=>{
+            const weeksUntilStartDate = -1;
+            const currentBalance = "1000";
+            const weeklyRent = "157.50";
+
+            expect(calculateStartingBalance(weeksUntilStartDate, currentBalance, weeklyRent)).toBe("");
+        });
+        test("current balance is empty string", ()=>{
+            const weeksUntilStartDate = 1;
+            const currentBalance = "";
+            const weeklyRent = "157.50";
+
+            expect(calculateStartingBalance(weeksUntilStartDate, currentBalance, weeklyRent)).toBe("");
+        });
+        test("weeklyRent is empty string and weeksUntillStartDate is > 0, should return empty string", ()=>{
+            const weeksUntilStartDate = 1;
+            const currentBalance = "1000";
+            const weeklyRent = "";
+
+            expect(calculateStartingBalance(weeksUntilStartDate, currentBalance, weeklyRent)).toBe("");
+        });
+        test.each([[1, "0", "270.74", "270.74"],
+                    [1, "1000", "270.74", "1270.74"],
+                    [3, "0", "100.74", "302.22"],
+                    [3, "115.17", "100.74", "417.39"]])("Functionality check, weeksUntilStartDate %d, currentBalance %s, weeklyRent, %s", (weeksUntilStartDate, currentBalance, weeklyRent, expected)=>{
+            expect(calculateStartingBalance(weeksUntilStartDate, currentBalance, weeklyRent)).toBe(expected);
+        });
+        test("weeklyRent is empty string and weeksUntillStartDate is 0, should return value", ()=>{
+            const weeksUntilStartDate = 0;
+            const currentBalance = "1000";
+            const weeklyRent = "";
+
+            expect(calculateStartingBalance(weeksUntilStartDate, currentBalance, weeklyRent)).toBe("1000.00");
+        });
+    });
+    describe("calculateTotalInstallments tests", () => {
+        test("starting balance is empty string, should return -1", () => {
+            const startingBalance = "";
+            const defaultAmount = "200";
+
+            expect(calculateTotalInstallments(startingBalance, defaultAmount)).toBe(-1);
+        });
+        test("default amount is empty string, should return -1", () => {
+            const startingBalance = "2000.00";
+            const defaultAmount = "";
+
+            expect(calculateTotalInstallments(startingBalance, defaultAmount)).toBe(-1);
+        });
+        test("default amount is negative, should return -1", () => {
+            const startingBalance = "2000.00";
+            const defaultAmount = "-200.00";
+
+            expect(calculateTotalInstallments(startingBalance, defaultAmount)).toBe(-1);
+        });
+        test("default amount is a factor of starting balance", () => {
+            const startingBalance = "2000.00";
+            const defaultAmount = "250";
+
+            expect(calculateTotalInstallments(startingBalance, defaultAmount)).toBe(8);
+        });
+        test("default amount is not factor of starting balance", () => {
+            const startingBalance = "3680.20";
+            const defaultAmount = "365.50";
+
+            expect(calculateTotalInstallments(startingBalance, defaultAmount)).toBe(11);
+        });
+    });
+    describe("calculateInstallment tests (current installment number)", ()=>{
+        test("forecastDate is before startDate, should return 0", ()=>{
+            const startDate = dayjs("2026-04-16");
+            const forecastDate = startDate.add(-29, 'days');
+            const paymentFrequency = InstallmentFrequency.UNSELECTED;
+
+            expect(calculateInstallment(startDate, forecastDate, paymentFrequency)).toBe(0);
+        });
+        test("forecastDate is after start date but paymentFreq is unselected, should return 0", ()=>{
+            const startDate = dayjs("2026-04-16");
+            const forecastDate = startDate.add(4, 'weeks');
+            const paymentFrequency = InstallmentFrequency.UNSELECTED;
+
+            expect(calculateInstallment(startDate, forecastDate, paymentFrequency)).toBe(0);
+        });
+        test.each([InstallmentFrequency.WEEKLY, InstallmentFrequency.MONTHLY])("Payment Frequency is %s, forecast date is after start date", (paymentFrequency)=>{
+            const startDate = dayjs("2026-04-16");
+            const forecastDate = startDate.add(4, paymentFrequency === InstallmentFrequency.WEEKLY? 'weeks' : 'months');
+
+            expect(calculateInstallment(startDate, forecastDate, paymentFrequency)).toBe(5);
+        });
+        test.each([InstallmentFrequency.WEEKLY, InstallmentFrequency.MONTHLY])("Payment Frequency is %s, forecast date is the same as start date", (paymentFrequency)=>{
+            const startDate = dayjs("2026-04-16");
+            const forecastDate = startDate.clone();
+
+            expect(calculateInstallment(startDate, forecastDate, paymentFrequency)).toBe(1);
+        });
+        test.each([InstallmentFrequency.WEEKLY, InstallmentFrequency.MONTHLY])("Payment Frequency is %s, forecast date is 1 installment after start date", (paymentFrequency)=>{
+            const startDate = dayjs("2026-04-16");
+            const forecastDate = startDate.add(1, paymentFrequency === InstallmentFrequency.WEEKLY? 'week' : 'month');
+
+            expect(calculateInstallment(startDate, forecastDate, paymentFrequency)).toBe(2);
+        });
+    });
+    describe("calculateForecastDate tests, calculates forecast date as instalment number changes", ()=>{
+        test("paymentFrequency is unselected, should be null", ()=>{
+            const startDate = dayjs("2026-05-23");
+            const minForecastDate = dayjs("2026-04-16");
+            const paymentFrequency = InstallmentFrequency.UNSELECTED;
+            const installmentNumber = 6;
+
+            expect(calculateForecastDate(startDate, minForecastDate, paymentFrequency, installmentNumber)).toEqual(null);
+        });
+
+        test.each([InstallmentFrequency.WEEKLY, InstallmentFrequency.MONTHLY])("paymentFrequency is %s, more than installment number 1", (paymentFrequency)=>{
+            const startDate = dayjs("2026-05-23");
+            const minForecastDate = dayjs("2026-04-16");
+            const installmentNumber = 6;
+
+            expect(calculateForecastDate(startDate, minForecastDate, paymentFrequency, installmentNumber)).toEqual(startDate.add(5, paymentFrequency===InstallmentFrequency.WEEKLY? "weeks": "months"));
+        });
+        test.each([InstallmentFrequency.WEEKLY, InstallmentFrequency.MONTHLY])("paymentFrequency is %s, installment number is 1, should be start date", (paymentFrequency)=>{
+            const startDate = dayjs("2026-05-23");
+            const minForecastDate = dayjs("2026-04-16");
+            const installmentNumber = 1;
+
+            expect(calculateForecastDate(startDate, minForecastDate, paymentFrequency, installmentNumber)).toEqual(startDate);
+        });
+        test.each([InstallmentFrequency.WEEKLY, InstallmentFrequency.MONTHLY])("paymentFrequency is %s, installment number is 0", (paymentFrequency)=>{
+            const startDate = dayjs("2026-05-23");
+            const minForecastDate = dayjs("2026-04-16");
+            const installmentNumber = 0;
+
+            expect(calculateForecastDate(startDate, minForecastDate, paymentFrequency, installmentNumber)).toEqual(startDate.add(-1, paymentFrequency===InstallmentFrequency.WEEKLY? "weeks": "months"));
+        });
+         test.each([InstallmentFrequency.WEEKLY, InstallmentFrequency.MONTHLY])("paymentFrequency is %s, installment number is 0, min forcast date is less than forecastDate", (paymentFrequency)=>{
+            const startDate = dayjs("2026-05-23");
+            const minForecastDate = startDate.add(-3,  paymentFrequency===InstallmentFrequency.WEEKLY? "days": "weeks" );
+            const installmentNumber = 0;
+
+            expect(calculateForecastDate(startDate, minForecastDate, paymentFrequency, installmentNumber)).toEqual(minForecastDate);
+        });
+    });
+    describe("forecastPaid tests, calculates how much of the balance would be paid", ()=>{
+        test("defaultAmount is empty string, should return empty string", ()=>{
+            const installmentNumber = 0;
+            const defaultAmount = "";
+            const startingBalance = "2000.15";
+
+            expect(calculateForecastPaid(installmentNumber, defaultAmount, startingBalance)).toBe("");
+        });
+        test("startingBalance is empty string, should return empty string", ()=>{
+            const installmentNumber = 0;
+            const defaultAmount = "200";
+            const startingBalance = "";
+
+            expect(calculateForecastPaid(installmentNumber, defaultAmount, startingBalance)).toBe("");
+        });
+        test("defaultAmount is negative, should return empty string", ()=>{
+            const installmentNumber = 0;
+            const defaultAmount = "-200";
+            const startingBalance = "2000.15";
+
+            expect(calculateForecastPaid(installmentNumber, defaultAmount, startingBalance)).toBe("");
+        });
+        test("installmentNumber is 0, should return 0", ()=>{
+            const installmentNumber = 0;
+            const defaultAmount = "200";
+            const startingBalance = "2000.15";
+
+            expect(calculateForecastPaid(installmentNumber, defaultAmount, startingBalance)).toBe("0.00");
+        });
+        test("installmentNumber is 1, should return defaultAmount", ()=>{
+            const installmentNumber = 1;
+            const defaultAmount = "200.00";
+            const startingBalance = "2000.15";
+
+            expect(calculateForecastPaid(installmentNumber, defaultAmount, startingBalance)).toBe(defaultAmount);
+        });
+        test("installmentNumber is less than final installment", ()=>{
+            const installmentNumber = 9;
+            const defaultAmount = "200.00";
+            const startingBalance = "2000.15";
+
+            expect(calculateForecastPaid(installmentNumber, defaultAmount, startingBalance)).toBe("1800.00");
+        });
+        test("installmentNumber is final installment", ()=>{
+            const installmentNumber = 11;
+            const defaultAmount = "200.00";
+            const startingBalance = "2000.15";
+
+            expect(calculateForecastPaid(installmentNumber, defaultAmount, startingBalance)).toBe(startingBalance);
+        });
+    });
+    describe("balanceRemaining tests, calculates how much of the balance is left to pay", ()=>{
+        test("starting balance is empty string, should return empty string",()=>{
+            const startingBalance = "";
+            const totalPaid = "350.00";
+
+            expect(calculateBalanceRemaining(startingBalance, totalPaid)).toBe("");
+        });
+        test("totalPaid is empty string, should return empty string",()=>{
+            const startingBalance = "2500.00";
+            const totalPaid = "";
+
+            expect(calculateBalanceRemaining(startingBalance, totalPaid)).toBe("");
+        });
+        test("totalPaid is less than startingBalance",()=>{
+            const startingBalance = "2500.00";
+            const totalPaid = "350.00";
+
+            expect(calculateBalanceRemaining(startingBalance, totalPaid)).toBe("2150.00");
+        });
+        test("totalPaid is the same as startingBalance",()=>{
+            const startingBalance = "2500.00";
+            const totalPaid = "2500.00";
+
+            expect(calculateBalanceRemaining(startingBalance, totalPaid)).toBe("0.00");
+        });
+    });
+    describe("calculateForecast tests", ()=>{
+        const generateForecast = (defaultAmount:string, forecastDate:Dayjs|null):ForecastState => {
+             return {
+                    totalInstallments: -1,
+                    installmentNumber: 0,
+                    forecastPaid: "",
+                    balanceRemaining: "",
+                    defaultAmount: defaultAmount,
+                    defaultAmountIsValid: true,
+                    forecastDate: forecastDate,
+                    forecastDateIsValid: true,
+                    minForecastDate: dayjs("2026-04-12"),
+                    paymentFrequency: InstallmentFrequency.WEEKLY,
+                    paymentFrequencyIsValid: true,
+                };
+        };
+        test("default amount is empty string, total installments is -1",()=>{
+            const defaultAmount = "";
+            const startingBalance = "2000.00";
+            const forecastDate = dayjs("2026-05-30");
+            const forecast = generateForecast(defaultAmount, forecastDate);
+            const startDate = dayjs("2026-05-01");
+
+            const result: ForecastState = {
+                totalInstallments: -1,
+                installmentNumber: 0,
+                forecastPaid: "",
+                balanceRemaining: "",
+                defaultAmount: forecast.defaultAmount,
+                defaultAmountIsValid: forecast.defaultAmountIsValid,
+                forecastDate: forecast.forecastDate,
+                forecastDateIsValid: forecast.forecastDateIsValid,
+                minForecastDate: forecast.minForecastDate,
+                paymentFrequency: forecast.paymentFrequency,
+                paymentFrequencyIsValid: forecast.paymentFrequencyIsValid,
+            };
+
+            expect(calculateForecast(startingBalance, startDate, true, forecast, true)).toEqual(result);
+            
+        });
+        test("forecast date is less than total installments away",()=>{
+            const defaultAmount = "250.00";
+            const startingBalance = "2000.00";
+            const forecastDate = dayjs("2026-05-30");
+            const forecast = generateForecast(defaultAmount, forecastDate);
+            const startDate = dayjs("2026-05-01");
+
+            const result: ForecastState = {
+                totalInstallments: 8,
+                installmentNumber: 5,
+                forecastPaid: "1250.00",
+                balanceRemaining: "750.00",
+                defaultAmount: forecast.defaultAmount,
+                defaultAmountIsValid: forecast.defaultAmountIsValid,
+                forecastDate: forecast.forecastDate,
+                forecastDateIsValid: forecast.forecastDateIsValid,
+                minForecastDate: forecast.minForecastDate,
+                paymentFrequency: forecast.paymentFrequency,
+                paymentFrequencyIsValid: forecast.paymentFrequencyIsValid,
+            };
+            expect(calculateForecast(startingBalance, startDate, true, forecast, true)).toEqual(result);
+        });
+        test("forecast date is null",()=>{
+            const defaultAmount = "250.00";
+            const startingBalance = "2000.00";
+            const forecastDate = null;
+            const forecast = generateForecast(defaultAmount, forecastDate);
+            const startDate = dayjs("2026-05-01");
+
+            const result: ForecastState = {
+                totalInstallments: 8,
+                installmentNumber: forecast.installmentNumber,
+                forecastPaid: "0.00",
+                balanceRemaining: "2000.00",
+                defaultAmount: forecast.defaultAmount,
+                defaultAmountIsValid: forecast.defaultAmountIsValid,
+                forecastDate: forecast.forecastDate,
+                forecastDateIsValid: forecast.forecastDateIsValid,
+                minForecastDate: forecast.minForecastDate,
+                paymentFrequency: forecast.paymentFrequency,
+                paymentFrequencyIsValid: forecast.paymentFrequencyIsValid,
+            };
+            expect(calculateForecast(startingBalance, startDate, true, forecast, true)).toEqual(result);
+        });
+        test("calc installments is false",()=>{
+            const defaultAmount = "250.00";
+            const startingBalance = "2000.00";
+            const forecastDate = dayjs("2026-05-30");
+            const forecast = generateForecast(defaultAmount, forecastDate);
+            const startDate = dayjs("2026-05-01");
+
+            forecast.installmentNumber = 2;
+
+            const result: ForecastState = {
+                totalInstallments: 8,
+                installmentNumber: forecast.installmentNumber,
+                forecastPaid: "500.00",
+                balanceRemaining: "1500.00",
+                defaultAmount: forecast.defaultAmount,
+                defaultAmountIsValid: forecast.defaultAmountIsValid,
+                forecastDate: forecast.forecastDate,
+                forecastDateIsValid: forecast.forecastDateIsValid,
+                minForecastDate: forecast.minForecastDate,
+                paymentFrequency: forecast.paymentFrequency,
+                paymentFrequencyIsValid: forecast.paymentFrequencyIsValid,
+            };
+            expect(calculateForecast(startingBalance, startDate, true, forecast, false)).toEqual(result);
         });
     });
 });
