@@ -139,17 +139,18 @@ export function rentCalculatorReducer(
 
             if (
                 rent.rentAmount === "" &&
-                rent.rentFrequency === RentFrequency.UNSELECTED &&
-                shortfall.benefitAmount === "" &&
+                !(shortfall.benefitAmount === "" &&
                 shortfall.benefitType === BenefitType.UNSELECTED &&
                 balance.startDate === null &&
                 balance.currentBalance === "" &&
                 forecast.defaultAmount === "" &&
                 forecast.forecastDate === null &&
-                forecast.paymentFrequency === InstallmentFrequency.UNSELECTED
+                forecast.paymentFrequency === InstallmentFrequency.UNSELECTED)
             ) {
-                rent.rentFrequencyIsValid = true;
-                rent.rentAmountIsValid = true;
+                if (rent.rentFrequency === RentFrequency.UNSELECTED){
+                    rent.rentFrequencyIsValid = false;
+                }
+                rent.rentAmountIsValid = false;
             }
 
             break;
@@ -157,6 +158,7 @@ export function rentCalculatorReducer(
 
         case CalculatorActions.CHANGE_BENEFIT_TYPE: {
             shortfall.benefitType = action.newBenefitType;
+            shortfall.benefitTypeIsValid = true;
 
             if (shortfall.benefitAmount !== "") {
                 shortfall = calculateShortfall(
@@ -199,26 +201,23 @@ export function rentCalculatorReducer(
                     rent.rentAmountIsValid = false;
                 }
             } else {
-                shortfall.benefitAmountIsValid = true;
-                if (shortfall.benefitType === BenefitType.UNSELECTED) {
-                    shortfall.benefitTypeIsValid = true;
-                    if (
-                        rent.rentAmount === "" &&
-                        balance.currentBalance === "" &&
-                        balance.startDate === null &&
-                        forecast.forecastDate === null &&
-                        forecast.defaultAmount === "" &&
-                        forecast.paymentFrequency ===
-                            InstallmentFrequency.UNSELECTED
+                if (shortfall.benefitType === BenefitType.UNSELECTED &&
+                    rent.rentAmount === "" &&
+                    balance.currentBalance === "" &&
+                    balance.startDate === null &&
+                    forecast.forecastDate === null &&
+                    forecast.defaultAmount === "" &&
+                    forecast.paymentFrequency ===
+                        InstallmentFrequency.UNSELECTED
                     ) {
-                        rent.rentAmountIsValid = true;
-                        if (rent.rentFrequency === RentFrequency.UNSELECTED) {
-                            rent.rentFrequencyIsValid = true;
-                        }
+
+                    rent.rentAmountIsValid = true;
+                    if (rent.rentFrequency === RentFrequency.UNSELECTED) {
+                        rent.rentFrequencyIsValid = true;
                     }
                 }
             }
-
+                
             break;
         }
 
