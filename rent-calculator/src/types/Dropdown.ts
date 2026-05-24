@@ -9,6 +9,7 @@ type CommonDropdownBoxProps<TLabel extends string> = {
     small?: boolean;
     minWidth?: number;
     valid?: boolean;
+    screenSize?: "SMALL" | "MEDIUM" | "LARGE";
 };
 
 type UncontrolledDropdownBoxProps<TLabel extends string> =
