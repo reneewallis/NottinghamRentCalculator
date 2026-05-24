@@ -1,4 +1,4 @@
-export const ELEMENT_MIN_SCALE = 0.75;
+export const ELEMENT_MIN_SCALE = 0.85;
 export const ELEMENT_MAX_SCALE = 1.1;
 export const DEFAULT_CIRCLE_SIZE = 16;
 export const CIRCLE_RIGHT_DISTANCE = 1.1975;
