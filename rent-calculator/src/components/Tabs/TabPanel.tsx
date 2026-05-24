@@ -18,9 +18,11 @@ import CustomDropdownBox from "../Dropdown/DropdownBox";
 import { useTabsContext } from "@/src/utils/Tabs/TabsContext";
 import { DATE_BOX_WIDTH, SIDE_PANEL_TEXT_BOX_WIDTH } from "../InputFields/inputFieldConsts";
 import { DEFAULT_DROPDOWN_LABEL_SCALE } from "../Dropdown/dropdownConstants";
+import { useViewportWidthRem } from "@/src/utils/hooks/useViewportWidth";
 
 function TabPanel() {
     const { tabsState, tabsDispatch } = useTabsContext();
+    const viewportWidth = useViewportWidthRem();
 
     if (tabsState.wrappedTabArr.length > 0) {
         const activeTab = tabsState.wrappedTabArr[tabsState.activeTabIndex];
@@ -151,7 +153,7 @@ function TabPanel() {
                 ]),
             ) * DEFAULT_DROPDOWN_LABEL_SCALE;
         return (
-                <div className="flex-1 grid grid-cols-[repeat(2,minmax(auto,1fr))] grid-flow-row-dense overflow-x-auto justify-items-center items-end content-center p-8 gap-12">
+                <div className="flex-1 grid grid-cols-[minmax(auto,1fr)] md:grid-cols-[repeat(2,minmax(auto,1fr))] grid-flow-row-dense overflow-x-auto justify-items-start md:justify-items-center items-end content-center p-8 gap-12">
                     <div key={"rent"} className="col-start-1">
                         <CalculatorBox
                             dropDownProps={{
@@ -192,7 +194,7 @@ function TabPanel() {
                             ]}
                         ></CalculatorBox>
                     </div>
-                    <div key={"shortfall"} className="col-start-1 pb-8">
+                    <div key={"shortfall"} className="col-start-1 md:pb-8">
                         <CalculatorBox
                             dropDownProps={{
                                 ...calcBoxDropdowns.shortfall,
@@ -243,7 +245,7 @@ function TabPanel() {
                     <CalculatorPanel
                         circleValue={balanceCircleValue}
                         circleLabel={balanceCircleString}
-                        flipPanel={true}
+                        flipPanel={viewportWidth < 48? false: true}
                         mainPanelBoxes={[
                             <TextBox
                                 key={"todayDate"}
@@ -323,7 +325,7 @@ function TabPanel() {
                     <CalculatorPanel
                         circleValue={forecastCircleValue}
                         circleLabel={forcastCircleLabel}
-                        flipPanel={true}
+                        flipPanel={viewportWidth < 48? false: true}
                         mainPanelBoxes={[
                             <TextBox
                                 key={"defaultAmount"}
