@@ -9,15 +9,17 @@ import { MenuItems } from "@/src/types/Buttons";
 import { useTabsContext } from "@/src/utils/Tabs/TabsContext";
 import { TAB_BUTTONS_CONTAINER_MARGIN_X } from "./tabConsts";
 import { useMaxTabs } from "@/src/utils/hooks/useMaxTabs";
+import { useRef } from "react";
 
 export default function Tabs() {
     const { tabsState, tabsDispatch: dispatch } = useTabsContext();
-    const maxTabs = useMaxTabs();
+    const mainContainerRef = useRef<HTMLDivElement>(null);
+    const maxTabs = useMaxTabs(mainContainerRef);
     const viewableIndex = tabsState.wrappedTabArr.length > maxTabs? tabsState.wrappedTabArr.length - maxTabs: 0;
 
     return (
         <div className="mt-2 w-full">
-            <div className="flex flex-wrap items-center border-b border-gray-800">
+            <div ref={mainContainerRef} className="flex flex-wrap items-center border-b border-gray-800">
                 {tabsState.wrappedTabArr.map(
                     (wrappedTab, index) =>
                         (tabsState.showHistory ||
