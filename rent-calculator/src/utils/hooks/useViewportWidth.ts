@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { TAB_BUTTONS_CONTAINER_WIDTH, TAB_CONTAINER_WIDTH } from "../components/Tabs/tabConsts";
-import { getMaxTabs } from "./helperFunctions";
+import { TAB_BUTTONS_CONTAINER_WIDTH, TAB_CONTAINER_WIDTH } from "../../components/Tabs/tabConsts";
+import { getMaxTabs } from "../helperFunctions";
 
 export function useViewportWidthRem(){
     const [width, setWidth] = useState(0);
@@ -23,9 +23,4 @@ export function useViewportWidthRem(){
     }, []);
 
     return width;
-}
-
-export function useMaxTabs(){
-    const viewportWidth = useViewportWidthRem();
-    return getMaxTabs(viewportWidth);
 }
