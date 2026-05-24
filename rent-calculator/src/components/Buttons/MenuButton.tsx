@@ -52,7 +52,7 @@ function DropdownMenu({ items }: MenuButtonProps) {
                 )}
             </button>
             {showMenu && (
-                <div className="absolute right-0 p-1 z-10 inline-flex flex-col rounded-3xl bg-gray-600 inset-shadow-sm border-2 border-gray-200">
+                <div className="absolute right-0 p-1 z-50 inline-flex flex-col rounded-3xl bg-gray-600 inset-shadow-sm border-2 border-gray-200">
                     {items.map((menuItem, index) => (
                         <button
                             key={`item${index}`}
