@@ -3,7 +3,33 @@
 import { useState } from "react";
 import { DropdownBoxProps } from "@/src/types/Dropdown";
 import { fluidCSSWidthScale } from "@/src/utils/helperFunctions";
-import { DEFAULT_DROPDOWN_LABEL_SCALE, MAX_DROPDOWN_WIDTH_SCALE, MIN_DROPDOWN_WIDTH_SCALE, SMALL_DROPDOWN_LABEL_SCALE } from "./dropdownConstants";
+import { ARROW_MARGIN_RIGHT, ARROW_WIDTH_LARGE, ARROW_WIDTH_MEDIUM, ARROW_WIDTH_SMALL, FONT_WIDTH_LARGE, FONT_WIDTH_MEDIUM, FONT_WIDTH_SMALL, MAX_DROPDOWN_WIDTH_SCALE, MIN_DROPDOWN_WIDTH_SCALE, PADDING_LEFT, PADDING_RIGHT, SMALL_DROPDOWN_LABEL_SCALE, SMALL_FONT_WIDTH_LARGE, SMALL_FONT_WIDTH_MEDIUM, SMALL_FONT_WIDTH_SMALL } from "./dropdownConstants";
+
+export function calcDropdownMinWidth(maxLabelLength: number, dropdownStyle: "DEFAULT" | "SMALL" = "DEFAULT", screenSize: "LARGE" | "MEDIUM" | "SMALL" = "LARGE"){
+    let buttonWidth : number;
+    switch (screenSize){
+        case "LARGE":{
+            const fontWidth = dropdownStyle === "DEFAULT" ? FONT_WIDTH_LARGE : SMALL_FONT_WIDTH_LARGE * 0.585;
+            buttonWidth = (fontWidth * maxLabelLength) + ARROW_WIDTH_LARGE;
+            
+            break;
+        }
+        case "MEDIUM":{
+            const fontWidth = dropdownStyle === "DEFAULT" ? FONT_WIDTH_MEDIUM : SMALL_FONT_WIDTH_MEDIUM * 0.585;
+            buttonWidth = (fontWidth * maxLabelLength) + ARROW_WIDTH_MEDIUM;
+
+            break;
+        }
+        case "SMALL":{
+            const fontWidth = dropdownStyle === "DEFAULT" ? FONT_WIDTH_SMALL : SMALL_FONT_WIDTH_SMALL * 0.585;
+            buttonWidth = ((fontWidth * maxLabelLength)) + ARROW_WIDTH_SMALL;
+
+            break;
+        }
+    }
+
+     return buttonWidth + PADDING_LEFT + PADDING_RIGHT + ARROW_MARGIN_RIGHT;
+}
 
 function CustomDropdownBox<TLabel extends string>(
     props: DropdownBoxProps<TLabel>,
@@ -15,6 +41,7 @@ function CustomDropdownBox<TLabel extends string>(
         small = false,
         valid = true,
         controlled,
+        screenSize = "LARGE",
     } = props;
 
     const [showItems, setShowItems] = useState(false);
@@ -31,11 +58,8 @@ function CustomDropdownBox<TLabel extends string>(
                       ...items.map((item) => item.label.length),
                   )
                 : label.length;
-        if (!small) {
-            buttonWidth = maxLabelLength * DEFAULT_DROPDOWN_LABEL_SCALE;
-        } else {
-            buttonWidth = maxLabelLength * SMALL_DROPDOWN_LABEL_SCALE;
-        }
+        
+        buttonWidth = calcDropdownMinWidth(maxLabelLength, small? "SMALL" : "DEFAULT", screenSize);
     }
     const boxLabel = controlled ? props.value : boxText;
 
