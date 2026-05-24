@@ -1,5 +1,4 @@
 import { TabProps } from "../../types/Tabs";
-import React from "react";
 import { TAB_CLOSE_BUTTON_MARGIN_X, TAB_CLOSE_BUTTON_SIZE, TAB_PADDING_LEFT, TAB_PADDING_RIGHT, TAB_TEXT_WIDTH } from "./tabConsts";
 
 function Tab({ label, active = false, onClick, onClose }: TabProps) {

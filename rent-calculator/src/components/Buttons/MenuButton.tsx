@@ -1,7 +1,7 @@
 "use client";
 
 import { MenuButtonProps } from "@/src/types/Buttons";
-import React, { useState } from "react";
+import { useState } from "react";
 import { DEFAULT_BUTTON_SIZE } from "./buttonConsts";
 
 function DropdownMenu({ items }: MenuButtonProps) {

@@ -1,4 +1,3 @@
-import React from "react";
 import { NewTabButtonProps } from "@/src/types/Buttons";
 import { DEFAULT_BUTTON_SIZE } from "./buttonConsts";
 

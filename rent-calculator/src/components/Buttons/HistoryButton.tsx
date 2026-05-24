@@ -1,5 +1,4 @@
 import { HistoryButtonProps } from "@/src/types/Buttons";
-import React from "react";
 import { DEFAULT_BUTTON_SIZE } from "./buttonConsts";
 
 function HistoryButton({ showHistory, onClick }: HistoryButtonProps) {

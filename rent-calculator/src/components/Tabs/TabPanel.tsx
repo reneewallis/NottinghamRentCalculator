@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { TabsActions } from "../../types/Tabs";
 import {
     CalculatorActions,

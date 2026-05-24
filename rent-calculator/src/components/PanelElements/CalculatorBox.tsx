@@ -1,4 +1,3 @@
-import React from "react";
 import { CalculatorBoxProps } from "../../types/PanelElements";
 import CustomDropdownBox from "../Dropdown/DropdownBox";
 import TextBox from "../InputFields/TextBox";

@@ -1,4 +1,3 @@
-import React from "react";
 import ArrowButton from "../Buttons/ArrowButton";
 import { InstallementScrollerProps } from "../../types/PanelElements";
 import { InstallmentFrequency } from "@/src/types/RentCalculator";

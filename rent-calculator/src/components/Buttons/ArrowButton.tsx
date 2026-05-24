@@ -1,5 +1,4 @@
 import { ArrowButtonProps } from "@/src/types/Buttons";
-import React from "react";
 
 function ArrowButton({ direction, onClick }: ArrowButtonProps) {
     return (
