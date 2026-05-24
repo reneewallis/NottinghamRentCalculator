@@ -1,3 +1,5 @@
+"use client";
+
 import { useTabsContext } from "@/src/utils/Tabs/TabsContext";
 import { TabsActions } from "@/src/types/Tabs";
 
