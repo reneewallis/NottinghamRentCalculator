@@ -31,7 +31,7 @@ function CalculatorPanel<TLabel extends string>({
                 </div>
             </div>
             {!flipPanel && (
-                <div style={{ marginTop:fluidCSSWidthScale(`${PANELS_MARGIN_TOP * ELEMENT_MIN_SCALE}rem`, `${PANELS_MARGIN_TOP}rem`, `${PANELS_MARGIN_TOP*ELEMENT_MAX_SCALE}rem`), paddingRight: fluidCSSWidthScale(`${SIDE_PANEL_PADDING_VISIBLE_SIDE * ELEMENT_MIN_SCALE}rem`, `${SIDE_PANEL_PADDING_VISIBLE_SIDE}rem`, `${SIDE_PANEL_PADDING_VISIBLE_SIDE * ELEMENT_MAX_SCALE}rem`) }}  className="mt-40 inline-flex gap-4 -ml-5 flex-col items-end bg-gray-800 rounded-2xl shadow-lg border-y-4 border-r-4 border-gray-300 pl-10 pt-4 md:pt-5 lg:pt-6 pb-6 md:pb-7 lg:pb-8">
+                <div style={{ marginTop:fluidCSSWidthScale(`${PANELS_MARGIN_TOP * ELEMENT_MIN_SCALE}rem`, `${PANELS_MARGIN_TOP}rem`, `${PANELS_MARGIN_TOP*ELEMENT_MAX_SCALE}rem`), paddingRight: fluidCSSWidthScale(`${SIDE_PANEL_PADDING_VISIBLE_SIDE * ELEMENT_MIN_SCALE}rem`, `${SIDE_PANEL_PADDING_VISIBLE_SIDE}rem`, `${SIDE_PANEL_PADDING_VISIBLE_SIDE * ELEMENT_MAX_SCALE}rem`) }}  className="mt-40 inline-flex gap-4 -ml-5 flex-col items-start bg-gray-800 rounded-2xl shadow-lg border-y-4 border-r-4 border-gray-300 pl-10 pt-4 md:pt-5 lg:pt-6 pb-6 md:pb-7 lg:pb-8">
                     {...sidePanelBoxes}
                 </div>
             )}
