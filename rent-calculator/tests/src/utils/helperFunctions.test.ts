@@ -84,7 +84,7 @@ describe("fluidCSSWidthScale and calcPx tests", () => {
     });
 
     describe("fluidCSSWidthScale tests", () =>{
-        const minScreen = "22.5rem";
+        const minScreen = "58rem";
         const devScreen = "96rem";
         const correctStringFormat = (min:string, pref:string, max:string) => {
             return `clamp(${min}, calc(${min} + (${pref} - ${min}) * ((100vw - ${minScreen}) / (${devScreen} - ${minScreen}))), ${max})`;
@@ -182,7 +182,7 @@ describe("fluidCSSWidthScale and calcPx tests", () => {
 
             test("viewport width is half of dev screen", ()=>{
                 const viewportWidth = calcPx(devScreen) / 2;
-                expect(calcFluidWidthScale("75px","150px","300px",`${viewportWidth}px`)).toBeCloseTo(101.02); 
+                expect(calcFluidWidthScale("75px","150px","300px",`${viewportWidth}px`)).toBe(75); 
             });
 
             test("viewport width is much larger than dev screen", ()=>{

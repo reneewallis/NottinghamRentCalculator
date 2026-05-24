@@ -91,7 +91,7 @@ export function calcPx(value:string){
 }
 
 export function fluidCSSWidthScale(min:string, pref:string, max:string):string{
-    const minScreen = "22.5rem";
+    const minScreen = "58rem";
     const devScreen = "96rem";
 
     try {
