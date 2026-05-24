@@ -5,8 +5,6 @@ import {
     rentCalculatorReducer,
 } from "../RentCalculator/RentCalculatorReducer";
 
-const MAX_TABS: number = 15;
-
 export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
     switch (action.type) {
         case TabsActions.NEW_TAB: {
@@ -19,16 +17,10 @@ export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
             const yyyy = now.year().toString().padStart(4, "0");
             const todayString = `${dd}/${mm}/${yyyy}`;
 
-            const viewableIndex =
-                state.wrappedTabArr.length >= MAX_TABS
-                    ? state.viewableIndex + 1
-                    : 0;
-
             return {
                 nextTabID: state.nextTabID + 1,
                 activeTabIndex: state.wrappedTabArr.length,
                 showHistory: state.showHistory,
-                viewableIndex: viewableIndex,
                 hoverLast: state.hoverLast,
                 lastTabActive: true,
                 hydrated: state.hydrated,
@@ -47,7 +39,6 @@ export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
         case TabsActions.CLOSE_TAB: {
             let activeTab = state.activeTabIndex;
             let lastTabActive = state.lastTabActive;
-            let viewableIndex = state.viewableIndex;
             let showHistory = state.showHistory;
             const newTabArr = state.wrappedTabArr.filter(
                 (_, index) => index !== action.closeIndex,
@@ -61,19 +52,10 @@ export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
                 lastTabActive = true;
             }
 
-            if (viewableIndex >= 1) {
-                if (showHistory && viewableIndex == 1) {
-                    showHistory = false;
-                }
-
-                viewableIndex -= 1;
-            }
-
             return {
                 ...state,
                 activeTabIndex: activeTab,
                 showHistory: showHistory,
-                viewableIndex: viewableIndex,
                 lastTabActive: lastTabActive,
                 wrappedTabArr: newTabArr,
             };
@@ -84,7 +66,6 @@ export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
                 nextTabID: state.nextTabID,
                 activeTabIndex: 0,
                 showHistory: false,
-                viewableIndex: 0,
                 hoverLast: false,
                 lastTabActive: false,
                 hydrated: state.hydrated,
@@ -100,17 +81,9 @@ export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
         }
 
         case TabsActions.VIEW_HISTORY: {
-            let showHistory = state.showHistory;
-
-            if (showHistory) {
-                showHistory = false;
-            } else if (state.viewableIndex > 0) {
-                showHistory = true;
-            }
-
             return {
                 ...state,
-                showHistory: showHistory,
+                showHistory: !state.showHistory,
             };
         }
 

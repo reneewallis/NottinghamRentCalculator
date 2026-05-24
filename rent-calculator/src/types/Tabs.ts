@@ -19,6 +19,7 @@ export enum TabsActions {
     HOVER_LAST,
     VIEW_HISTORY,
     USE_RENT_CALCULATOR,
+    SET_VIEWABLE_INDEX,
 }
 
 type TabsActionCloseTab = {
@@ -60,7 +61,7 @@ export type TabsAction =
     | TabsActionCloseTab
     | TabsActionSetActiveTab
     | TabsActionUseRentCalculator
-    | TabsActionLoadTabs;
+    | TabsActionLoadTabs
 
 export type TabsTabWrapper = {
     id: number;
@@ -73,7 +74,6 @@ export type TabsMetadata = {
     nextTabID: number;
     activeTabIndex: number;
     showHistory: boolean;
-    viewableIndex: number;
     hoverLast: boolean;
     lastTabActive: boolean;
     hydrated: boolean;

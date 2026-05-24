@@ -20,7 +20,6 @@ const initialTabsValue = {
     nextTabID: 0,
     activeTabIndex: 0,
     showHistory: false,
-    viewableIndex: 0,
     hoverLast: false,
     lastTabActive: false,
     hydrated: false,
@@ -57,7 +56,6 @@ function TabsProvider({ children }: TabsProviderProps) {
             lastTabActive: tabsState.lastTabActive,
             nextTabID: tabsState.nextTabID,
             showHistory: tabsState.showHistory,
-            viewableIndex: tabsState.viewableIndex,
             hydrated: tabsState.hydrated,
         });
     }, [
@@ -66,7 +64,6 @@ function TabsProvider({ children }: TabsProviderProps) {
         tabsState.lastTabActive,
         tabsState.nextTabID,
         tabsState.showHistory,
-        tabsState.viewableIndex,
         tabsState.hydrated,
     ]);
 
