@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { TAB_BUTTONS_CONTAINER_WIDTH, TAB_CONTAINER_WIDTH } from "../components/Tabs/tabConsts";
 import { getMaxTabs } from "./helperFunctions";
 
-function useViewportWidthRem(){
+export function useViewportWidthRem(){
     const [width, setWidth] = useState(0);
 
     useEffect(() => {
