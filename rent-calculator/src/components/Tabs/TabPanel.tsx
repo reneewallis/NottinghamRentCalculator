@@ -14,10 +14,9 @@ import CalculatorPanel from "../PanelElements/CalculatorPanel";
 import TextBox from "../InputFields/TextBox";
 import InstallementScroller from "../PanelElements/InstallmentScroller";
 import { Dayjs } from "dayjs";
-import CustomDropdownBox from "../Dropdown/DropdownBox";
+import CustomDropdownBox, { calcDropdownMinWidth } from "../Dropdown/DropdownBox";
 import { useTabsContext } from "@/src/utils/Tabs/TabsContext";
 import { DATE_BOX_WIDTH, SIDE_PANEL_TEXT_BOX_WIDTH } from "../InputFields/inputFieldConsts";
-import { DEFAULT_DROPDOWN_LABEL_SCALE } from "../Dropdown/dropdownConstants";
 import { useViewportWidthRem } from "@/src/utils/hooks/useViewportWidth";
 
 function TabPanel() {
@@ -144,16 +143,21 @@ function TabPanel() {
             },
         };
 
-        const minDropdownWidth =
+
+        const maxLabelLength =
             Math.max(
                 0,
                 ...Object.values(calcBoxDropdowns).flatMap((dropdown) => [
                     dropdown.label.length,
                     ...dropdown.items.map((item) => item.label.length),
                 ]),
-            ) * DEFAULT_DROPDOWN_LABEL_SCALE;
+            );
+
+        const screenSize = viewportWidth < 48 ? "SMALL" : viewportWidth < 64? "MEDIUM" : "LARGE"
+        const minDropdownWidth = calcDropdownMinWidth(maxLabelLength, "DEFAULT", screenSize);
+
         return (
-                <div className="flex-1 grid grid-cols-[minmax(auto,1fr)] md:grid-cols-[repeat(2,minmax(auto,1fr))] grid-flow-row-dense overflow-x-auto justify-items-start md:justify-items-center items-end content-center p-8 gap-12">
+                <div className="flex-1 grid grid-cols-[minmax(auto,1fr)] md:grid-cols-[repeat(2,minmax(auto,1fr))] grid-flow-row-dense overflow-x-auto justify-items-start sm:justify-items-center items-end place-content-center py-8 px-2 md:px-8 gap-12">
                     <div key={"rent"} className="col-start-1">
                         <CalculatorBox
                             dropDownProps={{
@@ -409,6 +413,7 @@ function TabPanel() {
                                 controlled={true}
                                 value={calculatorState.paymentFrequency}
                                 small={true}
+                                screenSize={screenSize}
                                 label={InstallmentFrequency.UNSELECTED}
                                 items={[
                                     {
