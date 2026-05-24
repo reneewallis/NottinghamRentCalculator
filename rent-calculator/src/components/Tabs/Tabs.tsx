@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+
 import { TabsActions } from "../../types/Tabs";
 import Tab from "../../components/Tabs/Tab";
 import DropdownMenu from "../../components/Buttons/MenuButton";
@@ -8,16 +8,20 @@ import NewTabButton from "../Buttons/NewTabButton";
 import { MenuItems } from "@/src/types/Buttons";
 import { useTabsContext } from "@/src/utils/Tabs/TabsContext";
 import { TAB_BUTTONS_CONTAINER_MARGIN_X } from "./tabConsts";
+import { useMaxTabs } from "@/src/utils/hooks/useMaxTabs";
 
 export default function Tabs() {
     const { tabsState, tabsDispatch: dispatch } = useTabsContext();
+    const maxTabs = useMaxTabs();
+    const viewableIndex = tabsState.wrappedTabArr.length > maxTabs? tabsState.wrappedTabArr.length - maxTabs: 0;
+
     return (
         <div className="mt-2 w-full">
             <div className="flex flex-wrap items-center border-b border-gray-800">
                 {tabsState.wrappedTabArr.map(
                     (wrappedTab, index) =>
                         (tabsState.showHistory ||
-                            index >= tabsState.viewableIndex) && (
+                            index >= viewableIndex) && (
                             <div
                                 key={`tabContainer${wrappedTab.id}`}
                                 onMouseEnter={() => {
