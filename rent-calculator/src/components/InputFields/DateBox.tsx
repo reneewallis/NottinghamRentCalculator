@@ -148,6 +148,45 @@ const dateTheme = createTheme({
             },
         },
 
+        MuiPaper : {
+            styleOverrides:{
+                root:{
+                    borderRadius: "1rem",
+                    backgroundColor: "#1e2939",
+                    border: "2px solid",
+                    borderColor: "#f9fafb",
+                },
+            },
+        },
+
+        MuiPickersToolbar: {
+            styleOverrides:{
+                root:{
+                    color: "#e5e7eb",
+                },
+            },
+        },
+
+        MuiTypography:{
+            styleOverrides:{
+                root:{
+                    color: "#e5e7eb!important",
+                },
+            },
+        },
+
+        MuiButton:{
+            styleOverrides:{
+                root:{
+                    "--variant-textColor": "#e5e7eb",
+                    "--variant-outlinedColor": "#8a0194",
+                    "--variant-outlinedBorder": "#8a0194",
+                    "--variant-containedColor": "#f9fafb",
+                    "--variant-containedBg": "#a800b7",
+                },
+            },
+        },
+
         MuiPickersArrowSwitcher: {
             styleOverrides: {
                 button: {
