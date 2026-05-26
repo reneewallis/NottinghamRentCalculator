@@ -12,6 +12,9 @@ export function calcDropdownMinWidth(args: CalcDropdownWidthArgs){
 
     if (args.dropdownStyle === "SMALL"){
         if (args.longestWordLength !== 0 && args.maxLabelLength !== 0){
+            if (args.longestWordLength > args.maxLabelLength){
+                throw new Error(`longest word length "${args.longestWordLength}" cannot be longer than max label length "${args.maxLabelLength}"`);
+            }
             smallDropdownScale = args.longestWordLength / args.maxLabelLength;
         }
     }

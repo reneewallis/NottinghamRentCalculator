@@ -21,4 +21,7 @@ describe("calcDropdownMinWidth tests", () => {
     test.each([[7, 4, 5.25], [14, 9, 7.75], [4,2,4.25], [5,5, 5.75]])("small dropdown, small screen tests, max label length %d, longest word length %d, expected %d", (labelLength, maxWordLength, expected) => {
         expect(calcDropdownMinWidth({maxLabelLength:labelLength, screenSize:"SMALL", dropdownStyle:"SMALL", longestWordLength:maxWordLength})).toBeCloseTo(expected,4);
     });
+    test("small dropdown test, longest word is longer than max label length, should through error", () => {
+        expect(()=>{calcDropdownMinWidth({dropdownStyle:"SMALL",maxLabelLength:5, longestWordLength:10})}).toThrow(new Error(`longest word length "10" cannot be longer than max label length "5"`));
+    });
 });
