@@ -154,7 +154,7 @@ function TabPanel() {
             );
 
         const screenSize = viewportWidth < 48 ? "SMALL" : viewportWidth < 64? "MEDIUM" : "LARGE"
-        const minDropdownWidth = calcDropdownMinWidth(maxLabelLength, "DEFAULT", screenSize);
+        const minDropdownWidth = calcDropdownMinWidth({maxLabelLength:maxLabelLength, dropdownStyle:"DEFAULT", screenSize:screenSize});
 
         return (
                 <div className="flex-1 grid grid-cols-[minmax(auto,1fr)] md:grid-cols-[repeat(2,minmax(auto,1fr))] grid-flow-row-dense overflow-x-auto justify-items-start sm:justify-items-center items-end place-content-center py-8 px-2 md:px-8 gap-12">

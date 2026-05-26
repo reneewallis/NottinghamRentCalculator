@@ -1,27 +1,40 @@
 "use client";
 
 import { useState } from "react";
-import { DropdownBoxProps } from "@/src/types/Dropdown";
+import { CalcDropdownWidthArgs, DropdownBoxProps } from "@/src/types/Dropdown";
 import { fluidCSSWidthScale } from "@/src/utils/helperFunctions";
-import { ARROW_MARGIN_RIGHT, ARROW_WIDTH_LARGE, ARROW_WIDTH_MEDIUM, ARROW_WIDTH_SMALL, FONT_WIDTH_LARGE, FONT_WIDTH_MEDIUM, FONT_WIDTH_SMALL, MAX_DROPDOWN_WIDTH_SCALE, MIN_DROPDOWN_WIDTH_SCALE, PADDING_LEFT, PADDING_RIGHT, SMALL_DROPDOWN_LABEL_SCALE, SMALL_FONT_WIDTH_LARGE, SMALL_FONT_WIDTH_MEDIUM, SMALL_FONT_WIDTH_SMALL } from "./dropdownConstants";
+import { ARROW_MARGIN_RIGHT, ARROW_WIDTH_LARGE, ARROW_WIDTH_MEDIUM, ARROW_WIDTH_SMALL, FONT_WIDTH_LARGE, FONT_WIDTH_MEDIUM, FONT_WIDTH_SMALL, MAX_DROPDOWN_WIDTH_SCALE, MIN_DROPDOWN_WIDTH_SCALE, PADDING_LEFT, PADDING_RIGHT, SMALL_FONT_WIDTH_LARGE, SMALL_FONT_WIDTH_MEDIUM, SMALL_FONT_WIDTH_SMALL } from "./dropdownConstants";
 
-export function calcDropdownMinWidth(maxLabelLength: number, dropdownStyle: "DEFAULT" | "SMALL" = "DEFAULT", screenSize: "LARGE" | "MEDIUM" | "SMALL" = "LARGE"){
+export function calcDropdownMinWidth(args: CalcDropdownWidthArgs){
+        
     let buttonWidth : number;
+    let smallDropdownScale = 0;
+
+    if (args.dropdownStyle === "SMALL"){
+        if (args.longestWordLength !== 0 && args.maxLabelLength !== 0){
+            smallDropdownScale = args.longestWordLength / args.maxLabelLength;
+        }
+    }
+
+    const { maxLabelLength, 
+        dropdownStyle = "DEFAULT", 
+        screenSize= "LARGE",} = args;
+
     switch (screenSize){
         case "LARGE":{
-            const fontWidth = dropdownStyle === "DEFAULT" ? FONT_WIDTH_LARGE : SMALL_FONT_WIDTH_LARGE * 0.585;
+            const fontWidth = dropdownStyle === "DEFAULT" ? FONT_WIDTH_LARGE : SMALL_FONT_WIDTH_LARGE * smallDropdownScale;
             buttonWidth = (fontWidth * maxLabelLength) + ARROW_WIDTH_LARGE;
             
             break;
         }
         case "MEDIUM":{
-            const fontWidth = dropdownStyle === "DEFAULT" ? FONT_WIDTH_MEDIUM : SMALL_FONT_WIDTH_MEDIUM * 0.585;
+            const fontWidth = dropdownStyle === "DEFAULT" ? FONT_WIDTH_MEDIUM : SMALL_FONT_WIDTH_MEDIUM * smallDropdownScale;
             buttonWidth = (fontWidth * maxLabelLength) + ARROW_WIDTH_MEDIUM;
 
             break;
         }
         case "SMALL":{
-            const fontWidth = dropdownStyle === "DEFAULT" ? FONT_WIDTH_SMALL : SMALL_FONT_WIDTH_SMALL * 0.585;
+            const fontWidth = dropdownStyle === "DEFAULT" ? FONT_WIDTH_SMALL : SMALL_FONT_WIDTH_SMALL * smallDropdownScale;
             buttonWidth = ((fontWidth * maxLabelLength)) + ARROW_WIDTH_SMALL;
 
             break;
@@ -47,7 +60,7 @@ function CustomDropdownBox<TLabel extends string>(
     const [showItems, setShowItems] = useState(false);
     const [boxText, setBoxText] = useState(label);
 
-    let buttonWidth;
+    let buttonWidth: number;
     if (minWidth) {
         buttonWidth = minWidth;
     } else {
@@ -59,8 +72,17 @@ function CustomDropdownBox<TLabel extends string>(
                   )
                 : label.length;
         
-        buttonWidth = calcDropdownMinWidth(maxLabelLength, small? "SMALL" : "DEFAULT", screenSize);
+        if (small){
+            const maxWordLength = Math.max(
+                ...[label, ...items.map(item => item.label)].flatMap(label => label.split(" ").map((word)=> word.length))
+            );
+            
+            buttonWidth = calcDropdownMinWidth({maxLabelLength:maxLabelLength, screenSize:screenSize, dropdownStyle:"SMALL", longestWordLength:maxWordLength});
+        } else {
+            buttonWidth = calcDropdownMinWidth({maxLabelLength:maxLabelLength, screenSize:screenSize, dropdownStyle:"DEFAULT"});
+        }
     }
+    
     const boxLabel = controlled ? props.value : boxText;
 
     return (
