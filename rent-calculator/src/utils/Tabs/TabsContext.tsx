@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useReducer } from "react";
-import { tabsReducer } from "./TabsReducer";
+import { tabsReducer } from "./tabsReducer";
 import {
     TabsActions,
     TabsContextType,

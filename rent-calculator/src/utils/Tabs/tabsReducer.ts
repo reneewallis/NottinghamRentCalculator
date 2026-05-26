@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import {
     initCalculatorState,
     rentCalculatorReducer,
-} from "../RentCalculator/RentCalculatorReducer";
+} from "../RentCalculator/rentCalculatorReducer";
 
 export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
     switch (action.type) {
