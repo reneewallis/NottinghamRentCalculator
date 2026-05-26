@@ -6,12 +6,19 @@ import { fluidCSSWidthScale } from "@/src/utils/helperFunctions";
 import { ARROW_MARGIN_RIGHT, ARROW_WIDTH_LARGE, ARROW_WIDTH_MEDIUM, ARROW_WIDTH_SMALL, FONT_WIDTH_LARGE, FONT_WIDTH_MEDIUM, FONT_WIDTH_SMALL, MAX_DROPDOWN_WIDTH_SCALE, MIN_DROPDOWN_WIDTH_SCALE, PADDING_LEFT, PADDING_RIGHT, SMALL_FONT_WIDTH_LARGE, SMALL_FONT_WIDTH_MEDIUM, SMALL_FONT_WIDTH_SMALL } from "./dropdownConstants";
 
 export function calcDropdownMinWidth(args: CalcDropdownWidthArgs){
+
+    if (args.maxLabelLength < 0){
+        throw new Error(`max label length "${args.maxLabelLength}" cannot be negative`);
+    }
         
     let buttonWidth : number;
     let smallDropdownScale = 0;
 
     if (args.dropdownStyle === "SMALL"){
         if (args.longestWordLength !== 0 && args.maxLabelLength !== 0){
+            if (args.longestWordLength < 0){
+                throw new Error(`longest word length "${args.longestWordLength}" cannot be negative`);
+            }
             if (args.longestWordLength > args.maxLabelLength){
                 throw new Error(`longest word length "${args.longestWordLength}" cannot be longer than max label length "${args.maxLabelLength}"`);
             }
