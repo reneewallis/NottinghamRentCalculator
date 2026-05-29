@@ -6,16 +6,20 @@ import {
     InstallmentFrequency,
     ForecastState,
 } from "@/src/types/RentCalculator";
-import { TAB_BUTTONS_CONTAINER_WIDTH, TAB_CONTAINER_WIDTH } from "../components/Tabs/tabConsts";
+import {
+    TAB_BUTTONS_CONTAINER_WIDTH,
+    TAB_CONTAINER_WIDTH,
+} from "../components/Tabs/tabConsts";
 import { Dayjs } from "dayjs";
 import Decimal from "decimal.js";
 
-export function getMaxTabs(viewportWidthRem:number){
-    return(
-        viewportWidthRem >= (TAB_BUTTONS_CONTAINER_WIDTH+TAB_CONTAINER_WIDTH) ?
-        Math.floor((viewportWidthRem - TAB_BUTTONS_CONTAINER_WIDTH) / TAB_CONTAINER_WIDTH):
-        1
-    );
+export function getMaxTabs(continerWidthRem: number) {
+    return continerWidthRem >= TAB_BUTTONS_CONTAINER_WIDTH + TAB_CONTAINER_WIDTH
+        ? Math.floor(
+              (continerWidthRem - TAB_BUTTONS_CONTAINER_WIDTH) /
+                  TAB_CONTAINER_WIDTH,
+          )
+        : 1;
 }
 const CSS_WIDTH_UNITS = [
     // absolute lengths
@@ -57,40 +61,46 @@ export class UnsupportedUnitError extends Error {
     }
 }
 
-export function calcPx(value:string){
+export function calcPx(value: string) {
     const match = value.match(/^([\d.]+)([a-zA-Z%]+)$/);
-    if (!match){
-        throw new Error("value was invalid: expected number followed by unit (e.g. 12px, 1.5rem)");
+    if (!match) {
+        throw new Error(
+            "value was invalid: expected number followed by unit (e.g. 12px, 1.5rem)",
+        );
     }
 
     const [, size, unit] = match;
     const sizeNumber = Number(size);
 
     if (unit !== "px" && unit !== "rem") {
-        if (CSS_WIDTH_UNITS.includes(unit)){
+        if (CSS_WIDTH_UNITS.includes(unit)) {
             throw new UnsupportedUnitError(unit);
-        };
+        }
         throw new Error(`Invalid unit: ${unit}`);
     }
 
-    if (isNaN(sizeNumber)){
+    if (isNaN(sizeNumber)) {
         throw new Error(`start of value "${size}" was not a valid number`);
     }
-
 
     let rootFontSize = 0;
 
     try {
-        rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+        rootFontSize = parseFloat(
+            getComputedStyle(document.documentElement).fontSize,
+        );
     } catch {
         rootFontSize = 16;
     }
-    
-    return unit === "rem"? sizeNumber * rootFontSize : sizeNumber;
-        
+
+    return unit === "rem" ? sizeNumber * rootFontSize : sizeNumber;
 }
 
-export function fluidCSSWidthScale(min:string, pref:string, max:string):string{
+export function fluidCSSWidthScale(
+    min: string,
+    pref: string,
+    max: string,
+): string {
     const minScreen = "58rem";
     const devScreen = "96rem";
 
@@ -98,37 +108,41 @@ export function fluidCSSWidthScale(min:string, pref:string, max:string):string{
         const minPx = calcPx(min);
         const maxPx = calcPx(max);
         const prefPx = calcPx(pref);
+        if (minPx > prefPx) {
+            throw new Error(`min "${min}" is larger than pref "${pref}"`);
+        }
+        if (minPx > maxPx) {
+            throw new Error(`min "${min}" is larger than max "${max}"`);
+        }
+        if (prefPx > maxPx) {
+            throw new Error(`pref "${pref}" is larger than max "${max}"`);
+        }
+
         const minScreenPx = calcPx(minScreen);
         const devScreenPx = calcPx(devScreen);
 
-        if (minPx > prefPx){
-            throw new Error(`min "${min}" is larger than pref "${pref}"`);
-        } else if (minPx > maxPx){
-            throw new Error(`min "${min}" is larger than max "${max}"`);
-        } else if (prefPx > maxPx){
-            throw new Error(`pref "${pref}" is larger than max "${max}"`);
+        if (minScreenPx > devScreenPx) {
+            throw new Error(
+                `min screen "${minScreen}" cannot be larger than devScreen "${devScreen}"`,
+            );
         }
-    } catch(error:unknown){
-        if (!(error instanceof UnsupportedUnitError)){
+    } catch (error: unknown) {
+        if (!(error instanceof UnsupportedUnitError)) {
             throw error;
         }
     }
 
-    return (`clamp(${min}, calc(${min} + (${pref} - ${min}) * ((100vw - ${minScreen}) / (${devScreen} - ${minScreen}))), ${max})`);
+    return `clamp(${min}, calc(${min} + (${pref} - ${min}) * ((100vw - ${minScreen}) / (${devScreen} - ${minScreen}))), ${max})`;
 }
 
 export function ceil2DP(value: number | Decimal): number {
-    const castValue = (value instanceof Decimal)? value : new Decimal(value);
-    return castValue
-    .toDecimalPlaces(2, Decimal.ROUND_CEIL)
-    .toNumber();
+    const castValue = value instanceof Decimal ? value : new Decimal(value);
+    return castValue.toDecimalPlaces(2, Decimal.ROUND_CEIL).toNumber();
 }
 
 export function floor2DP(value: number | Decimal): number {
-    const castValue = (value instanceof Decimal)? value : new Decimal(value);
-    return castValue
-    .toDecimalPlaces(2, Decimal.ROUND_FLOOR)
-    .toNumber();
+    const castValue = value instanceof Decimal ? value : new Decimal(value);
+    return castValue.toDecimalPlaces(2, Decimal.ROUND_FLOOR).toNumber();
 }
 
 export function isValidNumberEntry(value: string): boolean {
@@ -206,14 +220,16 @@ export function calculateShortfall(
     monthlyRent: string,
 ): ShortfallState {
     const benefitValueIsValid = isValidNumberEntry(benefitValue);
-    const benefitTypeIsValid = benefitValue === "" || benefitType !== BenefitType.UNSELECTED;
+    const benefitTypeIsValid =
+        benefitValue === "" || benefitType !== BenefitType.UNSELECTED;
 
     let weeklyShortfall = "";
     let fourWeeklyShortfall = "";
     let monthlyShortfall = "";
 
     if (
-        benefitValue !== "" && benefitValueIsValid &&
+        benefitValue !== "" &&
+        benefitValueIsValid &&
         weeklyRent !== "" &&
         fourWeeklyRent !== "" &&
         monthlyRent !== ""
@@ -225,27 +241,29 @@ export function calculateShortfall(
 
         switch (benefitType) {
             case BenefitType.HOUSING_BENEFIT: {
-                weeklyShortfall = (
-                    floor2DP(benefitAmount.div(4).minus(weeklyDecimal))
+                weeklyShortfall = floor2DP(
+                    benefitAmount.div(4).minus(weeklyDecimal),
                 ).toFixed(2);
-                fourWeeklyShortfall = (benefitAmount.minus(fourWeeklyDecimal)).toFixed(
-                    2,
-                );
-                monthlyShortfall = (
-                    floor2DP(benefitAmount.times(13).div(12).minus(monthlyDecimal))
+                fourWeeklyShortfall = benefitAmount
+                    .minus(fourWeeklyDecimal)
+                    .toFixed(2);
+                monthlyShortfall = floor2DP(
+                    benefitAmount.times(13).div(12).minus(monthlyDecimal),
                 ).toFixed(2);
 
                 break;
             }
 
             case BenefitType.UNIVERSAL_CREDIT: {
-                weeklyShortfall = (
-                    floor2DP(benefitAmount.times(12).div(52).minus(weeklyDecimal))
+                weeklyShortfall = floor2DP(
+                    benefitAmount.times(12).div(52).minus(weeklyDecimal),
                 ).toFixed(2);
-                fourWeeklyShortfall = (
-                    floor2DP(benefitAmount.times(12).div(13).minus(fourWeeklyDecimal))
+                fourWeeklyShortfall = floor2DP(
+                    benefitAmount.times(12).div(13).minus(fourWeeklyDecimal),
                 ).toFixed(2);
-                monthlyShortfall = benefitAmount.minus(monthlyDecimal).toFixed(2);
+                monthlyShortfall = benefitAmount
+                    .minus(monthlyDecimal)
+                    .toFixed(2);
 
                 break;
             }
@@ -280,7 +298,7 @@ export function calculateStartingBalance(
     const balance = new Decimal(+currentBalance);
     const rent = new Decimal(+weeklyRent);
 
-    return (rent.times(weeksUntilStartDate).add(balance)).toFixed(2);
+    return rent.times(weeksUntilStartDate).add(balance).toFixed(2);
 }
 
 export function calculateTotalInstallments(
@@ -412,7 +430,7 @@ export function calculateBalanceRemaining(
     const balance = new Decimal(+startingBalance);
     const paid = new Decimal(+totalPaid);
 
-    return (balance.minus(paid)).toFixed(2);
+    return balance.minus(paid).toFixed(2);
 }
 
 export function calculateForecast(
