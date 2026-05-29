@@ -9,21 +9,24 @@ import { MenuItems } from "@/src/types/Buttons";
 import { useTabsContext } from "@/src/utils/Tabs/TabsContext";
 import { TAB_BUTTONS_CONTAINER_MARGIN_X } from "./tabConsts";
 import { useMaxTabs } from "@/src/utils/hooks/useMaxTabs";
-import { useRef } from "react";
 
 export default function Tabs() {
     const { tabsState, tabsDispatch: dispatch } = useTabsContext();
-    const mainContainerRef = useRef<HTMLDivElement>(null);
-    const maxTabs = useMaxTabs(mainContainerRef);
-    const viewableIndex = tabsState.wrappedTabArr.length > maxTabs? tabsState.wrappedTabArr.length - maxTabs: 0;
+    const { maxTabs, ref: mainContainerRef } = useMaxTabs("element");
+    const viewableIndex =
+        tabsState.wrappedTabArr.length > maxTabs
+            ? tabsState.wrappedTabArr.length - maxTabs
+            : 0;
 
     return (
         <div className="mt-2 w-full">
-            <div ref={mainContainerRef} className="flex flex-wrap items-center border-b border-gray-800">
+            <div
+                ref={mainContainerRef}
+                className="flex flex-wrap items-center border-b border-gray-800"
+            >
                 {tabsState.wrappedTabArr.map(
                     (wrappedTab, index) =>
-                        (tabsState.showHistory ||
-                            index >= viewableIndex) && (
+                        (tabsState.showHistory || index >= viewableIndex) && (
                             <div
                                 key={`tabContainer${wrappedTab.id}`}
                                 onMouseEnter={() => {
@@ -72,7 +75,9 @@ export default function Tabs() {
                 )}
                 {tabsState.wrappedTabArr.length > 0 && (
                     <div
-                        style={{marginInline: `${TAB_BUTTONS_CONTAINER_MARGIN_X}rem`}}
+                        style={{
+                            marginInline: `${TAB_BUTTONS_CONTAINER_MARGIN_X}rem`,
+                        }}
                         className={`flex items-center h-7 mt-3 ${tabsState.activeTabIndex === tabsState.wrappedTabArr.length - 1 || tabsState.hoverLast === true ? "border-gray-500" : "border-l-gray-800 border-l-2"}`}
                     >
                         <NewTabButton
