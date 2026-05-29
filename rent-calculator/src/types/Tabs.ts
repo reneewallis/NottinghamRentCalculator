@@ -61,7 +61,7 @@ export type TabsAction =
     | TabsActionCloseTab
     | TabsActionSetActiveTab
     | TabsActionUseRentCalculator
-    | TabsActionLoadTabs
+    | TabsActionLoadTabs;
 
 export type TabsTabWrapper = {
     id: number;

@@ -139,15 +139,18 @@ export function rentCalculatorReducer(
 
             if (
                 rent.rentAmount === "" &&
-                !(shortfall.benefitAmount === "" &&
-                shortfall.benefitType === BenefitType.UNSELECTED &&
-                balance.startDate === null &&
-                balance.currentBalance === "" &&
-                forecast.defaultAmount === "" &&
-                forecast.forecastDate === null &&
-                forecast.paymentFrequency === InstallmentFrequency.UNSELECTED)
+                !(
+                    shortfall.benefitAmount === "" &&
+                    shortfall.benefitType === BenefitType.UNSELECTED &&
+                    balance.startDate === null &&
+                    balance.currentBalance === "" &&
+                    forecast.defaultAmount === "" &&
+                    forecast.forecastDate === null &&
+                    forecast.paymentFrequency ===
+                        InstallmentFrequency.UNSELECTED
+                )
             ) {
-                if (rent.rentFrequency === RentFrequency.UNSELECTED){
+                if (rent.rentFrequency === RentFrequency.UNSELECTED) {
                     rent.rentFrequencyIsValid = false;
                 }
                 rent.rentAmountIsValid = false;
@@ -201,7 +204,8 @@ export function rentCalculatorReducer(
                     rent.rentAmountIsValid = false;
                 }
             } else {
-                if (shortfall.benefitType === BenefitType.UNSELECTED &&
+                if (
+                    shortfall.benefitType === BenefitType.UNSELECTED &&
                     rent.rentAmount === "" &&
                     balance.currentBalance === "" &&
                     balance.startDate === null &&
@@ -209,15 +213,14 @@ export function rentCalculatorReducer(
                     forecast.defaultAmount === "" &&
                     forecast.paymentFrequency ===
                         InstallmentFrequency.UNSELECTED
-                    ) {
-
+                ) {
                     rent.rentAmountIsValid = true;
                     if (rent.rentFrequency === RentFrequency.UNSELECTED) {
                         rent.rentFrequencyIsValid = true;
                     }
                 }
             }
-                
+
             break;
         }
 

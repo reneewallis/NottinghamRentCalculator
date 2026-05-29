@@ -15,19 +15,20 @@ type CommonDropdownBoxProps<TLabel extends string> = {
 type CalcDropdownWidthCommonArgs = {
     maxLabelLength: number;
     screenSize?: "LARGE" | "MEDIUM" | "SMALL";
-}
+};
 
 type CalcDropdownWidthDefaultArgs = CalcDropdownWidthCommonArgs & {
     dropdownStyle?: "DEFAULT";
-}
+};
 
 type CalcDropdownWidthSmallArgs = CalcDropdownWidthCommonArgs & {
     dropdownStyle: "SMALL";
     longestWordLength: number;
-}
+};
 
-export type CalcDropdownWidthArgs = CalcDropdownWidthDefaultArgs | CalcDropdownWidthSmallArgs; 
-
+export type CalcDropdownWidthArgs =
+    | CalcDropdownWidthDefaultArgs
+    | CalcDropdownWidthSmallArgs;
 
 type UncontrolledDropdownBoxProps<TLabel extends string> =
     CommonDropdownBoxProps<TLabel> & { controlled?: false };

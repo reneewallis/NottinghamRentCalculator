@@ -20,7 +20,12 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en-GB">
-            <head><meta name="viewport" content="width=device-width, initial-scale=1.0" /></head>
+            <head>
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1.0"
+                />
+            </head>
             <body className={`${ubuntuFont.variable} antialiased bg-gray-500`}>
                 {children}
             </body>

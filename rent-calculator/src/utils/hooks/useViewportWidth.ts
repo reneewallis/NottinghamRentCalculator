@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import { TAB_BUTTONS_CONTAINER_WIDTH, TAB_CONTAINER_WIDTH } from "../../components/Tabs/tabConsts";
-import { getMaxTabs } from "../helperFunctions";
 
-export function useViewportWidthRem(){
+export function useViewportWidthRem() {
     const [width, setWidth] = useState(0);
 
     useEffect(() => {
         const updateWidth = () => {
             const widthPx = document.documentElement.clientWidth;
 
-            const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+            const rootFontSize = parseFloat(
+                getComputedStyle(document.documentElement).fontSize,
+            );
 
             setWidth(widthPx / rootFontSize);
         };

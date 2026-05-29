@@ -48,10 +48,11 @@ describe("useViewPortRem tests", () => {
         [160, 10],
         [476, 29.75],
         [10, 0.625],
-    ])("calculates viewport width in rem", (width, expected) => {
+    ])("calculates viewport width in rem", (widthPx, expected) => {
+        width = widthPx;
         const { result } = renderHook(() => useViewportWidthRem());
 
-        expect(result.current).toBe(96);
+        expect(result.current).toBe(expected);
     });
 
     test.each([

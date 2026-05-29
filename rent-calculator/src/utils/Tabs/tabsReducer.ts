@@ -39,7 +39,7 @@ export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
         case TabsActions.CLOSE_TAB: {
             let activeTab = state.activeTabIndex;
             let lastTabActive = state.lastTabActive;
-            let showHistory = state.showHistory;
+            const showHistory = state.showHistory;
             const newTabArr = state.wrappedTabArr.filter(
                 (_, index) => index !== action.closeIndex,
             );

@@ -7,11 +7,16 @@ import type {} from "@mui/x-date-pickers/themeAugmentation";
 import { ThemeProvider } from "@mui/material/styles";
 import { DateBoxProps } from "@/src/types/InputFields";
 import { fluidCSSWidthScale } from "@/src/utils/helperFunctions";
-import { DATE_BOX_HEIGHT, DATE_BOX_WIDTH, MAX_TEXT_BOX_WIDTH_SCALE, MIN_TEXT_BOX_WIDTH_SCALE } from "./inputFieldConsts";
+import {
+    DATE_BOX_HEIGHT,
+    DATE_BOX_WIDTH,
+    MAX_TEXT_BOX_WIDTH_SCALE,
+    MIN_TEXT_BOX_WIDTH_SCALE,
+} from "./inputFieldConsts";
 
 const dateTheme = createTheme({
     breakpoints: {
-        unit:"rem",
+        unit: "rem",
         values: {
             xs: 0,
             sm: 40,
@@ -23,7 +28,7 @@ const dateTheme = createTheme({
     components: {
         MuiPickersOutlinedInput: {
             styleOverrides: {
-                root:({theme}) => ({
+                root: ({ theme }) => ({
                     borderRadius: "1rem",
                     backgroundColor: "#364153",
                     color: "#e5e7eb",
@@ -31,9 +36,13 @@ const dateTheme = createTheme({
                     lineHeight: 1.5,
                     height: `${DATE_BOX_HEIGHT - 0.5}rem`,
 
-                    width: fluidCSSWidthScale(`${DATE_BOX_WIDTH * MIN_TEXT_BOX_WIDTH_SCALE}rem`,`${DATE_BOX_WIDTH}rem`, `${DATE_BOX_WIDTH*MAX_TEXT_BOX_WIDTH_SCALE}rem`), 
+                    width: fluidCSSWidthScale(
+                        `${DATE_BOX_WIDTH * MIN_TEXT_BOX_WIDTH_SCALE}rem`,
+                        `${DATE_BOX_WIDTH}rem`,
+                        `${DATE_BOX_WIDTH * MAX_TEXT_BOX_WIDTH_SCALE}rem`,
+                    ),
 
-                    [theme.breakpoints.up("md")]:{
+                    [theme.breakpoints.up("md")]: {
                         fontSize: "1.125rem",
                         lineHeight: 1.75 / 1.125,
                         height: `${DATE_BOX_HEIGHT - 0.25}rem`,
@@ -45,7 +54,7 @@ const dateTheme = createTheme({
                         height: `${DATE_BOX_HEIGHT}rem`,
                     },
 
-                    "& input":{
+                    "& input": {
                         font: "inherit",
                     },
 
@@ -124,14 +133,13 @@ const dateTheme = createTheme({
                         },
                     },
                 }),
-                
             },
         },
 
         MuiPickersInputBase: {
             styleOverrides: {
                 root: {
-                padding: "0 0.75rem !important",
+                    padding: "0 0.75rem !important",
                 },
             },
         },
@@ -148,9 +156,9 @@ const dateTheme = createTheme({
             },
         },
 
-        MuiPaper : {
-            styleOverrides:{
-                root:{
+        MuiPaper: {
+            styleOverrides: {
+                root: {
                     borderRadius: "1rem",
                     backgroundColor: "#1e2939",
                     border: "2px solid",
@@ -160,24 +168,24 @@ const dateTheme = createTheme({
         },
 
         MuiPickersToolbar: {
-            styleOverrides:{
-                root:{
+            styleOverrides: {
+                root: {
                     color: "#e5e7eb",
                 },
             },
         },
 
-        MuiTypography:{
-            styleOverrides:{
-                root:{
+        MuiTypography: {
+            styleOverrides: {
+                root: {
                     color: "#e5e7eb!important",
                 },
             },
         },
 
-        MuiButton:{
-            styleOverrides:{
-                root:{
+        MuiButton: {
+            styleOverrides: {
+                root: {
                     "--variant-textColor": "#e5e7eb",
                     "--variant-outlinedColor": "#8a0194",
                     "--variant-outlinedBorder": "#8a0194",

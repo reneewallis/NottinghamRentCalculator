@@ -26,17 +26,17 @@ function InstallementScroller({
 
     let installmentUnit;
 
-    switch(paymentFrequency){
-        case InstallmentFrequency.UNSELECTED : {
+    switch (paymentFrequency) {
+        case InstallmentFrequency.UNSELECTED: {
             installmentUnit = "Installment";
             break;
         }
-        case InstallmentFrequency.MONTHLY : {
+        case InstallmentFrequency.MONTHLY: {
             installmentUnit = "Month";
             break;
         }
         case InstallmentFrequency.WEEKLY: {
-            installmentUnit = "Week"
+            installmentUnit = "Week";
             break;
         }
     }

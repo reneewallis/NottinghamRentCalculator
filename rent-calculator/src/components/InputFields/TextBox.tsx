@@ -1,6 +1,10 @@
 import { TextBoxProps } from "../../types/InputFields";
 import { fluidCSSWidthScale } from "@/src/utils/helperFunctions";
-import { DEFAULT_TEXT_BOX_WIDTH, MAX_TEXT_BOX_WIDTH_SCALE, MIN_TEXT_BOX_WIDTH_SCALE } from "./inputFieldConsts";
+import {
+    DEFAULT_TEXT_BOX_WIDTH,
+    MAX_TEXT_BOX_WIDTH_SCALE,
+    MIN_TEXT_BOX_WIDTH_SCALE,
+} from "./inputFieldConsts";
 
 function TextBox(props: TextBoxProps) {
     const {
@@ -35,7 +39,13 @@ function TextBox(props: TextBoxProps) {
                 {label}
             </span>
             <textarea
-                style={{ width: fluidCSSWidthScale(`${width*MIN_TEXT_BOX_WIDTH_SCALE}rem`,`${width}rem`,`${width*MAX_TEXT_BOX_WIDTH_SCALE}rem`)}}
+                style={{
+                    width: fluidCSSWidthScale(
+                        `${width * MIN_TEXT_BOX_WIDTH_SCALE}rem`,
+                        `${width}rem`,
+                        `${width * MAX_TEXT_BOX_WIDTH_SCALE}rem`,
+                    ),
+                }}
                 className={`resize-none rounded-2xl py-2.5 px-3 border-2 font-normal ${valid ? "border-gray-300 hover:border-gray-100 focus:border-gray-50" : "border-red-600 hover:border-red-500 focus-within:border-red-500"} focus:outline-none transition-colors ${readOnly ? "bg-gray-800" : "bg-gray-700 hover:bg-gray-800 focus:bg-gray-900"}`}
                 value={text}
                 {...(!readOnly && { onChange: props.onChange })}
