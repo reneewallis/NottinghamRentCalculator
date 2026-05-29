@@ -2,13 +2,11 @@ import { useViewportWidthRem } from "./useViewportWidth";
 import { getMaxTabs } from "../helperFunctions";
 import { useElementWidthRem } from "./useElementWidth";
 
-export function useMaxTabs<T extends HTMLElement>(ref?: React.RefObject<T | null>){
+export function useMaxTabs(container: "viewport" | "element" = "viewport") {
     const viewportWidth = useViewportWidthRem();
-    const elementWidth = useElementWidthRem(ref);
+    const { ref, width: elementWidth } = useElementWidthRem();
 
-    const width = ref?.current
-        ? elementWidth
-        : viewportWidth;
+    const width = container === "viewport" ? viewportWidth : elementWidth;
 
-    return getMaxTabs(width);
+    return { maxTabs: getMaxTabs(width), ref };
 }
