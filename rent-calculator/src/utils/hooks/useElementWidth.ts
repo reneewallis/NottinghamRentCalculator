@@ -1,17 +1,21 @@
-import { useLayoutEffect, useState } from "react";
+import { useCallback, useLayoutEffect, useState } from "react";
 
-export function useElementWidthRem(ref?: React.RefObject<HTMLElement | null>) {
+export function useElementWidthRem() {
     const [widthRem, setWidthRem] = useState(0);
+    const [element, setElement] = useState<HTMLElement | null>(null);
+
+    const ref = useCallback((node: HTMLElement | null) => {
+        setElement(node);
+    }, []);
 
     useLayoutEffect(() => {
-        const element = ref?.current;
         if (!element) return;
 
         const update = () => {
-            const widthPx = element.offsetWidth;
+            const widthPx = element.scrollWidth;
 
             const rootFontSize = parseFloat(
-                getComputedStyle(document.documentElement).fontSize
+                getComputedStyle(document.documentElement).fontSize,
             );
 
             setWidthRem(widthPx / rootFontSize);
@@ -23,7 +27,7 @@ export function useElementWidthRem(ref?: React.RefObject<HTMLElement | null>) {
         observer.observe(element);
 
         return () => observer.disconnect();
-    }, [ref]);
+    }, [element]);
 
-    return widthRem;
+    return { ref, width: widthRem };
 }

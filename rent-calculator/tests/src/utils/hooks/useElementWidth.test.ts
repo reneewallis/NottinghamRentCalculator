@@ -1,122 +1,183 @@
 import { useElementWidthRem } from "@/src/utils/hooks/useElementWidth";
-import { jest, describe, test, beforeEach, afterEach, expect } from "@jest/globals";
+import {
+    jest,
+    describe,
+    test,
+    beforeEach,
+    afterEach,
+    expect,
+} from "@jest/globals";
 import { renderHook, act } from "@testing-library/react";
-import { RefObject } from "react";
 
-describe("useElementWidthRem tests", ()=>{
-    let resizeCallback: any;
+describe("useElementWidthRem tests", () => {
+    let resizeCallback: ResizeObserverCallback;
 
     class ResizeObserverMock {
-        constructor(cb: any) {
+        constructor(cb: ResizeObserverCallback) {
             resizeCallback = cb;
         }
         observe = jest.fn();
         disconnect = jest.fn();
     }
 
-    const ref: RefObject<HTMLElement | null> = {
-        current: null,
-    };
-
     let fontSpy: jest.SpiedFunction<typeof getComputedStyle>;
 
     beforeEach(() => {
-        (global as any).ResizeObserver = ResizeObserverMock;
-        ref.current = null;
+        global.ResizeObserver =
+            ResizeObserverMock as unknown as typeof ResizeObserver;
         fontSpy = jest.spyOn(window, "getComputedStyle").mockReturnValue({
-                fontSize: "16px"
-            } as CSSStyleDeclaration
-        );
+            fontSize: "16px",
+        } as CSSStyleDeclaration);
     });
 
     afterEach(() => {
         jest.restoreAllMocks();
     });
 
-    test("ref is not provided, should return 0", ()=>{
+    test("has ref and width properties", () => {
+        const { result } = renderHook(() => useElementWidthRem());
+        expect(result.current).toHaveProperty("ref");
+        expect(result.current).toHaveProperty("width");
+    });
+
+    test("ref is unused, width should be 0", () => {
         const { result } = renderHook(() => useElementWidthRem());
 
-        expect(result.current).toBe(0);
+        expect(result.current.width).toBe(0);
     });
 
-    test("ref provided but current is null, should return 0", ()=>{
-        const { result } = renderHook(() => useElementWidthRem(ref));
-
-        expect(result.current).toBe(0);
-    });
-
-    test.each([[512, 32], [16, 1], [8, 0.5], [172, 10.75]])("Calculates element width in rem, testing %dpx, expected %drem", (widthPx, widthRem)=>{
+    test("ref is used, should return correct width", () => {
+        const width = 380;
         const div = document.createElement("div");
 
-        Object.defineProperty(div, "offsetWidth", {
+        Object.defineProperty(div, "scrollWidth", {
             configurable: true,
-            value: widthPx,
+            value: width,
         });
 
-        ref.current = div;
+        const { result } = renderHook(() => useElementWidthRem());
 
-        const { result } = renderHook(() => useElementWidthRem(ref));
+        const ref = result.current.ref;
 
-        expect(result.current).toBe(widthRem);
-    });
-
-    test.each([[173.4, 10.8375], [50.675, 3.1671875], [8.72, 0.545]])("Calculates element width in rem, decimalPx testing %dpx, expected %drem", (widthPx, widthRem)=>{
-        const div = document.createElement("div");
-
-        Object.defineProperty(div, "offsetWidth", {
-            configurable: true,
-            value: widthPx,
+        act(() => {
+            ref(div);
         });
 
-        ref.current = div;
-
-        const { result } = renderHook(() => useElementWidthRem(ref));
-
-        expect(result.current).toBeCloseTo(widthRem);
+        expect(result.current).toEqual({ width: width / 16, ref: ref });
     });
 
-    test.each([[14, 350, 25], [14, 952, 68], [12, 1536, 128], [12, 60, 5],
-    [8, 512, 64], [8, 16 ,2], [32, 1536, 48], [32, 16, 0.5]])("Correctly uses font size to calculate width in rem, fontSize %d, widthpx %d, expected %d", (fontSize, widthPx, widthRem)=>{
-        const div = document.createElement("div");
+    test.each([
+        [512, 32],
+        [16, 1],
+        [8, 0.5],
+        [172, 10.75],
+    ])(
+        "Calculates element width in rem, testing %dpx, expected %drem",
+        (widthPx, widthRem) => {
+            const div = document.createElement("div");
 
-        fontSpy = fontSpy.mockReturnValue({
-            fontSize: `${fontSize}px`,
-        } as CSSStyleDeclaration);
+            Object.defineProperty(div, "scrollWidth", {
+                configurable: true,
+                value: widthPx,
+            });
 
-        Object.defineProperty(div, "offsetWidth", {
-            configurable: true,
-            value: widthPx,
-        });
+            const { result } = renderHook(() => useElementWidthRem());
 
-        ref.current = div;
+            const ref = result.current.ref;
 
-        const { result } = renderHook(() => useElementWidthRem(ref));
+            act(() => {
+                ref(div);
+            });
 
-        expect(result.current).toBe(widthRem);
-    });
+            expect(result.current).toEqual({ width: widthRem, ref: ref });
+        },
+    );
 
-    test("Calculates width after resize", ()=>{
+    test.each([
+        [173.4, 10.8375],
+        [50.675, 3.1671875],
+        [8.72, 0.545],
+    ])(
+        "Calculates element width in rem, decimalPx testing %dpx, expected %drem",
+        (widthPx, widthRem) => {
+            const div = document.createElement("div");
+
+            Object.defineProperty(div, "scrollWidth", {
+                configurable: true,
+                value: widthPx,
+            });
+
+            const { result } = renderHook(() => useElementWidthRem());
+
+            const ref = result.current.ref;
+
+            act(() => {
+                ref(div);
+            });
+
+            expect(result.current).toEqual({ ref: ref, width: widthRem });
+        },
+    );
+
+    test.each([
+        [14, 350, 25],
+        [14, 952, 68],
+        [12, 1536, 128],
+        [12, 60, 5],
+        [8, 512, 64],
+        [8, 16, 2],
+        [32, 1536, 48],
+        [32, 16, 0.5],
+    ])(
+        "Correctly uses font size to calculate width in rem, fontSize %d, widthpx %d, expected %d",
+        (fontSize, widthPx, widthRem) => {
+            const div = document.createElement("div");
+
+            fontSpy = fontSpy.mockReturnValue({
+                fontSize: `${fontSize}px`,
+            } as CSSStyleDeclaration);
+
+            Object.defineProperty(div, "scrollWidth", {
+                configurable: true,
+                value: widthPx,
+            });
+
+            const { result } = renderHook(() => useElementWidthRem());
+            const ref = result.current.ref;
+
+            act(() => {
+                ref(div);
+            });
+
+            expect(result.current).toEqual({ ref: ref, width: widthRem });
+        },
+    );
+
+    test("Calculates width after resize", () => {
         const div = document.createElement("div");
         let width = 480;
 
-        Object.defineProperty(div, "offsetWidth", {
+        Object.defineProperty(div, "scrollWidth", {
             configurable: true,
             get: () => width,
         });
 
-        ref.current = div;
+        const { result } = renderHook(() => useElementWidthRem());
 
-        const { result } = renderHook(() => useElementWidthRem(ref));
+        const ref = result.current.ref;
 
-        expect(result.current).toBe(30);
+        act(() => {
+            ref(div);
+        });
+
+        expect(result.current).toEqual({ width: 30, ref: ref });
 
         width = 570;
 
         act(() => {
-            resizeCallback();
+            resizeCallback([], {} as ResizeObserver);
         });
 
-        expect(result.current).toBe(35.625);
-
+        expect(result.current).toEqual({ width: 35.625, ref: ref });
     });
 });
