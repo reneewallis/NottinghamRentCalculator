@@ -6,7 +6,7 @@ import {
     InstallmentFrequency,
     RentFrequency,
 } from "@/src/types/RentCalculator";
-import { calculateRent } from "@/src/utils/helperFunctions";
+import { calculateRent, calculateShortfall } from "@/src/utils/helperFunctions";
 import {
     initCalculatorState,
     rentCalculatorReducer,
@@ -123,7 +123,7 @@ describe("rent calculator reducer tests, each test also checks for correct reduc
             RentFrequency.MONTHLY,
             RentFrequency.WEEKLY,
         ])(
-            "rent amount given before rent frequency, should have validility flags, frequency %s",
+            "rent amount given before rent frequency, should have validility flags until rent frequency is given, frequency %s",
             (frequency) => {
                 const expected = initCalculatorState(initDate);
                 const rentAmount = "359.00";
@@ -230,5 +230,311 @@ describe("rent calculator reducer tests, each test also checks for correct reduc
 
             expect(rentCalculatorReducer(state, action(""))).toEqual(expected);
         });
+    });
+
+    describe("shortfall tests", () => {
+        test.each([BenefitType.HOUSING_BENEFIT, BenefitType.UNIVERSAL_CREDIT])(
+            "changing Benefit Type should have no side effects, benefit type is %s",
+            (benefitType) => {
+                const state = rentCalculatorReducer(initialState, {
+                    type: CalculatorActions.CHANGE_BENEFIT_TYPE,
+                    newBenefitType: benefitType,
+                });
+                expect(state).not.toBe(initialState);
+            },
+        );
+        test("calculating shortfall should have no side effects", () => {
+            const state = rentCalculatorReducer(initialState, {
+                type: CalculatorActions.CALCULATE_SHORTFALL,
+                amount: "200",
+            });
+            expect(state).not.toBe(initialState);
+        });
+        test.each([BenefitType.HOUSING_BENEFIT, BenefitType.UNIVERSAL_CREDIT])(
+            "changing rent frequency, calculating rent, changing Benefit Type and then calculating shortfall shouldnt have validilty flags",
+            (benefitType) => {
+                const benefitAmount = "474";
+                const rentAmount = "400";
+
+                const rentFrequency = RentFrequency.MONTHLY;
+                const expected = initCalculatorState(initDate);
+
+                const rentState = calculateRent(rentFrequency, rentAmount);
+
+                expected.rentAmount = rentAmount;
+                expected.rentFrequency = rentFrequency;
+                expected.fourWeeklyRent = rentState.fourWeeklyRent;
+                expected.monthlyRent = rentState.monthlyRent;
+                expected.weeklyRent = rentState.weeklyRent;
+
+                let state = rentCalculatorReducer(initialState, {
+                    type: CalculatorActions.CHANGE_RENT_FREQUENCY,
+                    newRentFrequency: rentFrequency,
+                });
+
+                state = rentCalculatorReducer(state, {
+                    type: CalculatorActions.CALCULATE_RENT,
+                    amount: rentAmount,
+                });
+
+                state = rentCalculatorReducer(state, {
+                    type: CalculatorActions.CHANGE_BENEFIT_TYPE,
+                    newBenefitType: benefitType,
+                });
+
+                expected.benefitType = benefitType;
+
+                expect(state).toEqual(expected);
+
+                expected.benefitAmount = benefitAmount;
+
+                const shortFallState = calculateShortfall(
+                    benefitType,
+                    benefitAmount,
+                    expected.weeklyRent,
+                    expected.fourWeeklyRent,
+                    expected.monthlyRent,
+                );
+
+                expected.weeklyShortfall = shortFallState.weeklyShortfall;
+                expected.fourWeeklyShortfall =
+                    shortFallState.fourWeeklyShortfall;
+                expected.monthlyShortfall = shortFallState.monthlyShortfall;
+
+                expect(
+                    rentCalculatorReducer(state, {
+                        type: CalculatorActions.CALCULATE_SHORTFALL,
+                        amount: benefitAmount,
+                    }),
+                ).toEqual(expected);
+            },
+        );
+
+        test.each([BenefitType.HOUSING_BENEFIT, BenefitType.UNIVERSAL_CREDIT])(
+            "changing rent frequency, calculating rent, calculating shortfall and then changing benefit type, validility flag test",
+            (benefitType) => {
+                const benefitAmount = "564.75";
+                const rentAmount = "200";
+
+                const rentFrequency = RentFrequency.MONTHLY;
+                const expected = initCalculatorState(initDate);
+
+                const rentState = calculateRent(rentFrequency, rentAmount);
+
+                expected.rentAmount = rentAmount;
+                expected.rentFrequency = rentFrequency;
+                expected.fourWeeklyRent = rentState.fourWeeklyRent;
+                expected.monthlyRent = rentState.monthlyRent;
+                expected.weeklyRent = rentState.weeklyRent;
+
+                let state = rentCalculatorReducer(initialState, {
+                    type: CalculatorActions.CHANGE_RENT_FREQUENCY,
+                    newRentFrequency: rentFrequency,
+                });
+
+                state = rentCalculatorReducer(state, {
+                    type: CalculatorActions.CALCULATE_RENT,
+                    amount: rentAmount,
+                });
+
+                expected.benefitAmount = benefitAmount;
+                expected.benefitTypeIsValid = false;
+
+                state = rentCalculatorReducer(state, {
+                    type: CalculatorActions.CALCULATE_SHORTFALL,
+                    amount: benefitAmount,
+                });
+
+                expect(state).toEqual(expected);
+
+                state = rentCalculatorReducer(state, {
+                    type: CalculatorActions.CHANGE_BENEFIT_TYPE,
+                    newBenefitType: benefitType,
+                });
+
+                const shortFallState = calculateShortfall(
+                    benefitType,
+                    benefitAmount,
+                    expected.weeklyRent,
+                    expected.fourWeeklyRent,
+                    expected.monthlyRent,
+                );
+
+                expected.benefitType = benefitType;
+                expected.weeklyShortfall = shortFallState.weeklyShortfall;
+                expected.fourWeeklyShortfall =
+                    shortFallState.fourWeeklyShortfall;
+                expected.monthlyShortfall = shortFallState.monthlyShortfall;
+                expected.benefitTypeIsValid = true;
+
+                expect(state).toEqual(expected);
+            },
+        );
+        test.each([BenefitType.HOUSING_BENEFIT, BenefitType.UNIVERSAL_CREDIT])(
+            "changing benefit type, calculating shortfall, changing rent frequency and then calculating rent validility flag test",
+            (benefitType) => {
+                const benefitAmount = "564.75";
+                const rentAmount = "200";
+                const rentFrequencyArray = [
+                    RentFrequency.MONTHLY,
+                    RentFrequency.FOUR_WEEKLY,
+                    RentFrequency.WEEKLY,
+                ];
+
+                const expected = initCalculatorState(initDate);
+
+                expected.benefitType = benefitType;
+                expected.rentAmountIsValid = false;
+                expected.rentFrequencyIsValid = false;
+
+                let state = rentCalculatorReducer(initialState, {
+                    type: CalculatorActions.CHANGE_BENEFIT_TYPE,
+                    newBenefitType: benefitType,
+                });
+
+                expect(state).toEqual(expected);
+
+                state = rentCalculatorReducer(state, {
+                    type: CalculatorActions.CALCULATE_SHORTFALL,
+                    amount: benefitAmount,
+                });
+
+                expected.benefitAmount = benefitAmount;
+
+                expect(state).toEqual(expected);
+
+                expected.rentFrequencyIsValid = true;
+
+                for (const rentFrequency of rentFrequencyArray) {
+                    expected.rentAmountIsValid = false;
+                    expected.rentAmount = "";
+                    expected.fourWeeklyRent = "";
+                    expected.monthlyRent = "";
+                    expected.weeklyRent = "";
+                    expected.weeklyShortfall = "";
+                    expected.fourWeeklyShortfall = "";
+                    expected.monthlyShortfall = "";
+
+                    expected.rentFrequency = rentFrequency;
+                    let loopState = rentCalculatorReducer(state, {
+                        type: CalculatorActions.CHANGE_RENT_FREQUENCY,
+                        newRentFrequency: rentFrequency,
+                    });
+
+                    expect(loopState).toEqual(expected);
+
+                    const rentState = calculateRent(rentFrequency, rentAmount);
+
+                    expected.rentAmount = rentAmount;
+                    expected.fourWeeklyRent = rentState.fourWeeklyRent;
+                    expected.monthlyRent = rentState.monthlyRent;
+                    expected.weeklyRent = rentState.weeklyRent;
+                    expected.rentAmountIsValid = true;
+
+                    const shortFallState = calculateShortfall(
+                        benefitType,
+                        benefitAmount,
+                        expected.weeklyRent,
+                        expected.fourWeeklyRent,
+                        expected.monthlyRent,
+                    );
+
+                    expected.weeklyShortfall = shortFallState.weeklyShortfall;
+                    expected.fourWeeklyShortfall =
+                        shortFallState.fourWeeklyShortfall;
+                    expected.monthlyShortfall = shortFallState.monthlyShortfall;
+
+                    loopState = rentCalculatorReducer(loopState, {
+                        type: CalculatorActions.CALCULATE_RENT,
+                        amount: rentAmount,
+                    });
+
+                    expect(loopState).toEqual(expected);
+                }
+            },
+        );
+        test.each([BenefitType.HOUSING_BENEFIT, BenefitType.UNIVERSAL_CREDIT])(
+            "changing benefit type, calculating shortfall, calculating rent and then changing rentFreq validility flag test",
+            (benefitType) => {
+                const benefitAmount = "564.75";
+                const rentAmount = "200";
+                const rentFrequencyArray = [
+                    RentFrequency.MONTHLY,
+                    RentFrequency.FOUR_WEEKLY,
+                    RentFrequency.WEEKLY,
+                ];
+
+                const expected = initCalculatorState(initDate);
+
+                expected.benefitType = benefitType;
+                expected.rentAmountIsValid = false;
+                expected.rentFrequencyIsValid = false;
+
+                let state = rentCalculatorReducer(initialState, {
+                    type: CalculatorActions.CHANGE_BENEFIT_TYPE,
+                    newBenefitType: benefitType,
+                });
+
+                expect(state).toEqual(expected);
+
+                state = rentCalculatorReducer(state, {
+                    type: CalculatorActions.CALCULATE_SHORTFALL,
+                    amount: benefitAmount,
+                });
+
+                expected.benefitAmount = benefitAmount;
+
+                expect(state).toEqual(expected);
+
+                expected.rentAmountIsValid = true;
+                expected.rentAmount = rentAmount;
+
+                for (const rentFrequency of rentFrequencyArray) {
+                    expected.rentFrequencyIsValid = false;
+                    expected.rentFrequency = RentFrequency.UNSELECTED;
+                    expected.fourWeeklyRent = "";
+                    expected.monthlyRent = "";
+                    expected.weeklyRent = "";
+                    expected.weeklyShortfall = "";
+                    expected.fourWeeklyShortfall = "";
+                    expected.monthlyShortfall = "";
+
+                    let loopState = rentCalculatorReducer(state, {
+                        type: CalculatorActions.CALCULATE_RENT,
+                        amount: rentAmount,
+                    });
+
+                    expect(loopState).toEqual(expected);
+
+                    const rentState = calculateRent(rentFrequency, rentAmount);
+
+                    expected.rentFrequency = rentFrequency;
+                    expected.fourWeeklyRent = rentState.fourWeeklyRent;
+                    expected.monthlyRent = rentState.monthlyRent;
+                    expected.weeklyRent = rentState.weeklyRent;
+                    expected.rentFrequencyIsValid = true;
+
+                    const shortFallState = calculateShortfall(
+                        benefitType,
+                        benefitAmount,
+                        expected.weeklyRent,
+                        expected.fourWeeklyRent,
+                        expected.monthlyRent,
+                    );
+
+                    expected.weeklyShortfall = shortFallState.weeklyShortfall;
+                    expected.fourWeeklyShortfall =
+                        shortFallState.fourWeeklyShortfall;
+                    expected.monthlyShortfall = shortFallState.monthlyShortfall;
+
+                    loopState = rentCalculatorReducer(loopState, {
+                        type: CalculatorActions.CHANGE_RENT_FREQUENCY,
+                        newRentFrequency: rentFrequency,
+                    });
+
+                    expect(loopState).toEqual(expected);
+                }
+            },
+        );
     });
 });
