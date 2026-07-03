@@ -1,26 +1,18 @@
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+
+const subscribe = (callback: () => void) => {
+    const observer = new ResizeObserver(callback);
+    observer.observe(document.documentElement);
+
+    return () => observer.disconnect();
+};
+
+const getSnapshot = () => {
+    const widthPx = document.documentElement.clientWidth;
+    const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    return widthPx / rootFontSize;
+};
 
 export function useViewportWidthRem() {
-    const [width, setWidth] = useState(0);
-
-    useEffect(() => {
-        const updateWidth = () => {
-            const widthPx = document.documentElement.clientWidth;
-
-            const rootFontSize = parseFloat(
-                getComputedStyle(document.documentElement).fontSize,
-            );
-
-            setWidth(widthPx / rootFontSize);
-        };
-
-        updateWidth();
-
-        const observer = new ResizeObserver(updateWidth);
-        observer.observe(document.documentElement);
-
-        return () => observer.disconnect();
-    }, []);
-
-    return width;
+    return useSyncExternalStore(subscribe, getSnapshot);
 }
