@@ -1,34 +1,22 @@
-import { describe, expect, jest, test, beforeEach } from "@jest/globals";
+import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 
 jest.mock("@/src/utils/hooks/useViewportWidth", () => {
-    const actual = jest.requireActual(
-        "@/src/utils/hooks/useViewportWidth",
-    ) as typeof import("@/src/utils/hooks/useViewportWidth");
-
-    return {
-        __esModule: true,
-        ...actual,
-        useViewportWidthRem: jest.fn(),
-    };
+    const actual = jest.requireActual("@/src/utils/hooks/useViewportWidth");
+    return Object.assign({ __esModule: true }, actual, { useViewportWidthRem: jest.fn() });
 });
 
 jest.mock("@/src/utils/hooks/useElementWidth", () => {
-    const actual = jest.requireActual(
-        "@/src/utils/hooks/useElementWidth",
-    ) as typeof import("@/src/utils/hooks/useElementWidth");
+    const actual = jest.requireActual("@/src/utils/hooks/useElementWidth");
 
-    return {
-        __esModule: true,
-        ...actual,
-        useElementWidthRem: jest.fn(),
-    };
+    return Object.assign({ __esModule: true }, actual, { useElementWidthRem: jest.fn() });
 });
 
 import { renderHook } from "@testing-library/react";
-import { useViewportWidthRem } from "@/src/utils/hooks/useViewportWidth";
-import { useMaxTabs } from "@/src/utils/hooks/useMaxTabs";
-import { useElementWidthRem } from "@/src/utils/hooks/useElementWidth";
+
 import { getMaxTabs } from "@/src/utils/helperFunctions";
+import { useElementWidthRem } from "@/src/utils/hooks/useElementWidth";
+import { useMaxTabs } from "@/src/utils/hooks/useMaxTabs";
+import { useViewportWidthRem } from "@/src/utils/hooks/useViewportWidth";
 
 const mockedUseViewportRem = useViewportWidthRem as jest.Mock;
 const mockedUseElementRem = useElementWidthRem as jest.Mock;
@@ -39,19 +27,16 @@ describe("useMaxTabs tests", () => {
         jest.clearAllMocks();
     });
 
-    test.each([true, false])(
-        "returns correct properties",
-        (containerIsViewport) => {
-            mockedUseElementRem.mockReturnValue({ ref: defaultRef, width: 0 });
-            mockedUseViewportRem.mockReturnValue(0);
-            const { result } = renderHook(() =>
-                useMaxTabs(containerIsViewport ? "viewport" : "element"),
-            );
+    test.each([true, false])("returns correct properties", (containerIsViewport) => {
+        mockedUseElementRem.mockReturnValue({ ref: defaultRef, width: 0 });
+        mockedUseViewportRem.mockReturnValue(0);
+        const { result } = renderHook(() =>
+            useMaxTabs(containerIsViewport ? "viewport" : "element"),
+        );
 
-            expect(result.current).toHaveProperty("maxTabs");
-            expect(result.current).toHaveProperty("ref");
-        },
-    );
+        expect(result.current).toHaveProperty("maxTabs");
+        expect(result.current).toHaveProperty("ref");
+    });
 
     describe("container is viewport tests", () => {
         beforeEach(() => {
