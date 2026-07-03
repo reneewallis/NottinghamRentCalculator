@@ -9,35 +9,61 @@
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "prettier": "prettier . --write",
-    "test": "jest"
+    "prettier:check": "prettier --check .",
+    "test": "jest",
+    "prepare": "husky"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@mui/material": "^7.3.8",
-    "@mui/x-date-pickers": "^8.27.2",
-    "dayjs": "^1.11.19",
-    "next": "^16.2.1",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
+    "@mui/material": "^9.2.0",
+    "@mui/x-date-pickers": "^9.8.0",
+    "dayjs": "^1.11.21",
+    "next": "^16.2.10",
+    "postcss": "^8.5.16",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
     "ts-node": "^10.9.2"
   },
   "devDependencies": {
+    "@eslint-react/eslint-plugin": "^5.10.2",
+    "@eslint/js": "^10.0.1",
     "@jest/globals": "^30.4.1",
     "@tailwindcss/postcss": "^4",
     "@testing-library/react": "^16.3.2",
-    "@types/node": "^20",
+    "@types/node": "^26",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.1.6",
+    "@typescript-eslint/eslint-plugin": "^8.62.1",
+    "@typescript-eslint/parser": "^8.62.1",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-better-tailwindcss": "^4.6.1",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-simple-import-sort": "^13.0.0",
+    "husky": "^9.1.7",
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
-    "prettier": "^3.8.1",
-    "tailwindcss": "^4",
-    "ts-jest": "^29.4.9",
-    "typescript": "^5"
+    "lint-staged": "^17.0.8",
+    "prettier": "^3.9.4",
+    "tailwindcss": "^4.3.2",
+    "ts-jest": "^29.4.11",
+    "typescript": "^6",
+    "typescript-eslint": "^8.62.1"
+  },
+  "lint-staged": {
+    ".{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    ".{json,md,css,scss,html,yaml,yml}": [
+      "prettier --write"
+    ]
+  },
+  "overrides": {
+    "postcss": "^8.5.16"
+  },
+  "allowScripts": {
+    "sharp@0.34.5": true,
+    "unrs-resolver@1.12.2": true
   }
 }
