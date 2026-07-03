@@ -1,16 +1,8 @@
 import { ReactElement } from "react";
+
 import { DropdownBoxProps } from "./Dropdown";
-import {
-    DateBoxProps,
-    InputTextBoxProps,
-    ReadOnlyTextBoxProps,
-    TextBoxProps,
-} from "./InputFields";
-import {
-    BenefitType,
-    InstallmentFrequency,
-    RentFrequency,
-} from "./RentCalculator";
+import { DateBoxProps, InputTextBoxProps, ReadOnlyTextBoxProps, TextBoxProps } from "./InputFields";
+import { BenefitType, InstallmentFrequency, RentFrequency } from "./RentCalculator";
 
 export type CalculatorBoxDropdownBoxes = {
     rent: DropdownBoxProps<RentFrequency>;
@@ -36,8 +28,7 @@ type MainPanelElement =
     | ReactElement<DateBoxProps>
     | ReactElement<InstallementScrollerProps>;
 type SidePanelElement<TLabel extends string> =
-    | ReactElement<TextBoxProps>
-    | ReactElement<DropdownBoxProps<TLabel>>;
+    ReactElement<TextBoxProps> | ReactElement<DropdownBoxProps<TLabel>>;
 
 export type CalculatorPanelProps<TLabel extends string> = {
     circleValue: string;

@@ -1,6 +1,7 @@
+import "./globals.css";
+
 import type { Metadata } from "next";
 import { Ubuntu } from "next/font/google";
-import "./globals.css";
 
 const ubuntuFont = Ubuntu({
     variable: "--font-ubuntu",
@@ -21,14 +22,12 @@ export default function RootLayout({
     return (
         <html lang="en-GB">
             <head>
-                <meta
-                    name="viewport"
-                    content="width=device-width, initial-scale=1.0"
-                />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             </head>
-            <body className={`${ubuntuFont.variable} antialiased bg-gray-500`}>
-                {children}
-            </body>
+            <body className={`
+              ${ubuntuFont.variable}
+              bg-gray-500 antialiased
+            `}>{children}</body>
         </html>
     );
 }

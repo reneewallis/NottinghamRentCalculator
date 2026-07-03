@@ -1,12 +1,15 @@
+import "dayjs/locale/en-gb";
+
+import { createTheme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import "dayjs/locale/en-gb";
-import { createTheme } from "@mui/material/styles";
 import type {} from "@mui/x-date-pickers/themeAugmentation";
-import { ThemeProvider } from "@mui/material/styles";
+
 import { DateBoxProps } from "@/src/types/InputFields";
 import { fluidCSSWidthScale } from "@/src/utils/helperFunctions";
+
 import {
     DATE_BOX_HEIGHT,
     DATE_BOX_WIDTH,
@@ -327,13 +330,20 @@ function DateBox(props: DateBoxProps) {
     };
     return (
         <ThemeProvider theme={dateTheme}>
-            <LocalizationProvider
-                dateAdapter={AdapterDayjs}
-                adapterLocale="en-gb"
-            >
-                <label className="flex flex-col font-normal focus-within:font-semibold focus-within:text-gray-50 transition-colors">
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
+                <label className="
+                  flex flex-col font-normal transition-colors
+                  focus-within:font-semibold focus-within:text-gray-50
+                ">
                     <span
-                        className={`text-gray-200 whitespace-nowrap ${alignmentMap[alignment]} text-base md:text-lg lg:text-2xl hover:text-gray-100 mb-2 cursor-pointer`}
+                        className={`
+                          whitespace-nowrap text-gray-200
+                          ${alignmentMap[alignment]}
+                          mb-2 cursor-pointer text-base
+                          hover:text-gray-100
+                          md:text-lg
+                          lg:text-2xl
+                        `}
                     >
                         {label}
                     </span>
@@ -370,10 +380,7 @@ function DateBox(props: DateBoxProps) {
 
                             textField: {
                                 variant: "outlined",
-                                error:
-                                    props.valid !== undefined
-                                        ? !props.valid
-                                        : undefined,
+                                error: props.valid !== undefined ? !props.valid : undefined,
                                 sx: {},
                             },
                         }}

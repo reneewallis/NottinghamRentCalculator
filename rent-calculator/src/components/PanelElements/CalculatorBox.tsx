@@ -11,10 +11,14 @@ function CalculatorBox({
     return (
         <div className="inline-flex flex-row">
             {flipResultTextBoxes && (
-                <div className="px-2 pb-3 mr-2 inline-flex flex-col justify-between">
-                    {resultTextBoxes.map((props, index) => (
+                <div
+                    className="
+                      mr-2 inline-flex flex-col justify-between px-2 pb-3
+                    "
+                >
+                    {resultTextBoxes.map((props) => (
                         <TextBox
-                            key={`${props.label}-${index}`}
+                            key={`${props.label}`}
                             {...props}
                             alignment="right"
                             width={12}
@@ -22,18 +26,25 @@ function CalculatorBox({
                     ))}
                 </div>
             )}
-            <div className="inline-flex flex-col justify-between gap-18.5 lg:gap-20.5 bg-gray-800 rounded-xl shadow-lg border-4 border-gray-300 pt-12 pb-12 pl-9 pr-12">
+            <div
+                className="
+                  inline-flex flex-col justify-between gap-18.5 rounded-xl
+                  border-4 border-gray-300 bg-gray-800 py-12 pr-12 pl-9
+                  shadow-lg
+                  lg:gap-20.5
+                "
+            >
                 <CustomDropdownBox {...dropDownProps}></CustomDropdownBox>
                 <TextBox {...inputTextBoxProps} width={13}></TextBox>
             </div>
             {!flipResultTextBoxes && (
-                <div className="px-2 pb-3 ml-2 inline-flex flex-col justify-between">
-                    {resultTextBoxes.map((props, index) => (
-                        <TextBox
-                            key={`${props.label}-${index}`}
-                            {...props}
-                            width={12}
-                        ></TextBox>
+                <div
+                    className="
+                      ml-2 inline-flex flex-col justify-between px-2 pb-3
+                    "
+                >
+                    {resultTextBoxes.map((props) => (
+                        <TextBox key={`${props.label}`} {...props} width={12}></TextBox>
                     ))}
                 </div>
             )}

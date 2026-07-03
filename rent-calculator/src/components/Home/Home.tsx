@@ -1,18 +1,28 @@
 "use client";
 
-import { useTabsContext } from "@/src/utils/Tabs/TabsContext";
 import { TabsActions } from "@/src/types/Tabs";
+import { useTabsContext } from "@/src/utils/Tabs/TabsContext";
 
 function Home() {
     const { tabsState, tabsDispatch: dispatch } = useTabsContext();
     const isHidden = tabsState.wrappedTabArr.length > 0;
     return (
-        <div
-            hidden={isHidden}
-            className="flex flex-1 items-center justify-center my-2"
-        >
-            <div className="inline-flex flex-col items-center p-2 md:p-6 lg:p-10 bg-gray-800 border-solid border-gray-200 border-3 inset-shadow-sm ring-2 ring-gray-100/60 rounded-2xl">
-                <h1 className="font-semibold text-center md:whitespace-nowrap text-xl md:text-2xl lg:text-4xl text-gray-50 text-shadow-lg/20 pt-4 lg:pt-8 ">
+        <div hidden={isHidden} className="
+          my-2 flex flex-1 items-center justify-center
+        ">
+            <div className="
+              inline-flex flex-col items-center rounded-2xl border-3
+              border-solid border-gray-200 bg-gray-800 p-2 ring-2
+              inset-shadow-sm ring-gray-100/60
+              md:p-6
+              lg:p-10
+            ">
+                <h1 className="
+                  pt-4 text-center text-xl font-semibold text-gray-50
+                  text-shadow-lg/20
+                  md:text-2xl md:whitespace-nowrap
+                  lg:pt-8 lg:text-4xl
+                ">
                     Welcome to Nottingham&#39;s Rent Calculator
                 </h1>
                 <button
@@ -20,7 +30,16 @@ function Home() {
                     onClick={() => {
                         dispatch({ type: TabsActions.NEW_TAB });
                     }}
-                    className="bg-gray-700 border-gray-50 text-gray-50 text-shadow-lg/20 text-xs md:text-sm lg:text-xl border-2 shadow-xl text-center mt-5 md:mt-6 lg:mt-10 mb-4 lg:mb-6 p-2 md:p-3 lg:p-5 rounded-full focus:outline-none transition-colors cursor-pointer duration-200 hover:text-fuchsia-700 hover:border-fuchsia-700"
+                    className="
+                      mt-5 mb-4 cursor-pointer rounded-full border-2
+                      border-gray-50 bg-gray-700 p-2 text-center text-xs
+                      text-gray-50 shadow-xl transition-colors duration-200
+                      text-shadow-lg/20
+                      hover:border-fuchsia-700 hover:text-fuchsia-700
+                      focus:outline-none
+                      md:mt-6 md:p-3 md:text-sm
+                      lg:mt-10 lg:mb-6 lg:p-5 lg:text-xl
+                    "
                 >
                     Create New Tab
                 </button>

@@ -1,28 +1,25 @@
 "use client";
 
-import { TabsActions } from "../../types/Tabs";
-import {
-    CalculatorActions,
-    RentFrequency,
-    BenefitType,
-    InstallmentFrequency,
-} from "@/src/types/RentCalculator";
-import CalculatorBox from "../PanelElements/CalculatorBox";
-import { CalculatorBoxDropdownBoxes } from "../../types/PanelElements";
-import DateBox from "../InputFields/DateBox";
-import CalculatorPanel from "../PanelElements/CalculatorPanel";
-import TextBox from "../InputFields/TextBox";
-import InstallementScroller from "../PanelElements/InstallmentScroller";
 import { Dayjs } from "dayjs";
-import CustomDropdownBox, {
-    calcDropdownMinWidth,
-} from "../Dropdown/DropdownBox";
-import { useTabsContext } from "@/src/utils/Tabs/TabsContext";
+
 import {
-    DATE_BOX_WIDTH,
-    SIDE_PANEL_TEXT_BOX_WIDTH,
-} from "../InputFields/inputFieldConsts";
+    BenefitType,
+    CalculatorActions,
+    InstallmentFrequency,
+    RentFrequency,
+} from "@/src/types/RentCalculator";
 import { useViewportWidthRem } from "@/src/utils/hooks/useViewportWidth";
+import { useTabsContext } from "@/src/utils/Tabs/TabsContext";
+
+import { CalculatorBoxDropdownBoxes } from "../../types/PanelElements";
+import { TabsActions } from "../../types/Tabs";
+import CustomDropdownBox, { calcDropdownMinWidth } from "../Dropdown/DropdownBox";
+import DateBox from "../InputFields/DateBox";
+import { DATE_BOX_WIDTH, SIDE_PANEL_TEXT_BOX_WIDTH } from "../InputFields/inputFieldConsts";
+import TextBox from "../InputFields/TextBox";
+import CalculatorBox from "../PanelElements/CalculatorBox";
+import CalculatorPanel from "../PanelElements/CalculatorPanel";
+import InstallementScroller from "../PanelElements/InstallmentScroller";
 
 function TabPanel() {
     const { tabsState, tabsDispatch } = useTabsContext();
@@ -41,17 +38,11 @@ function TabPanel() {
             let timeFrame: string;
 
             if (calculatorState.daysUntilStartDate < 7) {
-                timeFrame =
-                    calculatorState.daysUntilStartDate === 1 ? "Day" : "Days";
-                balanceCircleValue =
-                    calculatorState.daysUntilStartDate.toString();
+                timeFrame = calculatorState.daysUntilStartDate === 1 ? "Day" : "Days";
+                balanceCircleValue = calculatorState.daysUntilStartDate.toString();
             } else {
-                timeFrame =
-                    calculatorState.weeksUntilStartDate === 1
-                        ? "Week"
-                        : "Weeks";
-                balanceCircleValue =
-                    calculatorState.weeksUntilStartDate.toString();
+                timeFrame = calculatorState.weeksUntilStartDate === 1 ? "Week" : "Weeks";
+                balanceCircleValue = calculatorState.weeksUntilStartDate.toString();
             }
 
             balanceCircleString = `${timeFrame} until Arrangment Start Date`;
@@ -125,8 +116,7 @@ function TabPanel() {
                                 type: TabsActions.USE_RENT_CALCULATOR,
                                 action: {
                                     type: CalculatorActions.CHANGE_BENEFIT_TYPE,
-                                    newBenefitType:
-                                        BenefitType.UNIVERSAL_CREDIT,
+                                    newBenefitType: BenefitType.UNIVERSAL_CREDIT,
                                 },
                             });
                         },
@@ -156,12 +146,7 @@ function TabPanel() {
             ]),
         );
 
-        const screenSize =
-            viewportWidth < 48
-                ? "SMALL"
-                : viewportWidth < 64
-                  ? "MEDIUM"
-                  : "LARGE";
+        const screenSize = viewportWidth < 48 ? "SMALL" : viewportWidth < 64 ? "MEDIUM" : "LARGE";
         const minDropdownWidth = calcDropdownMinWidth({
             maxLabelLength: maxLabelLength,
             dropdownStyle: "DEFAULT",
@@ -169,7 +154,13 @@ function TabPanel() {
         });
 
         return (
-            <div className="flex-1 grid grid-cols-[minmax(auto,1fr)] md:grid-cols-[repeat(2,minmax(auto,1fr))] grid-flow-row-dense overflow-x-auto justify-items-start sm:justify-items-center items-end place-content-center py-8 px-2 md:px-8 gap-12">
+            <div className="
+              grid flex-1 grid-flow-row-dense grid-cols-[minmax(auto,1fr)]
+              place-content-center items-end justify-items-start gap-12
+              overflow-x-auto px-2 py-8
+              sm:justify-items-center
+              md:grid-cols-[repeat(2,minmax(auto,1fr))] md:px-8
+            ">
                 <div key={"rent"} className="col-start-1">
                     <CalculatorBox
                         dropDownProps={{
@@ -210,7 +201,10 @@ function TabPanel() {
                         ]}
                     ></CalculatorBox>
                 </div>
-                <div key={"shortfall"} className="col-start-1 md:pb-8">
+                <div key={"shortfall"} className="
+                  col-start-1
+                  md:pb-8
+                ">
                     <CalculatorBox
                         dropDownProps={{
                             ...calcBoxDropdowns.shortfall,
@@ -242,8 +236,7 @@ function TabPanel() {
                                 label: "4-Weekly Shortfall",
                                 text: calculatorState.fourWeeklyShortfall,
                                 readOnly: true,
-                                valid:
-                                    +calculatorState.fourWeeklyShortfall >= 0,
+                                valid: +calculatorState.fourWeeklyShortfall >= 0,
                             },
                             {
                                 label: "Monthly Shortfall",
@@ -292,10 +285,7 @@ function TabPanel() {
                             }
                             alignment="center"
                             minDate={calculatorState.minStartDate}
-                            onError={(
-                                error: string | null,
-                                value: Dayjs | null,
-                            ) =>
+                            onError={(error: string | null, value: Dayjs | null) =>
                                 tabsDispatch({
                                     type: TabsActions.USE_RENT_CALCULATOR,
                                     action: {
@@ -382,10 +372,7 @@ function TabPanel() {
                             }
                             alignment="left"
                             minDate={calculatorState.minForecastDate}
-                            onError={(
-                                error: string | null,
-                                value: Dayjs | null,
-                            ) =>
+                            onError={(error: string | null, value: Dayjs | null) =>
                                 tabsDispatch({
                                     type: TabsActions.USE_RENT_CALCULATOR,
                                     action: {
@@ -399,12 +386,8 @@ function TabPanel() {
                         ></DateBox>,
                         <InstallementScroller
                             key={"installmentScroller"}
-                            totalInstallments={
-                                calculatorState.totalInstallments
-                            }
-                            installmentNumber={
-                                calculatorState.installmentNumber
-                            }
+                            totalInstallments={calculatorState.totalInstallments}
+                            installmentNumber={calculatorState.installmentNumber}
                             paymentFrequency={calculatorState.paymentFrequency}
                             onChange={(value) =>
                                 tabsDispatch({
@@ -433,8 +416,7 @@ function TabPanel() {
                                             type: TabsActions.USE_RENT_CALCULATOR,
                                             action: {
                                                 type: CalculatorActions.CHANGE_PAYMENT_FREQUENCY,
-                                                frequency:
-                                                    InstallmentFrequency.WEEKLY,
+                                                frequency: InstallmentFrequency.WEEKLY,
                                             },
                                         });
                                     },
@@ -446,8 +428,7 @@ function TabPanel() {
                                             type: TabsActions.USE_RENT_CALCULATOR,
                                             action: {
                                                 type: CalculatorActions.CHANGE_PAYMENT_FREQUENCY,
-                                                frequency:
-                                                    InstallmentFrequency.MONTHLY,
+                                                frequency: InstallmentFrequency.MONTHLY,
                                             },
                                         });
                                     },

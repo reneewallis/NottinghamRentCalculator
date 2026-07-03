@@ -1,22 +1,21 @@
 "use client";
 
-import { TabsActions } from "../../types/Tabs";
-import Tab from "../../components/Tabs/Tab";
+import { MenuItems } from "@/src/types/Buttons";
+import { useMaxTabs } from "@/src/utils/hooks/useMaxTabs";
+import { useTabsContext } from "@/src/utils/Tabs/TabsContext";
+
 import DropdownMenu from "../../components/Buttons/MenuButton";
+import Tab from "../../components/Tabs/Tab";
+import { TabsActions } from "../../types/Tabs";
 import HistoryButton from "../Buttons/HistoryButton";
 import NewTabButton from "../Buttons/NewTabButton";
-import { MenuItems } from "@/src/types/Buttons";
-import { useTabsContext } from "@/src/utils/Tabs/TabsContext";
 import { TAB_BUTTONS_CONTAINER_MARGIN_X } from "./tabConsts";
-import { useMaxTabs } from "@/src/utils/hooks/useMaxTabs";
 
 export default function Tabs() {
     const { tabsState, tabsDispatch: dispatch } = useTabsContext();
     const { maxTabs, ref: mainContainerRef } = useMaxTabs("element");
     const viewableIndex =
-        tabsState.wrappedTabArr.length > maxTabs
-            ? tabsState.wrappedTabArr.length - maxTabs
-            : 0;
+        tabsState.wrappedTabArr.length > maxTabs ? tabsState.wrappedTabArr.length - maxTabs : 0;
 
     return (
         <div className="mt-2 w-full">
@@ -30,10 +29,7 @@ export default function Tabs() {
                             <div
                                 key={`tabContainer${wrappedTab.id}`}
                                 onMouseEnter={() => {
-                                    if (
-                                        index ===
-                                        tabsState.wrappedTabArr.length - 1
-                                    ) {
+                                    if (index === tabsState.wrappedTabArr.length - 1) {
                                         dispatch({
                                             type: TabsActions.HOVER_LAST,
                                             hoverLast: true,
@@ -53,9 +49,7 @@ export default function Tabs() {
                                     <Tab
                                         key={`tab${wrappedTab.id}`}
                                         label={wrappedTab.time}
-                                        active={
-                                            tabsState.activeTabIndex === index
-                                        }
+                                        active={tabsState.activeTabIndex === index}
                                         onClick={() => {
                                             dispatch({
                                                 type: TabsActions.SET_ACTIVE_TAB,
@@ -78,7 +72,15 @@ export default function Tabs() {
                         style={{
                             marginInline: `${TAB_BUTTONS_CONTAINER_MARGIN_X}rem`,
                         }}
-                        className={`flex items-center h-7 mt-3 ${tabsState.activeTabIndex === tabsState.wrappedTabArr.length - 1 || tabsState.hoverLast === true ? "border-gray-500" : "border-l-gray-800 border-l-2"}`}
+                        className={`
+                          mt-3 flex h-7 items-center
+                          ${
+                              tabsState.activeTabIndex === tabsState.wrappedTabArr.length - 1 ||
+                              tabsState.hoverLast === true
+                                  ? `border-gray-500`
+                                  : "border-l-2 border-l-gray-800"
+                          }
+                        `}
                     >
                         <NewTabButton
                             onClick={() => {

@@ -2,7 +2,7 @@ export function getSessionStorageItem<T>(key: string): T | null {
     try {
         const item = sessionStorage.getItem(key);
         if (item) {
-            return JSON.parse(item);
+            return JSON.parse(item) as T;
         } else {
             console.log(`${key} not found in session storage\n`);
         }

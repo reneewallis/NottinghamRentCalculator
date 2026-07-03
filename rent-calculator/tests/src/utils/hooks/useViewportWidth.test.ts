@@ -1,13 +1,7 @@
+import { afterEach,beforeEach, describe, expect, jest, test } from "@jest/globals";
+import { act,renderHook } from "@testing-library/react";
+
 import { useViewportWidthRem } from "@/src/utils/hooks/useViewportWidth";
-import {
-    describe,
-    expect,
-    jest,
-    test,
-    beforeEach,
-    afterEach,
-} from "@jest/globals";
-import { renderHook, act } from "@testing-library/react";
 
 describe("useViewPortRem tests", () => {
     let resizeCallback: ResizeObserverCallback;
@@ -26,8 +20,7 @@ describe("useViewPortRem tests", () => {
     beforeEach(() => {
         width = 1536;
 
-        global.ResizeObserver =
-            ResizeObserverMock as unknown as typeof ResizeObserver;
+        global.ResizeObserver = ResizeObserverMock as unknown as typeof ResizeObserver;
 
         Object.defineProperty(document.documentElement, "clientWidth", {
             configurable: true,

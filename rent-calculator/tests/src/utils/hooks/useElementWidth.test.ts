@@ -1,13 +1,7 @@
+import { afterEach, beforeEach, describe, expect,jest, test } from "@jest/globals";
+import { act,renderHook } from "@testing-library/react";
+
 import { useElementWidthRem } from "@/src/utils/hooks/useElementWidth";
-import {
-    jest,
-    describe,
-    test,
-    beforeEach,
-    afterEach,
-    expect,
-} from "@jest/globals";
-import { renderHook, act } from "@testing-library/react";
 
 describe("useElementWidthRem tests", () => {
     let resizeCallback: ResizeObserverCallback;
@@ -23,8 +17,7 @@ describe("useElementWidthRem tests", () => {
     let fontSpy: jest.SpiedFunction<typeof getComputedStyle>;
 
     beforeEach(() => {
-        global.ResizeObserver =
-            ResizeObserverMock as unknown as typeof ResizeObserver;
+        global.ResizeObserver = ResizeObserverMock as unknown as typeof ResizeObserver;
         fontSpy = jest.spyOn(window, "getComputedStyle").mockReturnValue({
             fontSize: "16px",
         } as CSSStyleDeclaration);
@@ -71,27 +64,24 @@ describe("useElementWidthRem tests", () => {
         [16, 1],
         [8, 0.5],
         [172, 10.75],
-    ])(
-        "Calculates element width in rem, testing %dpx, expected %drem",
-        (widthPx, widthRem) => {
-            const div = document.createElement("div");
+    ])("Calculates element width in rem, testing %dpx, expected %drem", (widthPx, widthRem) => {
+        const div = document.createElement("div");
 
-            Object.defineProperty(div, "scrollWidth", {
-                configurable: true,
-                value: widthPx,
-            });
+        Object.defineProperty(div, "scrollWidth", {
+            configurable: true,
+            value: widthPx,
+        });
 
-            const { result } = renderHook(() => useElementWidthRem());
+        const { result } = renderHook(() => useElementWidthRem());
 
-            const ref = result.current.ref;
+        const ref = result.current.ref;
 
-            act(() => {
-                ref(div);
-            });
+        act(() => {
+            ref(div);
+        });
 
-            expect(result.current).toEqual({ width: widthRem, ref: ref });
-        },
-    );
+        expect(result.current).toEqual({ width: widthRem, ref: ref });
+    });
 
     test.each([
         [173.4, 10.8375],

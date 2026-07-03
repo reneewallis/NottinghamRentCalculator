@@ -10,7 +10,18 @@ import {
 function Tab({ label, active = false, onClick, onClose }: TabProps) {
     return (
         <div
-            className={`inline-flex justify-between items-center mt-2 rounded-t-lg focus:outline-none transition-colors font-medium text-sm duration-200 ${active ? "border-b-2  border-b-gray-800 text-gray-200 bg-gray-600" : "text-gray-300 hover:text-fuchsia-700 border-b-2 border-b-gray-500 hover:border-b-gray-800 hover:bg-gray-800 hover:opacity-90"}`}
+            className={`
+              mt-2 inline-flex items-center justify-between rounded-t-lg text-sm
+              font-medium transition-colors duration-200
+              focus:outline-none
+              ${active ? `
+                border-b-2 border-b-gray-800 bg-gray-600 text-gray-200
+              ` : `
+                border-b-2 border-b-gray-500 text-gray-300
+                hover:border-b-gray-800 hover:bg-gray-800 hover:text-fuchsia-700
+                hover:opacity-90
+              `}
+            `}
         >
             <button
                 style={{
@@ -19,7 +30,11 @@ function Tab({ label, active = false, onClick, onClose }: TabProps) {
                     paddingRight: `${TAB_PADDING_RIGHT}rem`,
                 }}
                 className={
-                    "text-left py-3 cursor-pointer transition-colors duration-200 focus:outline-none overflow-clip"
+                    `
+                      cursor-pointer overflow-clip py-3 text-left
+                      transition-colors duration-200
+                      focus:outline-none
+                    `
                 }
                 {...(onClick && { onClick: onClick })}
             >
@@ -32,7 +47,13 @@ function Tab({ label, active = false, onClick, onClose }: TabProps) {
                     marginInline: `${TAB_CLOSE_BUTTON_MARGIN_X}rem`,
                 }}
                 className={
-                    "flex justify-center items-center my-2 rounded-full font-semibold text-center cursor-pointer transition-colors duration-200 focus:outline-none hover:bg-fuchsia-700 hover:text-gray-50"
+                    `
+                      my-2 flex cursor-pointer items-center justify-center
+                      rounded-full text-center font-semibold transition-colors
+                      duration-200
+                      hover:bg-fuchsia-700 hover:text-gray-50
+                      focus:outline-none
+                    `
                 }
                 {...(onClose && { onClick: onClose })}
             >
@@ -44,11 +65,7 @@ function Tab({ label, active = false, onClick, onClose }: TabProps) {
                     stroke="currentColor"
                     className="size-4"
                 >
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M6 18 18 6M6 6l12 12"
-                    />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>

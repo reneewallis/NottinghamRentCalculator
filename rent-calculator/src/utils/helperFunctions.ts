@@ -1,24 +1,20 @@
-import {
-    RentFrequency,
-    RentState,
-    BenefitType,
-    ShortfallState,
-    InstallmentFrequency,
-    ForecastState,
-} from "@/src/types/RentCalculator";
-import {
-    TAB_BUTTONS_CONTAINER_WIDTH,
-    TAB_CONTAINER_WIDTH,
-} from "../components/Tabs/tabConsts";
 import { Dayjs } from "dayjs";
 import Decimal from "decimal.js";
 
+import {
+    BenefitType,
+    ForecastState,
+    InstallmentFrequency,
+    RentFrequency,
+    RentState,
+    ShortfallState,
+} from "@/src/types/RentCalculator";
+
+import { TAB_BUTTONS_CONTAINER_WIDTH, TAB_CONTAINER_WIDTH } from "../components/Tabs/tabConsts";
+
 export function getMaxTabs(continerWidthRem: number) {
     return continerWidthRem >= TAB_BUTTONS_CONTAINER_WIDTH + TAB_CONTAINER_WIDTH
-        ? Math.floor(
-              (continerWidthRem - TAB_BUTTONS_CONTAINER_WIDTH) /
-                  TAB_CONTAINER_WIDTH,
-          )
+        ? Math.floor((continerWidthRem - TAB_BUTTONS_CONTAINER_WIDTH) / TAB_CONTAINER_WIDTH)
         : 1;
 }
 const CSS_WIDTH_UNITS = [
@@ -64,9 +60,7 @@ export class UnsupportedUnitError extends Error {
 export function calcPx(value: string) {
     const match = value.match(/^([\d.]+)([a-zA-Z%]+)$/);
     if (!match) {
-        throw new Error(
-            "value was invalid: expected number followed by unit (e.g. 12px, 1.5rem)",
-        );
+        throw new Error("value was invalid: expected number followed by unit (e.g. 12px, 1.5rem)");
     }
 
     const [, size, unit] = match;
@@ -83,12 +77,10 @@ export function calcPx(value: string) {
         throw new Error(`start of value "${size}" was not a valid number`);
     }
 
-    let rootFontSize = 0;
+    let rootFontSize: number;
 
     try {
-        rootFontSize = parseFloat(
-            getComputedStyle(document.documentElement).fontSize,
-        );
+        rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
     } catch {
         rootFontSize = 16;
     }
@@ -96,11 +88,7 @@ export function calcPx(value: string) {
     return unit === "rem" ? sizeNumber * rootFontSize : sizeNumber;
 }
 
-export function fluidCSSWidthScale(
-    min: string,
-    pref: string,
-    max: string,
-): string {
+export function fluidCSSWidthScale(min: string, pref: string, max: string): string {
     const minScreen = "58rem";
     const devScreen = "96rem";
 
@@ -162,10 +150,7 @@ export function isValidNumberEntry(value: string): boolean {
     return true;
 }
 
-export function calculateRent(
-    frequency: RentFrequency,
-    value: string,
-): RentState {
+export function calculateRent(frequency: RentFrequency, value: string): RentState {
     const frequencySelected = frequency !== RentFrequency.UNSELECTED;
     let valueIsValid = true;
 
@@ -220,8 +205,7 @@ export function calculateShortfall(
     monthlyRent: string,
 ): ShortfallState {
     const benefitValueIsValid = isValidNumberEntry(benefitValue);
-    const benefitTypeIsValid =
-        benefitValue === "" || benefitType !== BenefitType.UNSELECTED;
+    const benefitTypeIsValid = benefitValue === "" || benefitType !== BenefitType.UNSELECTED;
 
     let weeklyShortfall = "";
     let fourWeeklyShortfall = "";
@@ -241,12 +225,8 @@ export function calculateShortfall(
 
         switch (benefitType) {
             case BenefitType.HOUSING_BENEFIT: {
-                weeklyShortfall = floor2DP(
-                    benefitAmount.div(4).minus(weeklyDecimal),
-                ).toFixed(2);
-                fourWeeklyShortfall = benefitAmount
-                    .minus(fourWeeklyDecimal)
-                    .toFixed(2);
+                weeklyShortfall = floor2DP(benefitAmount.div(4).minus(weeklyDecimal)).toFixed(2);
+                fourWeeklyShortfall = benefitAmount.minus(fourWeeklyDecimal).toFixed(2);
                 monthlyShortfall = floor2DP(
                     benefitAmount.times(13).div(12).minus(monthlyDecimal),
                 ).toFixed(2);
@@ -261,9 +241,7 @@ export function calculateShortfall(
                 fourWeeklyShortfall = floor2DP(
                     benefitAmount.times(12).div(13).minus(fourWeeklyDecimal),
                 ).toFixed(2);
-                monthlyShortfall = benefitAmount
-                    .minus(monthlyDecimal)
-                    .toFixed(2);
+                monthlyShortfall = benefitAmount.minus(monthlyDecimal).toFixed(2);
 
                 break;
             }
@@ -301,10 +279,7 @@ export function calculateStartingBalance(
     return rent.times(weeksUntilStartDate).add(balance).toFixed(2);
 }
 
-export function calculateTotalInstallments(
-    startingBalance: string,
-    defaultAmount: string,
-): number {
+export function calculateTotalInstallments(startingBalance: string, defaultAmount: string): number {
     if (
         startingBalance === "" ||
         defaultAmount === "" ||
@@ -337,16 +312,12 @@ export function calculateInstallment(
         }
 
         case InstallmentFrequency.WEEKLY: {
-            installment += forecastDate
-                .startOf("day")
-                .diff(startDate.startOf("day"), "weeks");
+            installment += forecastDate.startOf("day").diff(startDate.startOf("day"), "weeks");
             break;
         }
 
         case InstallmentFrequency.MONTHLY: {
-            installment += forecastDate
-                .startOf("day")
-                .diff(startDate.startOf("day"), "months");
+            installment += forecastDate.startOf("day").diff(startDate.startOf("day"), "months");
             break;
         }
     }
@@ -367,16 +338,12 @@ export function calculateForecastDate(
         }
 
         case InstallmentFrequency.WEEKLY: {
-            forecastDate = startDate
-                .startOf("day")
-                .add(installmentNumber - 1, "weeks");
+            forecastDate = startDate.startOf("day").add(installmentNumber - 1, "weeks");
             break;
         }
 
         case InstallmentFrequency.MONTHLY: {
-            forecastDate = startDate
-                .startOf("day")
-                .add(installmentNumber - 1, "months");
+            forecastDate = startDate.startOf("day").add(installmentNumber - 1, "months");
             break;
         }
     }
@@ -391,11 +358,7 @@ export function calculateForecastPaid(
     defaultAmount: string,
     startingBalance: string,
 ): string {
-    if (
-        defaultAmount === "" ||
-        startingBalance === "" ||
-        !isValidNumberEntry(defaultAmount)
-    ) {
+    if (defaultAmount === "" || startingBalance === "" || !isValidNumberEntry(defaultAmount)) {
         return "";
     }
 
@@ -414,10 +377,7 @@ export function calculateForecastPaid(
     }
 }
 
-export function calculateBalanceRemaining(
-    startingBalance: string,
-    totalPaid: string,
-): string {
+export function calculateBalanceRemaining(startingBalance: string, totalPaid: string): string {
     if (
         startingBalance === "" ||
         totalPaid === "" ||
@@ -440,10 +400,7 @@ export function calculateForecast(
     forecast: ForecastState,
     calcInstallment: boolean = true,
 ): ForecastState {
-    const totalInstallments = calculateTotalInstallments(
-        startingBalance,
-        forecast.defaultAmount,
-    );
+    const totalInstallments = calculateTotalInstallments(startingBalance, forecast.defaultAmount);
     let newInstallmentNumber = 0;
     let forecastPaid = "";
     let balanceRemaining = "";
@@ -467,19 +424,14 @@ export function calculateForecast(
         }
 
         newInstallmentNumber =
-            newInstallmentNumber > totalInstallments
-                ? totalInstallments
-                : newInstallmentNumber;
+            newInstallmentNumber > totalInstallments ? totalInstallments : newInstallmentNumber;
 
         forecastPaid = calculateForecastPaid(
             newInstallmentNumber,
             forecast.defaultAmount,
             startingBalance,
         );
-        balanceRemaining = calculateBalanceRemaining(
-            startingBalance,
-            forecastPaid,
-        );
+        balanceRemaining = calculateBalanceRemaining(startingBalance, forecastPaid);
     }
 
     return {

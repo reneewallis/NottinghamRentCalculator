@@ -1,4 +1,5 @@
 import React from "react";
+
 import { CalculatorAction, CalculatorState } from "./RentCalculator";
 import { SerialisedTabsTabWrapper } from "./Storage";
 
@@ -49,10 +50,7 @@ type TabsActionLoadTabs = {
 };
 
 type TabsActionOther = {
-    type:
-        | TabsActions.CLOSE_ALL_TABS
-        | TabsActions.NEW_TAB
-        | TabsActions.VIEW_HISTORY;
+    type: TabsActions.CLOSE_ALL_TABS | TabsActions.NEW_TAB | TabsActions.VIEW_HISTORY;
 };
 
 export type TabsAction =

@@ -64,10 +64,7 @@ export type ForecastState = {
     balanceRemaining: string;
 };
 
-export type CalculatorState = RentState &
-    ShortfallState &
-    BalanceState &
-    ForecastState;
+export type CalculatorState = RentState & ShortfallState & BalanceState & ForecastState;
 
 export enum CalculatorActions {
     CALCULATE_RENT,

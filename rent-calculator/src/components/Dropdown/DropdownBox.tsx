@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+
 import { CalcDropdownWidthArgs, DropdownBoxProps } from "@/src/types/Dropdown";
 import { fluidCSSWidthScale } from "@/src/utils/helperFunctions";
+
 import {
     ARROW_MARGIN_RIGHT,
     ARROW_WIDTH_LARGE,
@@ -22,9 +24,7 @@ import {
 
 export function calcDropdownMinWidth(args: CalcDropdownWidthArgs) {
     if (args.maxLabelLength < 0) {
-        throw new Error(
-            `max label length "${args.maxLabelLength}" cannot be negative`,
-        );
+        throw new Error(`max label length "${args.maxLabelLength}" cannot be negative`);
     }
 
     let buttonWidth: number;
@@ -46,11 +46,7 @@ export function calcDropdownMinWidth(args: CalcDropdownWidthArgs) {
         }
     }
 
-    const {
-        maxLabelLength,
-        dropdownStyle = "DEFAULT",
-        screenSize = "LARGE",
-    } = args;
+    const { maxLabelLength, dropdownStyle = "DEFAULT", screenSize = "LARGE" } = args;
 
     switch (screenSize) {
         case "LARGE": {
@@ -85,9 +81,7 @@ export function calcDropdownMinWidth(args: CalcDropdownWidthArgs) {
     return buttonWidth + PADDING_LEFT + PADDING_RIGHT + ARROW_MARGIN_RIGHT;
 }
 
-function CustomDropdownBox<TLabel extends string>(
-    props: DropdownBoxProps<TLabel>,
-) {
+function CustomDropdownBox<TLabel extends string>(props: DropdownBoxProps<TLabel>) {
     const {
         label,
         items,
@@ -107,16 +101,13 @@ function CustomDropdownBox<TLabel extends string>(
     } else {
         const maxLabelLength =
             items.length > 0
-                ? Math.max(
-                      label.length,
-                      ...items.map((item) => item.label.length),
-                  )
+                ? Math.max(label.length, ...items.map((item) => item.label.length))
                 : label.length;
 
         if (small) {
             const maxWordLength = Math.max(
-                ...[label, ...items.map((item) => item.label)].flatMap(
-                    (label) => label.split(" ").map((word) => word.length),
+                ...[label, ...items.map((item) => item.label)].flatMap((label) =>
+                    label.split(" ").map((word) => word.length),
                 ),
             );
 
@@ -148,16 +139,72 @@ function CustomDropdownBox<TLabel extends string>(
                     ),
                 }}
                 key={`dropdown ${label}`}
-                className={`inline-flex justify-between items-center ${small ? "py-2 lg:py-3 gap-1" : "py-5 lg:py-6 gap-2"} pl-4 border-2 rounded-3xl cursor-pointer transition-colors ${showItems ? `text-gray-100 font-semibold bg-gray-800 hover:bg-gray-900 hover:text-gray-50 ${valid ? "border-gray-100 hover:border-gray-50" : "border-red-500"}` : `text-gray-200 bg-gray-700 hover:bg-gray-800 hover:text-gray-100 ${valid ? "border-gray-300 hover:border-gray-200" : "border-red-600"}`}`}
+                className={`
+                  inline-flex items-center justify-between
+                  ${
+                      small
+                          ? `
+                            gap-1 py-2
+                            lg:py-3
+                          `
+                          : `
+                            gap-2 py-5
+                            lg:py-6
+                          `
+                  }
+                  cursor-pointer rounded-3xl border-2 pl-4 transition-colors
+                  ${
+                      showItems
+                          ? `
+                            bg-gray-800 font-semibold text-gray-100
+                            hover:bg-gray-900 hover:text-gray-50
+                            ${
+                                valid
+                                    ? `
+                                      border-gray-100
+                                      hover:border-gray-50
+                                    `
+                                    : `border-red-500`
+                            }
+                          `
+                          : `
+                            bg-gray-700 text-gray-200
+                            hover:bg-gray-800 hover:text-gray-100
+                            ${
+                                valid
+                                    ? `
+                                      border-gray-300
+                                      hover:border-gray-200
+                                    `
+                                    : `border-red-600`
+                            }
+                          `
+                  }
+                `}
                 onClick={() => setShowItems(!showItems)}
             >
                 <div
                     key={"boxLabel"}
-                    className={`${small ? "text-base md:text-lg lg:text-2xl wrap-break-word whitespace-normal" : "text-lg md:text-xl lg:text-3xl whitespace-nowrap"} text-left`}
+                    className={`
+                      ${
+                          small
+                              ? `
+                                text-base wrap-break-word whitespace-normal
+                                md:text-lg
+                                lg:text-2xl
+                              `
+                              : `
+                                text-lg whitespace-nowrap
+                                md:text-xl
+                                lg:text-3xl
+                              `
+                      }
+                      text-left
+                    `}
                 >
                     {small
-                        ? boxLabel.split(" ").map((word, index) => (
-                              <span key={index} className="block">
+                        ? boxLabel.split(" ").map((word) => (
+                              <span key={`${word}`} className="block">
                                   {word}
                               </span>
                           ))
@@ -165,7 +212,10 @@ function CustomDropdownBox<TLabel extends string>(
                 </div>
                 <div
                     key={"arrow"}
-                    className="translate-y-0.5 lg:translate-y-1 pr-1.5 mr-2.5"
+                    className="
+                      mr-2.5 translate-y-0.5 pr-1.5
+                      lg:translate-y-1
+                    "
                 >
                     {showItems ? (
                         <svg
@@ -174,7 +224,11 @@ function CustomDropdownBox<TLabel extends string>(
                             viewBox="0 0 24 24"
                             strokeWidth={3}
                             stroke="currentColor"
-                            className="size-4 md:size-5 lg:size-6"
+                            className="
+                              size-4
+                              md:size-5
+                              lg:size-6
+                            "
                         >
                             <path
                                 strokeLinecap="round"
@@ -189,7 +243,11 @@ function CustomDropdownBox<TLabel extends string>(
                             viewBox="0 0 24 24"
                             strokeWidth={2}
                             stroke="currentColor"
-                            className="size-5 md:size-6 lg:size-7"
+                            className="
+                              size-5
+                              md:size-6
+                              lg:size-7
+                            "
                         >
                             <path
                                 strokeLinecap="round"
@@ -201,11 +259,26 @@ function CustomDropdownBox<TLabel extends string>(
                 </div>
             </button>
             {showItems && (
-                <div className="absolute top-full z-10 mt-1.5 p-1 w-full flex flex-col rounded-3xl bg-gray-800 inset-shadow-sm border-2 border-gray-100 hover:border-gray-50 opacity-90">
+                <div
+                    className="
+                      absolute top-full z-10 mt-1.5 flex w-full flex-col
+                      rounded-3xl border-2 border-gray-100 bg-gray-800 p-1
+                      opacity-90 inset-shadow-sm
+                      hover:border-gray-50
+                    "
+                >
                     {items.map((item, index) => (
                         <button
-                            key={`item${index}`}
-                            className="whitespace-nowrap text-base md:text-lg lg:text-xl pt-0.5 pb-1 pl-2 pr-2 text-left text-gray-100 rounded-2xl hover:bg-fuchsia-700 hover:text-gray-50 hover:font-semibold cursor-pointer"
+                            key={`item${item.label}-${item.id ?? index}`}
+                            className="
+                              cursor-pointer rounded-2xl px-2 pt-0.5 pb-1
+                              text-left text-base whitespace-nowrap
+                              text-gray-100
+                              hover:bg-fuchsia-700 hover:font-semibold
+                              hover:text-gray-50
+                              md:text-lg
+                              lg:text-xl
+                            "
                             onClick={() => {
                                 if (item.onClick) {
                                     item.onClick();

@@ -1,5 +1,6 @@
-import { TextBoxProps } from "../../types/InputFields";
 import { fluidCSSWidthScale } from "@/src/utils/helperFunctions";
+
+import { TextBoxProps } from "../../types/InputFields";
 import {
     DEFAULT_TEXT_BOX_WIDTH,
     MAX_TEXT_BOX_WIDTH_SCALE,
@@ -33,11 +34,21 @@ function TextBox(props: TextBoxProps) {
     }
     return (
         <label
-            className={`inline-flex flex-col text-gray-200 text-base md:text-lg lg:text-2xl whitespace-nowrap ${alignmentString} focus-within:font-semibold hover:text-gray-100 focus-within:text-gray-50 transition-colors`}
+            className={`
+              inline-flex flex-col text-base whitespace-nowrap text-gray-200
+              md:text-lg
+              lg:text-2xl
+              ${alignmentString}
+              transition-colors
+              focus-within:font-semibold focus-within:text-gray-50
+              hover:text-gray-100
+            `}
         >
-            <span className="w-fit h-fit mb-1.25 md:mb-2 lg:mb-3 cursor-pointer">
-                {label}
-            </span>
+            <span className="
+              mb-1.25 size-fit cursor-pointer
+              md:mb-2
+              lg:mb-3
+            ">{label}</span>
             <textarea
                 style={{
                     width: fluidCSSWidthScale(
@@ -46,7 +57,25 @@ function TextBox(props: TextBoxProps) {
                         `${width * MAX_TEXT_BOX_WIDTH_SCALE}rem`,
                     ),
                 }}
-                className={`resize-none rounded-2xl py-2.5 px-3 border-2 font-normal ${valid ? "border-gray-300 hover:border-gray-100 focus:border-gray-50" : "border-red-600 hover:border-red-500 focus-within:border-red-500"} focus:outline-none transition-colors ${readOnly ? "bg-gray-800" : "bg-gray-700 hover:bg-gray-800 focus:bg-gray-900"}`}
+                className={`
+                  resize-none rounded-2xl border-2 px-3 py-2.5 font-normal
+                  ${valid ? `
+                    border-gray-300
+                    hover:border-gray-100
+                    focus:border-gray-50
+                  ` : `
+                    border-red-600
+                    focus-within:border-red-500
+                    hover:border-red-500
+                  `}
+                  transition-colors
+                  focus:outline-none
+                  ${readOnly ? `bg-gray-800` : `
+                    bg-gray-700
+                    hover:bg-gray-800
+                    focus:bg-gray-900
+                  `}
+                `}
                 value={text}
                 {...(!readOnly && { onChange: props.onChange })}
                 readOnly={readOnly}

@@ -1,5 +1,6 @@
-import { TabsAction, TabsActions, TabsState } from "../../types/Tabs";
 import dayjs from "dayjs";
+
+import { TabsAction, TabsActions, TabsState } from "../../types/Tabs";
 import {
     initCalculatorState,
     rentCalculatorReducer,
@@ -40,9 +41,7 @@ export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
             let activeTab = state.activeTabIndex;
             let lastTabActive = state.lastTabActive;
             const showHistory = state.showHistory;
-            const newTabArr = state.wrappedTabArr.filter(
-                (_, index) => index !== action.closeIndex,
-            );
+            const newTabArr = state.wrappedTabArr.filter((_, index) => index !== action.closeIndex);
 
             if (activeTab !== 0 && action.closeIndex <= activeTab) {
                 activeTab -= 1;
@@ -121,12 +120,8 @@ export function tabsReducer(state: TabsState, action: TabsAction): TabsState {
                         ...tab,
                         calculatorState: {
                             ...tab.calculatorState,
-                            minStartDate: dayjs(
-                                tab.calculatorState.minStartDate,
-                            ),
-                            minForecastDate: dayjs(
-                                tab.calculatorState.minForecastDate,
-                            ),
+                            minStartDate: dayjs(tab.calculatorState.minStartDate),
+                            minForecastDate: dayjs(tab.calculatorState.minForecastDate),
                             startDate: tab.calculatorState.startDate
                                 ? dayjs(tab.calculatorState.startDate)
                                 : null,

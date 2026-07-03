@@ -1,7 +1,9 @@
 "use client";
 
-import { MenuButtonProps } from "@/src/types/Buttons";
 import { useState } from "react";
+
+import { MenuButtonProps } from "@/src/types/Buttons";
+
 import { DEFAULT_BUTTON_SIZE } from "./buttonConsts";
 
 function DropdownMenu({ items }: MenuButtonProps) {
@@ -15,9 +17,12 @@ function DropdownMenu({ items }: MenuButtonProps) {
                     height: `${DEFAULT_BUTTON_SIZE}rem`,
                     width: `${DEFAULT_BUTTON_SIZE}rem`,
                 }}
-                className={
-                    "flex justify-center items-center my-1 text-gray-200 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer hover:bg-fuchsia-700 hover:text-gray-50"
-                }
+                className={`
+                  my-1 flex cursor-pointer items-center justify-center
+                  rounded-full text-gray-200 transition-colors duration-200
+                  hover:bg-fuchsia-700 hover:text-gray-50
+                  focus:outline-none
+                `}
                 onClick={() => {
                     setShowMenu(!showMenu);
                 }}
@@ -55,11 +60,20 @@ function DropdownMenu({ items }: MenuButtonProps) {
                 )}
             </button>
             {showMenu && (
-                <div className="absolute right-0 p-1 z-50 inline-flex flex-col rounded-3xl bg-gray-600 inset-shadow-sm border-2 border-gray-200">
+                <div
+                    className="
+                      absolute right-0 z-50 inline-flex flex-col rounded-3xl
+                      border-2 border-gray-200 bg-gray-600 p-1 inset-shadow-sm
+                    "
+                >
                     {items.map((menuItem, index) => (
                         <button
-                            key={`item${index}`}
-                            className="whitespace-nowrap pt-0.5 pb-1 pl-2 pr-2 text-left text-gray-200 rounded-2xl hover:bg-fuchsia-700 hover:text-gray-50 cursor-pointer"
+                            key={`item-${menuItem.label}-${menuItem.id ?? index}`}
+                            className="
+                              cursor-pointer rounded-2xl px-2 pt-0.5 pb-1
+                              text-left whitespace-nowrap text-gray-200
+                              hover:bg-fuchsia-700 hover:text-gray-50
+                            "
                             onClick={() => {
                                 if (menuItem.onClick) {
                                     menuItem.onClick();

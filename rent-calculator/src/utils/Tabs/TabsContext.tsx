@@ -1,18 +1,12 @@
 "use client";
 
-import { createContext, useContext, useEffect, useReducer } from "react";
-import { tabsReducer } from "./tabsReducer";
-import {
-    TabsActions,
-    TabsContextType,
-    TabsMetadata,
-    TabsProviderProps,
-} from "@/src/types/Tabs";
-import {
-    getSessionStorageItem,
-    setSessionStorageItem,
-} from "../SessionStorage/sessionStorage";
+import { createContext, use, useEffect, useReducer } from "react";
+
 import { SerialisedTabsTabWrapper } from "@/src/types/Storage";
+import { TabsActions, TabsContextType, TabsMetadata, TabsProviderProps } from "@/src/types/Tabs";
+
+import { getSessionStorageItem, setSessionStorageItem } from "../SessionStorage/sessionStorage";
+import { tabsReducer } from "./tabsReducer";
 
 const TabsContext = createContext<TabsContextType | null>(null);
 
@@ -31,8 +25,7 @@ function TabsProvider({ children }: TabsProviderProps) {
 
     useEffect(() => {
         const metadata = getSessionStorageItem<TabsMetadata>("tabsMetadata");
-        const storedTabs =
-            getSessionStorageItem<SerialisedTabsTabWrapper[]>("tabs");
+        const storedTabs = getSessionStorageItem<SerialisedTabsTabWrapper[]>("tabs");
 
         if (metadata && storedTabs) {
             dispatch({
@@ -75,10 +68,8 @@ function TabsProvider({ children }: TabsProviderProps) {
                     ...tab,
                     calculatorState: {
                         ...tab.calculatorState,
-                        minStartDate:
-                            tab.calculatorState.minStartDate.toISOString(),
-                        minForecastDate:
-                            tab.calculatorState.minForecastDate.toISOString(),
+                        minStartDate: tab.calculatorState.minStartDate.toISOString(),
+                        minForecastDate: tab.calculatorState.minForecastDate.toISOString(),
                         startDate: tab.calculatorState.startDate
                             ? tab.calculatorState.startDate.toISOString()
                             : null,
@@ -92,16 +83,14 @@ function TabsProvider({ children }: TabsProviderProps) {
     }, [tabsState.wrappedTabArr]);
 
     return (
-        <TabsContext.Provider
-            value={{ tabsState: tabsState, tabsDispatch: dispatch }}
-        >
+        <TabsContext value={{ tabsState: tabsState, tabsDispatch: dispatch }}>
             {tabsState.hydrated ? children : null}
-        </TabsContext.Provider>
+        </TabsContext>
     );
 }
 
 export function useTabsContext() {
-    const context = useContext(TabsContext);
+    const context = use(TabsContext);
 
     if (context === null) {
         throw new Error("Tabs Context was null\n");

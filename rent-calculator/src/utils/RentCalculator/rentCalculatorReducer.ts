@@ -1,26 +1,26 @@
+import { Dayjs } from "dayjs";
+
 import {
+    BalanceState,
+    BenefitType,
     CalculatorAction,
     CalculatorActions,
-    RentFrequency,
     CalculatorState,
-    RentState,
-    BenefitType,
-    ShortfallState,
-    BalanceState,
-    InstallmentFrequency,
     ForecastState,
+    InstallmentFrequency,
+    RentFrequency,
+    RentState,
+    ShortfallState,
 } from "@/src/types/RentCalculator";
 
 import {
-    isValidNumberEntry,
+    calculateForecast,
+    calculateForecastDate,
     calculateRent,
     calculateShortfall,
     calculateStartingBalance,
-    calculateForecast,
-    calculateForecastDate,
+    isValidNumberEntry,
 } from "../helperFunctions";
-
-import { Dayjs } from "dayjs";
 
 export function rentCalculatorReducer(
     state: CalculatorState,
@@ -146,8 +146,7 @@ export function rentCalculatorReducer(
                     balance.currentBalance === "" &&
                     forecast.defaultAmount === "" &&
                     forecast.forecastDate === null &&
-                    forecast.paymentFrequency ===
-                        InstallmentFrequency.UNSELECTED
+                    forecast.paymentFrequency === InstallmentFrequency.UNSELECTED
                 )
             ) {
                 if (rent.rentFrequency === RentFrequency.UNSELECTED) {
@@ -211,8 +210,7 @@ export function rentCalculatorReducer(
                     balance.startDate === null &&
                     forecast.forecastDate === null &&
                     forecast.defaultAmount === "" &&
-                    forecast.paymentFrequency ===
-                        InstallmentFrequency.UNSELECTED
+                    forecast.paymentFrequency === InstallmentFrequency.UNSELECTED
                 ) {
                     rent.rentAmountIsValid = true;
                     if (rent.rentFrequency === RentFrequency.UNSELECTED) {
@@ -240,7 +238,7 @@ export function rentCalculatorReducer(
                 forecast.forecastPaid = "";
                 forecast.totalInstallments = -1;
                 console.log(
-                    `start date error:${action.error}\nvalue:${action.value}`,
+                    `start date error: ${action.error}\nvalue: ${action.value?.format("DD/MM/YYYY")}`,
                 );
             }
             break;
@@ -253,9 +251,7 @@ export function rentCalculatorReducer(
                 balance.daysUntilStartDate = balance.startDate
                     .startOf("day")
                     .diff(balance.minStartDate.startOf("day"), "days");
-                balance.weeksUntilStartDate = Math.ceil(
-                    balance.daysUntilStartDate / 7,
-                );
+                balance.weeksUntilStartDate = Math.ceil(balance.daysUntilStartDate / 7);
                 balance.startingBalance = calculateStartingBalance(
                     balance.weeksUntilStartDate,
                     balance.currentBalance,
@@ -263,8 +259,7 @@ export function rentCalculatorReducer(
                 );
 
                 if (
-                    forecast.paymentFrequency !==
-                        InstallmentFrequency.UNSELECTED &&
+                    forecast.paymentFrequency !== InstallmentFrequency.UNSELECTED &&
                     forecast.forecastDate === null
                 ) {
                     if (balance.startDate && balance.startDateIsValid) {
@@ -310,8 +305,7 @@ export function rentCalculatorReducer(
                     balance.currentBalance === "" &&
                     forecast.defaultAmount === "" &&
                     forecast.forecastDate === null &&
-                    forecast.paymentFrequency ===
-                        InstallmentFrequency.UNSELECTED
+                    forecast.paymentFrequency === InstallmentFrequency.UNSELECTED
                 ) {
                     balance.startDateIsValid = true;
                     if (
@@ -322,8 +316,7 @@ export function rentCalculatorReducer(
                         shortfall.benefitAmount === "" &&
                         forecast.defaultAmount === "" &&
                         forecast.forecastDate === null &&
-                        forecast.paymentFrequency ===
-                            InstallmentFrequency.UNSELECTED
+                        forecast.paymentFrequency === InstallmentFrequency.UNSELECTED
                     ) {
                         rent.rentAmountIsValid = true;
                         if (rent.rentFrequency === RentFrequency.UNSELECTED) {
@@ -362,9 +355,7 @@ export function rentCalculatorReducer(
             );
 
             if (balance.currentBalance !== "") {
-                balance.currentBalanceIsValid = isValidNumberEntry(
-                    balance.currentBalance,
-                );
+                balance.currentBalanceIsValid = isValidNumberEntry(balance.currentBalance);
 
                 if (balance.weeksUntilStartDate !== 0) {
                     if (rent.rentFrequency === RentFrequency.UNSELECTED) {
@@ -394,8 +385,7 @@ export function rentCalculatorReducer(
                 if (
                     forecast.forecastDate === null &&
                     forecast.defaultAmount === "" &&
-                    forecast.paymentFrequency ===
-                        InstallmentFrequency.UNSELECTED
+                    forecast.paymentFrequency === InstallmentFrequency.UNSELECTED
                 ) {
                     balance.currentBalanceIsValid = true;
                     if (balance.startDate === null) {
@@ -406,9 +396,7 @@ export function rentCalculatorReducer(
                             shortfall.benefitAmount === ""
                         ) {
                             rent.rentAmountIsValid = true;
-                            if (
-                                rent.rentFrequency === RentFrequency.UNSELECTED
-                            ) {
+                            if (rent.rentFrequency === RentFrequency.UNSELECTED) {
                                 rent.rentFrequencyIsValid = true;
                             }
                         }
@@ -425,11 +413,7 @@ export function rentCalculatorReducer(
             forecast.paymentFrequency = action.frequency;
             forecast.paymentFrequencyIsValid = true;
             let calcForecastInstallment = true;
-            if (
-                forecast.forecastDate === null &&
-                balance.startDate &&
-                balance.startDateIsValid
-            ) {
+            if (forecast.forecastDate === null && balance.startDate && balance.startDateIsValid) {
                 const forecastDate = calculateForecastDate(
                     balance.startDate,
                     forecast.minForecastDate,
@@ -483,7 +467,7 @@ export function rentCalculatorReducer(
             if (action.error) {
                 forecast.forecastDateIsValid = false;
                 console.log(
-                    `forcast date error:${action.error}\nvalue:${action.value}`,
+                    `forcast date error: ${action.error}\nvalue: ${action.value?.format("DD/MM/YYYY")}`,
                 );
             }
             break;
@@ -517,10 +501,7 @@ export function rentCalculatorReducer(
                     }
                 }
 
-                if (
-                    forecast.paymentFrequency ===
-                    InstallmentFrequency.UNSELECTED
-                ) {
+                if (forecast.paymentFrequency === InstallmentFrequency.UNSELECTED) {
                     forecast.paymentFrequencyIsValid = false;
                 }
 
@@ -528,10 +509,7 @@ export function rentCalculatorReducer(
                     forecast.defaultAmountIsValid = false;
                 }
             } else {
-                if (
-                    forecast.paymentFrequency ===
-                    InstallmentFrequency.UNSELECTED
-                ) {
+                if (forecast.paymentFrequency === InstallmentFrequency.UNSELECTED) {
                     forecast.paymentFrequencyIsValid = true;
                     if (forecast.defaultAmount === "") {
                         forecast.defaultAmountIsValid = true;
@@ -541,15 +519,11 @@ export function rentCalculatorReducer(
                                 balance.startDateIsValid = true;
                                 if (
                                     rent.rentAmount === "" &&
-                                    shortfall.benefitType ===
-                                        BenefitType.UNSELECTED &&
+                                    shortfall.benefitType === BenefitType.UNSELECTED &&
                                     shortfall.benefitAmount === ""
                                 ) {
                                     rent.rentAmountIsValid = true;
-                                    if (
-                                        rent.rentFrequency ===
-                                        RentFrequency.UNSELECTED
-                                    ) {
+                                    if (rent.rentFrequency === RentFrequency.UNSELECTED) {
                                         rent.rentFrequencyIsValid = true;
                                     }
                                 }
@@ -572,9 +546,7 @@ export function rentCalculatorReducer(
             );
 
             if (forecast.defaultAmount !== "") {
-                forecast.defaultAmountIsValid = isValidNumberEntry(
-                    forecast.defaultAmount,
-                );
+                forecast.defaultAmountIsValid = isValidNumberEntry(forecast.defaultAmount);
                 if (balance.weeksUntilStartDate !== 0) {
                     if (rent.rentFrequency === RentFrequency.UNSELECTED) {
                         rent.rentFrequencyIsValid = false;
@@ -595,8 +567,7 @@ export function rentCalculatorReducer(
             } else {
                 if (
                     forecast.forecastDate === null &&
-                    forecast.paymentFrequency ===
-                        InstallmentFrequency.UNSELECTED
+                    forecast.paymentFrequency === InstallmentFrequency.UNSELECTED
                 ) {
                     forecast.defaultAmountIsValid = true;
                     if (balance.currentBalance === "") {
@@ -605,15 +576,11 @@ export function rentCalculatorReducer(
                             balance.startDateIsValid = true;
                             if (
                                 rent.rentAmount === "" &&
-                                shortfall.benefitType ===
-                                    BenefitType.UNSELECTED &&
+                                shortfall.benefitType === BenefitType.UNSELECTED &&
                                 shortfall.benefitAmount === ""
                             ) {
                                 rent.rentAmountIsValid = true;
-                                if (
-                                    rent.rentFrequency ===
-                                    RentFrequency.UNSELECTED
-                                ) {
+                                if (rent.rentFrequency === RentFrequency.UNSELECTED) {
                                     rent.rentFrequencyIsValid = true;
                                 }
                             }

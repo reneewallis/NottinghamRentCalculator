@@ -1,6 +1,7 @@
-import ArrowButton from "../Buttons/ArrowButton";
-import { InstallementScrollerProps } from "../../types/PanelElements";
 import { InstallmentFrequency } from "@/src/types/RentCalculator";
+
+import { InstallementScrollerProps } from "../../types/PanelElements";
+import ArrowButton from "../Buttons/ArrowButton";
 
 function InstallementScroller({
     totalInstallments,
@@ -41,9 +42,13 @@ function InstallementScroller({
         }
     }
     return (
-        <div className="flex items-center justify-between gap-3 pt-4 px-2">
+        <div className="flex items-center justify-between gap-3 px-2 pt-4">
             <ArrowButton direction="left" onClick={weekDown}></ArrowButton>
-            <h1 className="text-base md:text-lg lg:text-2xl whitespace-nowrap text-gray-200">
+            <h1 className="
+              text-base whitespace-nowrap text-gray-200
+              md:text-lg
+              lg:text-2xl
+            ">
                 {installmentUnit} {installmentNumber}
             </h1>
             <ArrowButton direction="right" onClick={weekUp}></ArrowButton>

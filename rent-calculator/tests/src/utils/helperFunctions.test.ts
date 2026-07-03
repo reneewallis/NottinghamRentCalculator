@@ -1,3 +1,7 @@
+import { afterEach, beforeEach, describe, expect, jest, test } from "@jest/globals";
+import dayjs, { Dayjs } from "dayjs";
+import Decimal from "decimal.js";
+
 import {
     BenefitType,
     ForecastState,
@@ -24,16 +28,6 @@ import {
     isValidNumberEntry,
     UnsupportedUnitError,
 } from "@/src/utils/helperFunctions";
-import {
-    afterEach,
-    beforeEach,
-    describe,
-    expect,
-    jest,
-    test,
-} from "@jest/globals";
-import dayjs, { Dayjs } from "dayjs";
-import Decimal from "decimal.js";
 
 describe("getMaxTabs test, viewportWidth is in Rem, minimum size is 0", () => {
     test("Minimum viewport size", () => {
@@ -132,9 +126,7 @@ describe("fluidCSSWidthScale and calcPx tests", () => {
         test("invalid size, should throw error, contains multiple decimal points", () => {
             expect(() => {
                 calcPx("12.1.1rem");
-            }).toThrow(
-                new Error('start of value "12.1.1" was not a valid number'),
-            );
+            }).toThrow(new Error('start of value "12.1.1" was not a valid number'));
         });
         test("rem to px test", () => {
             expect(calcPx("96rem")).toBe(1536);
@@ -156,11 +148,7 @@ describe("fluidCSSWidthScale and calcPx tests", () => {
     describe("fluidCSSWidthScale tests", () => {
         const minScreen = "58rem";
         const devScreen = "96rem";
-        const correctStringFormat = (
-            min: string,
-            pref: string,
-            max: string,
-        ) => {
+        const correctStringFormat = (min: string, pref: string, max: string) => {
             return `clamp(${min}, calc(${min} + (${pref} - ${min}) * ((100vw - ${minScreen}) / (${devScreen} - ${minScreen}))), ${max})`;
         };
 
@@ -195,9 +183,7 @@ describe("fluidCSSWidthScale and calcPx tests", () => {
             const pref = "20rem";
             const max = "30rem";
 
-            expect(fluidCSSWidthScale(min, pref, max)).toBe(
-                correctStringFormat(min, pref, max),
-            );
+            expect(fluidCSSWidthScale(min, pref, max)).toBe(correctStringFormat(min, pref, max));
         });
         test("returns the correct string format, min, pref and max are all the same", () => {
             const value = "150px";
@@ -210,9 +196,7 @@ describe("fluidCSSWidthScale and calcPx tests", () => {
             const pref = "10vh";
             const max = "50mm";
 
-            expect(fluidCSSWidthScale(min, pref, max)).toBe(
-                correctStringFormat(min, pref, max),
-            );
+            expect(fluidCSSWidthScale(min, pref, max)).toBe(correctStringFormat(min, pref, max));
         });
 
         describe("tests for a function that ensures the calculations of fluidCSSWidthScale are correct", () => {
@@ -231,8 +215,7 @@ describe("fluidCSSWidthScale and calcPx tests", () => {
                 const calc =
                     minPx +
                     (prefPx - minPx) *
-                        ((calcPx(viewportWidth) - minScreenPx) /
-                            (devScreenPx - minScreenPx));
+                        ((calcPx(viewportWidth) - minScreenPx) / (devScreenPx - minScreenPx));
 
                 if (calc >= maxPx) {
                     return maxPx;
@@ -244,69 +227,43 @@ describe("fluidCSSWidthScale and calcPx tests", () => {
             };
 
             test("min, pref and max are all the same", () => {
-                expect(
-                    calcFluidWidthScale("150px", "150px", "150px", devScreen),
-                ).toBe(150);
+                expect(calcFluidWidthScale("150px", "150px", "150px", devScreen)).toBe(150);
             });
 
             test("min, pref and max are all greater than viewport width", () => {
                 const min = calcPx(devScreen) + 245;
                 expect(
-                    calcFluidWidthScale(
-                        `${min}px`,
-                        `${min * 1.25}px`,
-                        `${min * 1.5}px`,
-                        devScreen,
-                    ),
+                    calcFluidWidthScale(`${min}px`, `${min * 1.25}px`, `${min * 1.5}px`, devScreen),
                 ).toBe(min * 1.25);
             });
 
             test("viewport Width is the same as dev width with differnt min and max", () => {
-                expect(
-                    calcFluidWidthScale("75px", "250px", "300px", devScreen),
-                ).toBe(250);
+                expect(calcFluidWidthScale("75px", "250px", "300px", devScreen)).toBe(250);
             });
 
             test("viewport width is min screen", () => {
-                expect(
-                    calcFluidWidthScale("7px", "185px", "245px", minScreen),
-                ).toBe(7);
+                expect(calcFluidWidthScale("7px", "185px", "245px", minScreen)).toBe(7);
             });
 
             test("viewport width is less than min screen", () => {
                 const viewportWidth = calcPx(minScreen) - 30;
                 expect(
-                    calcFluidWidthScale(
-                        "1290px",
-                        "1386px",
-                        "1536px",
-                        `${viewportWidth}px`,
-                    ),
+                    calcFluidWidthScale("1290px", "1386px", "1536px", `${viewportWidth}px`),
                 ).toBe(1290);
             });
 
             test("viewport width is half of dev screen", () => {
                 const viewportWidth = calcPx(devScreen) / 2;
-                expect(
-                    calcFluidWidthScale(
-                        "75px",
-                        "150px",
-                        "300px",
-                        `${viewportWidth}px`,
-                    ),
-                ).toBe(75);
+                expect(calcFluidWidthScale("75px", "150px", "300px", `${viewportWidth}px`)).toBe(
+                    75,
+                );
             });
 
             test("viewport width is much larger than dev screen", () => {
                 const viewportWidth = calcPx(devScreen) * 5;
-                expect(
-                    calcFluidWidthScale(
-                        "75px",
-                        "150px",
-                        "300px",
-                        `${viewportWidth}px`,
-                    ),
-                ).toBe(300);
+                expect(calcFluidWidthScale("75px", "150px", "300px", `${viewportWidth}px`)).toBe(
+                    300,
+                );
             });
         });
     });
@@ -508,11 +465,7 @@ describe("Rent Calculator helper function tests", () => {
             };
             expect(calculateRent(rentFreq, value)).toEqual(expected);
         });
-        test.each([
-            RentFrequency.WEEKLY,
-            RentFrequency.FOUR_WEEKLY,
-            RentFrequency.MONTHLY,
-        ])(
+        test.each([RentFrequency.WEEKLY, RentFrequency.FOUR_WEEKLY, RentFrequency.MONTHLY])(
             "value is empty, frequency is selected - frequency %s",
             (rentFreq) => {
                 const value = "";
@@ -615,15 +568,9 @@ describe("Rent Calculator helper function tests", () => {
                 monthlyShortfall: "",
             };
 
-            expect(
-                calculateShortfall(
-                    benefitType,
-                    value,
-                    weekly,
-                    fourWeekly,
-                    monthly,
-                ),
-            ).toEqual(expected);
+            expect(calculateShortfall(benefitType, value, weekly, fourWeekly, monthly)).toEqual(
+                expected,
+            );
         });
 
         test.each([BenefitType.HOUSING_BENEFIT, BenefitType.UNIVERSAL_CREDIT])(
@@ -644,15 +591,9 @@ describe("Rent Calculator helper function tests", () => {
                     monthlyShortfall: "",
                 };
 
-                expect(
-                    calculateShortfall(
-                        benefitType,
-                        value,
-                        weekly,
-                        fourWeekly,
-                        monthly,
-                    ),
-                ).toEqual(expected);
+                expect(calculateShortfall(benefitType, value, weekly, fourWeekly, monthly)).toEqual(
+                    expected,
+                );
             },
         );
         test("value is valid number, benefit type is unselected", () => {
@@ -672,15 +613,9 @@ describe("Rent Calculator helper function tests", () => {
                 monthlyShortfall: "",
             };
 
-            expect(
-                calculateShortfall(
-                    benefitType,
-                    value,
-                    weekly,
-                    fourWeekly,
-                    monthly,
-                ),
-            ).toEqual(expected);
+            expect(calculateShortfall(benefitType, value, weekly, fourWeekly, monthly)).toEqual(
+                expected,
+            );
         });
         test("value is valid number, benefit type is selected, weekly, four weekly and monthly are unselected", () => {
             const benefitType = BenefitType.HOUSING_BENEFIT;
@@ -699,15 +634,9 @@ describe("Rent Calculator helper function tests", () => {
                 monthlyShortfall: "",
             };
 
-            expect(
-                calculateShortfall(
-                    benefitType,
-                    value,
-                    weekly,
-                    fourWeekly,
-                    monthly,
-                ),
-            ).toEqual(expected);
+            expect(calculateShortfall(benefitType, value, weekly, fourWeekly, monthly)).toEqual(
+                expected,
+            );
         });
         test("value is negative, should not be valid", () => {
             const value = "-900.60";
@@ -730,15 +659,9 @@ describe("Rent Calculator helper function tests", () => {
                 monthlyShortfall: monthlyShortfall,
             };
 
-            expect(
-                calculateShortfall(
-                    benefitType,
-                    value,
-                    weekly,
-                    fourWeekly,
-                    monthly,
-                ),
-            ).toEqual(expected);
+            expect(calculateShortfall(benefitType, value, weekly, fourWeekly, monthly)).toEqual(
+                expected,
+            );
         });
         test("values are non-empty and valid, benefit type is Housing Benefit, benefit amount is above four weekly", () => {
             const value = "900.60";
@@ -761,15 +684,9 @@ describe("Rent Calculator helper function tests", () => {
                 monthlyShortfall: monthlyShortfall,
             };
 
-            expect(
-                calculateShortfall(
-                    benefitType,
-                    value,
-                    weekly,
-                    fourWeekly,
-                    monthly,
-                ),
-            ).toEqual(expected);
+            expect(calculateShortfall(benefitType, value, weekly, fourWeekly, monthly)).toEqual(
+                expected,
+            );
         });
 
         test("values are non-empty and valid, benefit type is Housing Benefit, benefit amount is the same as four weekly", () => {
@@ -793,15 +710,9 @@ describe("Rent Calculator helper function tests", () => {
                 monthlyShortfall: monthlyShortfall,
             };
 
-            expect(
-                calculateShortfall(
-                    benefitType,
-                    value,
-                    weekly,
-                    fourWeekly,
-                    monthly,
-                ),
-            ).toEqual(expected);
+            expect(calculateShortfall(benefitType, value, weekly, fourWeekly, monthly)).toEqual(
+                expected,
+            );
         });
         test("values are non-empty and valid, benefit type is Housing Benefit, benefit amount is below four weekly", () => {
             const value = "800";
@@ -824,15 +735,9 @@ describe("Rent Calculator helper function tests", () => {
                 monthlyShortfall: monthlyShortfall,
             };
 
-            expect(
-                calculateShortfall(
-                    benefitType,
-                    value,
-                    weekly,
-                    fourWeekly,
-                    monthly,
-                ),
-            ).toEqual(expected);
+            expect(calculateShortfall(benefitType, value, weekly, fourWeekly, monthly)).toEqual(
+                expected,
+            );
         });
         test("values are non-empty and valid, benefit type is Universal Credit, benefit amount is above monthly", () => {
             const value = "1000";
@@ -855,15 +760,9 @@ describe("Rent Calculator helper function tests", () => {
                 monthlyShortfall: monthlyShortfall,
             };
 
-            expect(
-                calculateShortfall(
-                    benefitType,
-                    value,
-                    weekly,
-                    fourWeekly,
-                    monthly,
-                ),
-            ).toEqual(expected);
+            expect(calculateShortfall(benefitType, value, weekly, fourWeekly, monthly)).toEqual(
+                expected,
+            );
         });
         test("values are non-empty and valid, benefit type is Universal Credit, benefit amount is the same as monthly", () => {
             const value = "960.70";
@@ -886,15 +785,9 @@ describe("Rent Calculator helper function tests", () => {
                 monthlyShortfall: monthlyShortfall,
             };
 
-            expect(
-                calculateShortfall(
-                    benefitType,
-                    value,
-                    weekly,
-                    fourWeekly,
-                    monthly,
-                ),
-            ).toEqual(expected);
+            expect(calculateShortfall(benefitType, value, weekly, fourWeekly, monthly)).toEqual(
+                expected,
+            );
         });
         test("values are non-empty and valid, benefit type is Universal Credit, benefit amount is below monthly", () => {
             const value = "810.74";
@@ -917,15 +810,9 @@ describe("Rent Calculator helper function tests", () => {
                 monthlyShortfall: monthlyShortfall,
             };
 
-            expect(
-                calculateShortfall(
-                    benefitType,
-                    value,
-                    weekly,
-                    fourWeekly,
-                    monthly,
-                ),
-            ).toEqual(expected);
+            expect(calculateShortfall(benefitType, value, weekly, fourWeekly, monthly)).toEqual(
+                expected,
+            );
         });
     });
     describe("calculateStaringBalance tests", () => {
@@ -934,39 +821,27 @@ describe("Rent Calculator helper function tests", () => {
             const currentBalance = "1000";
             const weeklyRent = "157.50";
 
-            expect(
-                calculateStartingBalance(
-                    weeksUntilStartDate,
-                    currentBalance,
-                    weeklyRent,
-                ),
-            ).toBe("");
+            expect(calculateStartingBalance(weeksUntilStartDate, currentBalance, weeklyRent)).toBe(
+                "",
+            );
         });
         test("current balance is empty string", () => {
             const weeksUntilStartDate = 1;
             const currentBalance = "";
             const weeklyRent = "157.50";
 
-            expect(
-                calculateStartingBalance(
-                    weeksUntilStartDate,
-                    currentBalance,
-                    weeklyRent,
-                ),
-            ).toBe("");
+            expect(calculateStartingBalance(weeksUntilStartDate, currentBalance, weeklyRent)).toBe(
+                "",
+            );
         });
         test("weeklyRent is empty string and weeksUntillStartDate is > 0, should return empty string", () => {
             const weeksUntilStartDate = 1;
             const currentBalance = "1000";
             const weeklyRent = "";
 
-            expect(
-                calculateStartingBalance(
-                    weeksUntilStartDate,
-                    currentBalance,
-                    weeklyRent,
-                ),
-            ).toBe("");
+            expect(calculateStartingBalance(weeksUntilStartDate, currentBalance, weeklyRent)).toBe(
+                "",
+            );
         });
         test.each([
             [1, "0", "270.74", "270.74"],
@@ -977,11 +852,7 @@ describe("Rent Calculator helper function tests", () => {
             "Functionality check, weeksUntilStartDate %d, currentBalance %s, weeklyRent, %s",
             (weeksUntilStartDate, currentBalance, weeklyRent, expected) => {
                 expect(
-                    calculateStartingBalance(
-                        weeksUntilStartDate,
-                        currentBalance,
-                        weeklyRent,
-                    ),
+                    calculateStartingBalance(weeksUntilStartDate, currentBalance, weeklyRent),
                 ).toBe(expected);
             },
         );
@@ -990,13 +861,9 @@ describe("Rent Calculator helper function tests", () => {
             const currentBalance = "1000";
             const weeklyRent = "";
 
-            expect(
-                calculateStartingBalance(
-                    weeksUntilStartDate,
-                    currentBalance,
-                    weeklyRent,
-                ),
-            ).toBe("1000.00");
+            expect(calculateStartingBalance(weeksUntilStartDate, currentBalance, weeklyRent)).toBe(
+                "1000.00",
+            );
         });
     });
     describe("calculateTotalInstallments tests", () => {
@@ -1004,41 +871,31 @@ describe("Rent Calculator helper function tests", () => {
             const startingBalance = "";
             const defaultAmount = "200";
 
-            expect(
-                calculateTotalInstallments(startingBalance, defaultAmount),
-            ).toBe(-1);
+            expect(calculateTotalInstallments(startingBalance, defaultAmount)).toBe(-1);
         });
         test("default amount is empty string, should return -1", () => {
             const startingBalance = "2000.00";
             const defaultAmount = "";
 
-            expect(
-                calculateTotalInstallments(startingBalance, defaultAmount),
-            ).toBe(-1);
+            expect(calculateTotalInstallments(startingBalance, defaultAmount)).toBe(-1);
         });
         test("default amount is negative, should return -1", () => {
             const startingBalance = "2000.00";
             const defaultAmount = "-200.00";
 
-            expect(
-                calculateTotalInstallments(startingBalance, defaultAmount),
-            ).toBe(-1);
+            expect(calculateTotalInstallments(startingBalance, defaultAmount)).toBe(-1);
         });
         test("default amount is a factor of starting balance", () => {
             const startingBalance = "2000.00";
             const defaultAmount = "250";
 
-            expect(
-                calculateTotalInstallments(startingBalance, defaultAmount),
-            ).toBe(8);
+            expect(calculateTotalInstallments(startingBalance, defaultAmount)).toBe(8);
         });
         test("default amount is not factor of starting balance", () => {
             const startingBalance = "3680.20";
             const defaultAmount = "365.50";
 
-            expect(
-                calculateTotalInstallments(startingBalance, defaultAmount),
-            ).toBe(11);
+            expect(calculateTotalInstallments(startingBalance, defaultAmount)).toBe(11);
         });
     });
     describe("calculateInstallment tests (current installment number)", () => {
@@ -1047,18 +904,14 @@ describe("Rent Calculator helper function tests", () => {
             const forecastDate = startDate.add(-29, "days");
             const paymentFrequency = InstallmentFrequency.UNSELECTED;
 
-            expect(
-                calculateInstallment(startDate, forecastDate, paymentFrequency),
-            ).toBe(0);
+            expect(calculateInstallment(startDate, forecastDate, paymentFrequency)).toBe(0);
         });
         test("forecastDate is after start date but paymentFreq is unselected, should return 0", () => {
             const startDate = dayjs("2026-04-16");
             const forecastDate = startDate.add(4, "weeks");
             const paymentFrequency = InstallmentFrequency.UNSELECTED;
 
-            expect(
-                calculateInstallment(startDate, forecastDate, paymentFrequency),
-            ).toBe(0);
+            expect(calculateInstallment(startDate, forecastDate, paymentFrequency)).toBe(0);
         });
         test.each([InstallmentFrequency.WEEKLY, InstallmentFrequency.MONTHLY])(
             "Payment Frequency is %s, forecast date is after start date",
@@ -1066,18 +919,10 @@ describe("Rent Calculator helper function tests", () => {
                 const startDate = dayjs("2026-04-16");
                 const forecastDate = startDate.add(
                     4,
-                    paymentFrequency === InstallmentFrequency.WEEKLY
-                        ? "weeks"
-                        : "months",
+                    paymentFrequency === InstallmentFrequency.WEEKLY ? "weeks" : "months",
                 );
 
-                expect(
-                    calculateInstallment(
-                        startDate,
-                        forecastDate,
-                        paymentFrequency,
-                    ),
-                ).toBe(5);
+                expect(calculateInstallment(startDate, forecastDate, paymentFrequency)).toBe(5);
             },
         );
         test.each([InstallmentFrequency.WEEKLY, InstallmentFrequency.MONTHLY])(
@@ -1086,13 +931,7 @@ describe("Rent Calculator helper function tests", () => {
                 const startDate = dayjs("2026-04-16");
                 const forecastDate = startDate.clone();
 
-                expect(
-                    calculateInstallment(
-                        startDate,
-                        forecastDate,
-                        paymentFrequency,
-                    ),
-                ).toBe(1);
+                expect(calculateInstallment(startDate, forecastDate, paymentFrequency)).toBe(1);
             },
         );
         test.each([InstallmentFrequency.WEEKLY, InstallmentFrequency.MONTHLY])(
@@ -1101,18 +940,10 @@ describe("Rent Calculator helper function tests", () => {
                 const startDate = dayjs("2026-04-16");
                 const forecastDate = startDate.add(
                     1,
-                    paymentFrequency === InstallmentFrequency.WEEKLY
-                        ? "week"
-                        : "month",
+                    paymentFrequency === InstallmentFrequency.WEEKLY ? "week" : "month",
                 );
 
-                expect(
-                    calculateInstallment(
-                        startDate,
-                        forecastDate,
-                        paymentFrequency,
-                    ),
-                ).toBe(2);
+                expect(calculateInstallment(startDate, forecastDate, paymentFrequency)).toBe(2);
             },
         );
     });
@@ -1150,9 +981,7 @@ describe("Rent Calculator helper function tests", () => {
                 ).toEqual(
                     startDate.add(
                         5,
-                        paymentFrequency === InstallmentFrequency.WEEKLY
-                            ? "weeks"
-                            : "months",
+                        paymentFrequency === InstallmentFrequency.WEEKLY ? "weeks" : "months",
                     ),
                 );
             },
@@ -1191,9 +1020,7 @@ describe("Rent Calculator helper function tests", () => {
                 ).toEqual(
                     startDate.add(
                         -1,
-                        paymentFrequency === InstallmentFrequency.WEEKLY
-                            ? "weeks"
-                            : "months",
+                        paymentFrequency === InstallmentFrequency.WEEKLY ? "weeks" : "months",
                     ),
                 );
             },
@@ -1204,9 +1031,7 @@ describe("Rent Calculator helper function tests", () => {
                 const startDate = dayjs("2026-05-23");
                 const minForecastDate = startDate.add(
                     -3,
-                    paymentFrequency === InstallmentFrequency.WEEKLY
-                        ? "days"
-                        : "weeks",
+                    paymentFrequency === InstallmentFrequency.WEEKLY ? "days" : "weeks",
                 );
                 const installmentNumber = 0;
 
@@ -1227,91 +1052,63 @@ describe("Rent Calculator helper function tests", () => {
             const defaultAmount = "";
             const startingBalance = "2000.15";
 
-            expect(
-                calculateForecastPaid(
-                    installmentNumber,
-                    defaultAmount,
-                    startingBalance,
-                ),
-            ).toBe("");
+            expect(calculateForecastPaid(installmentNumber, defaultAmount, startingBalance)).toBe(
+                "",
+            );
         });
         test("startingBalance is empty string, should return empty string", () => {
             const installmentNumber = 0;
             const defaultAmount = "200";
             const startingBalance = "";
 
-            expect(
-                calculateForecastPaid(
-                    installmentNumber,
-                    defaultAmount,
-                    startingBalance,
-                ),
-            ).toBe("");
+            expect(calculateForecastPaid(installmentNumber, defaultAmount, startingBalance)).toBe(
+                "",
+            );
         });
         test("defaultAmount is negative, should return empty string", () => {
             const installmentNumber = 0;
             const defaultAmount = "-200";
             const startingBalance = "2000.15";
 
-            expect(
-                calculateForecastPaid(
-                    installmentNumber,
-                    defaultAmount,
-                    startingBalance,
-                ),
-            ).toBe("");
+            expect(calculateForecastPaid(installmentNumber, defaultAmount, startingBalance)).toBe(
+                "",
+            );
         });
         test("installmentNumber is 0, should return 0", () => {
             const installmentNumber = 0;
             const defaultAmount = "200";
             const startingBalance = "2000.15";
 
-            expect(
-                calculateForecastPaid(
-                    installmentNumber,
-                    defaultAmount,
-                    startingBalance,
-                ),
-            ).toBe("0.00");
+            expect(calculateForecastPaid(installmentNumber, defaultAmount, startingBalance)).toBe(
+                "0.00",
+            );
         });
         test("installmentNumber is 1, should return defaultAmount", () => {
             const installmentNumber = 1;
             const defaultAmount = "200.00";
             const startingBalance = "2000.15";
 
-            expect(
-                calculateForecastPaid(
-                    installmentNumber,
-                    defaultAmount,
-                    startingBalance,
-                ),
-            ).toBe(defaultAmount);
+            expect(calculateForecastPaid(installmentNumber, defaultAmount, startingBalance)).toBe(
+                defaultAmount,
+            );
         });
         test("installmentNumber is less than final installment", () => {
             const installmentNumber = 9;
             const defaultAmount = "200.00";
             const startingBalance = "2000.15";
 
-            expect(
-                calculateForecastPaid(
-                    installmentNumber,
-                    defaultAmount,
-                    startingBalance,
-                ),
-            ).toBe("1800.00");
+            expect(calculateForecastPaid(installmentNumber, defaultAmount, startingBalance)).toBe(
+                "1800.00",
+            );
         });
         test("installmentNumber is final installment", () => {
             const installmentNumber = 11;
             const defaultAmount = "200.00";
             const startingBalance = "2000.15";
 
-            expect(
-                calculateForecastPaid(
-                    installmentNumber,
-                    defaultAmount,
-                    startingBalance,
-                ),
-            ).toBe(startingBalance);
+            expect(calculateForecastPaid(installmentNumber, defaultAmount, startingBalance)).toBe(
+                startingBalance,
+            );
         });
     });
     describe("balanceRemaining tests, calculates how much of the balance is left to pay", () => {
@@ -1319,33 +1116,25 @@ describe("Rent Calculator helper function tests", () => {
             const startingBalance = "";
             const totalPaid = "350.00";
 
-            expect(calculateBalanceRemaining(startingBalance, totalPaid)).toBe(
-                "",
-            );
+            expect(calculateBalanceRemaining(startingBalance, totalPaid)).toBe("");
         });
         test("totalPaid is empty string, should return empty string", () => {
             const startingBalance = "2500.00";
             const totalPaid = "";
 
-            expect(calculateBalanceRemaining(startingBalance, totalPaid)).toBe(
-                "",
-            );
+            expect(calculateBalanceRemaining(startingBalance, totalPaid)).toBe("");
         });
         test("totalPaid is less than startingBalance", () => {
             const startingBalance = "2500.00";
             const totalPaid = "350.00";
 
-            expect(calculateBalanceRemaining(startingBalance, totalPaid)).toBe(
-                "2150.00",
-            );
+            expect(calculateBalanceRemaining(startingBalance, totalPaid)).toBe("2150.00");
         });
         test("totalPaid is the same as startingBalance", () => {
             const startingBalance = "2500.00";
             const totalPaid = "2500.00";
 
-            expect(calculateBalanceRemaining(startingBalance, totalPaid)).toBe(
-                "0.00",
-            );
+            expect(calculateBalanceRemaining(startingBalance, totalPaid)).toBe("0.00");
         });
     });
     describe("calculateForecast tests", () => {
@@ -1388,15 +1177,9 @@ describe("Rent Calculator helper function tests", () => {
                 paymentFrequencyIsValid: forecast.paymentFrequencyIsValid,
             };
 
-            expect(
-                calculateForecast(
-                    startingBalance,
-                    startDate,
-                    true,
-                    forecast,
-                    true,
-                ),
-            ).toEqual(result);
+            expect(calculateForecast(startingBalance, startDate, true, forecast, true)).toEqual(
+                result,
+            );
         });
         test("forecast date is less than total installments away", () => {
             const defaultAmount = "250.00";
@@ -1418,15 +1201,9 @@ describe("Rent Calculator helper function tests", () => {
                 paymentFrequency: forecast.paymentFrequency,
                 paymentFrequencyIsValid: forecast.paymentFrequencyIsValid,
             };
-            expect(
-                calculateForecast(
-                    startingBalance,
-                    startDate,
-                    true,
-                    forecast,
-                    true,
-                ),
-            ).toEqual(result);
+            expect(calculateForecast(startingBalance, startDate, true, forecast, true)).toEqual(
+                result,
+            );
         });
         test("forecast date is null", () => {
             const defaultAmount = "250.00";
@@ -1448,15 +1225,9 @@ describe("Rent Calculator helper function tests", () => {
                 paymentFrequency: forecast.paymentFrequency,
                 paymentFrequencyIsValid: forecast.paymentFrequencyIsValid,
             };
-            expect(
-                calculateForecast(
-                    startingBalance,
-                    startDate,
-                    true,
-                    forecast,
-                    true,
-                ),
-            ).toEqual(result);
+            expect(calculateForecast(startingBalance, startDate, true, forecast, true)).toEqual(
+                result,
+            );
         });
         test("calc installments is false", () => {
             const defaultAmount = "250.00";
@@ -1480,15 +1251,9 @@ describe("Rent Calculator helper function tests", () => {
                 paymentFrequency: forecast.paymentFrequency,
                 paymentFrequencyIsValid: forecast.paymentFrequencyIsValid,
             };
-            expect(
-                calculateForecast(
-                    startingBalance,
-                    startDate,
-                    true,
-                    forecast,
-                    false,
-                ),
-            ).toEqual(result);
+            expect(calculateForecast(startingBalance, startDate, true, forecast, false)).toEqual(
+                result,
+            );
         });
     });
 });

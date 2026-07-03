@@ -1,13 +1,14 @@
 import React from "react";
+
 import Header from "../components/Header/Header";
-import Tabs from "../components/Tabs/Tabs";
-import TabsProvider from "../utils/Tabs/TabsContext";
 import Home from "../components/Home/Home";
 import TabPanel from "../components/Tabs/TabPanel";
+import Tabs from "../components/Tabs/Tabs";
+import TabsProvider from "../utils/Tabs/TabsContext";
 
 export default function App() {
     return (
-        <div className="flex flex-col min-h-screen min-w-screen w-fit py-2 px-2">
+        <div className="flex min-h-screen w-fit min-w-screen flex-col p-2">
             <Header></Header>
             <TabsProvider>
                 <Tabs></Tabs>

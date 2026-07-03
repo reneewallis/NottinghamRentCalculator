@@ -1,3 +1,6 @@
+import { describe, expect, test } from "@jest/globals";
+import dayjs from "dayjs";
+
 import {
     BenefitType,
     CalculatorAction,
@@ -11,8 +14,6 @@ import {
     initCalculatorState,
     rentCalculatorReducer,
 } from "@/src/utils/RentCalculator/rentCalculatorReducer";
-import { expect, describe, test } from "@jest/globals";
-import dayjs from "dayjs";
 
 describe("rent calculator reducer tests, each test also checks for correct reducer pattern", () => {
     const initDate = dayjs("2026-05-26");
@@ -57,13 +58,9 @@ describe("rent calculator reducer tests, each test also checks for correct reduc
     });
 
     describe("rent tests", () => {
-        test.each([
-            RentFrequency.FOUR_WEEKLY,
-            RentFrequency.MONTHLY,
-            RentFrequency.WEEKLY,
-        ])(
+        test.each([RentFrequency.FOUR_WEEKLY, RentFrequency.MONTHLY, RentFrequency.WEEKLY])(
             "changing rent frequency should have no side effects, frequency %s",
-            (frequency) => {
+            (frequency: RentFrequency) => {
                 const state = rentCalculatorReducer(initialState, {
                     type: CalculatorActions.CHANGE_RENT_FREQUENCY,
                     newRentFrequency: frequency,
@@ -81,13 +78,9 @@ describe("rent calculator reducer tests, each test also checks for correct reduc
             expect(state).not.toBe(initialState);
         });
 
-        test.each([
-            RentFrequency.FOUR_WEEKLY,
-            RentFrequency.MONTHLY,
-            RentFrequency.WEEKLY,
-        ])(
+        test.each([RentFrequency.FOUR_WEEKLY, RentFrequency.MONTHLY, RentFrequency.WEEKLY])(
             "Select frequency %s and then rent, should have no validity flags",
-            (frequency) => {
+            (frequency: RentFrequency) => {
                 let action: CalculatorAction = {
                     type: CalculatorActions.CHANGE_RENT_FREQUENCY,
                     newRentFrequency: frequency,
@@ -118,13 +111,9 @@ describe("rent calculator reducer tests, each test also checks for correct reduc
             },
         );
 
-        test.each([
-            RentFrequency.FOUR_WEEKLY,
-            RentFrequency.MONTHLY,
-            RentFrequency.WEEKLY,
-        ])(
+        test.each([RentFrequency.FOUR_WEEKLY, RentFrequency.MONTHLY, RentFrequency.WEEKLY])(
             "rent amount given before rent frequency, should have validility flags until rent frequency is given, frequency %s",
-            (frequency) => {
+            (frequency: RentFrequency) => {
                 const expected = initCalculatorState(initDate);
                 const rentAmount = "359.00";
 
@@ -156,7 +145,7 @@ describe("rent calculator reducer tests, each test also checks for correct reduc
         );
         test.each(["a", "2a", "2.", "2.0", "2.000", "2.a", "2.ab", "2.."])(
             "rent amount %s is invalid",
-            (rentAmount) => {
+            (rentAmount: string) => {
                 const expected = initCalculatorState(initDate);
                 const action: CalculatorAction = {
                     type: CalculatorActions.CALCULATE_RENT,
@@ -167,9 +156,7 @@ describe("rent calculator reducer tests, each test also checks for correct reduc
                 expected.rentAmountIsValid = false;
                 expected.rentFrequencyIsValid = false;
 
-                expect(rentCalculatorReducer(initialState, action)).toEqual(
-                    expected,
-                );
+                expect(rentCalculatorReducer(initialState, action)).toEqual(expected);
 
                 const weeklyState = rentCalculatorReducer(initialState, {
                     type: CalculatorActions.CHANGE_RENT_FREQUENCY,
@@ -187,28 +174,20 @@ describe("rent calculator reducer tests, each test also checks for correct reduc
                 expected.rentFrequencyIsValid = true;
                 expected.rentFrequency = RentFrequency.WEEKLY;
 
-                expect(rentCalculatorReducer(weeklyState, action)).toEqual(
-                    expected,
-                );
+                expect(rentCalculatorReducer(weeklyState, action)).toEqual(expected);
 
                 expected.rentFrequency = RentFrequency.FOUR_WEEKLY;
-                expect(rentCalculatorReducer(fourWeeklyState, action)).toEqual(
-                    expected,
-                );
+                expect(rentCalculatorReducer(fourWeeklyState, action)).toEqual(expected);
 
                 expected.rentFrequency = RentFrequency.MONTHLY;
-                expect(rentCalculatorReducer(monthlyState, action)).toEqual(
-                    expected,
-                );
+                expect(rentCalculatorReducer(monthlyState, action)).toEqual(expected);
             },
         );
 
         test("rent frequency is valid when rent amount returns to empty", () => {
             const expected = initCalculatorState(initDate);
             const rentAmount = "450.76";
-            const action: (amount: string) => CalculatorAction = (
-                amount: string,
-            ) => {
+            const action: (amount: string) => CalculatorAction = (amount: string) => {
                 return {
                     type: CalculatorActions.CALCULATE_RENT,
                     amount: amount,
@@ -218,10 +197,7 @@ describe("rent calculator reducer tests, each test also checks for correct reduc
             expected.rentAmount = rentAmount;
             expected.rentFrequencyIsValid = false;
 
-            const state = rentCalculatorReducer(
-                initialState,
-                action(rentAmount),
-            );
+            const state = rentCalculatorReducer(initialState, action(rentAmount));
 
             expect(state).toEqual(expected);
 
@@ -235,7 +211,7 @@ describe("rent calculator reducer tests, each test also checks for correct reduc
     describe("shortfall tests", () => {
         test.each([BenefitType.HOUSING_BENEFIT, BenefitType.UNIVERSAL_CREDIT])(
             "changing Benefit Type should have no side effects, benefit type is %s",
-            (benefitType) => {
+            (benefitType: BenefitType) => {
                 const state = rentCalculatorReducer(initialState, {
                     type: CalculatorActions.CHANGE_BENEFIT_TYPE,
                     newBenefitType: benefitType,
@@ -252,7 +228,7 @@ describe("rent calculator reducer tests, each test also checks for correct reduc
         });
         test.each([BenefitType.HOUSING_BENEFIT, BenefitType.UNIVERSAL_CREDIT])(
             "changing rent frequency, calculating rent, changing Benefit Type and then calculating shortfall shouldnt have validilty flags",
-            (benefitType) => {
+            (benefitType: BenefitType) => {
                 const benefitAmount = "474";
                 const rentAmount = "400";
 
@@ -297,8 +273,7 @@ describe("rent calculator reducer tests, each test also checks for correct reduc
                 );
 
                 expected.weeklyShortfall = shortFallState.weeklyShortfall;
-                expected.fourWeeklyShortfall =
-                    shortFallState.fourWeeklyShortfall;
+                expected.fourWeeklyShortfall = shortFallState.fourWeeklyShortfall;
                 expected.monthlyShortfall = shortFallState.monthlyShortfall;
 
                 expect(
@@ -312,7 +287,7 @@ describe("rent calculator reducer tests, each test also checks for correct reduc
 
         test.each([BenefitType.HOUSING_BENEFIT, BenefitType.UNIVERSAL_CREDIT])(
             "changing rent frequency, calculating rent, calculating shortfall and then changing benefit type, validility flag test",
-            (benefitType) => {
+            (benefitType: BenefitType) => {
                 const benefitAmount = "564.75";
                 const rentAmount = "200";
 
@@ -362,8 +337,7 @@ describe("rent calculator reducer tests, each test also checks for correct reduc
 
                 expected.benefitType = benefitType;
                 expected.weeklyShortfall = shortFallState.weeklyShortfall;
-                expected.fourWeeklyShortfall =
-                    shortFallState.fourWeeklyShortfall;
+                expected.fourWeeklyShortfall = shortFallState.fourWeeklyShortfall;
                 expected.monthlyShortfall = shortFallState.monthlyShortfall;
                 expected.benefitTypeIsValid = true;
 
@@ -372,7 +346,7 @@ describe("rent calculator reducer tests, each test also checks for correct reduc
         );
         test.each([BenefitType.HOUSING_BENEFIT, BenefitType.UNIVERSAL_CREDIT])(
             "changing benefit type, calculating shortfall, changing rent frequency and then calculating rent validility flag test",
-            (benefitType) => {
+            (benefitType: BenefitType) => {
                 const benefitAmount = "564.75";
                 const rentAmount = "200";
                 const rentFrequencyArray = [
@@ -440,8 +414,7 @@ describe("rent calculator reducer tests, each test also checks for correct reduc
                     );
 
                     expected.weeklyShortfall = shortFallState.weeklyShortfall;
-                    expected.fourWeeklyShortfall =
-                        shortFallState.fourWeeklyShortfall;
+                    expected.fourWeeklyShortfall = shortFallState.fourWeeklyShortfall;
                     expected.monthlyShortfall = shortFallState.monthlyShortfall;
 
                     loopState = rentCalculatorReducer(loopState, {
@@ -455,7 +428,7 @@ describe("rent calculator reducer tests, each test also checks for correct reduc
         );
         test.each([BenefitType.HOUSING_BENEFIT, BenefitType.UNIVERSAL_CREDIT])(
             "changing benefit type, calculating shortfall, calculating rent and then changing rentFreq validility flag test",
-            (benefitType) => {
+            (benefitType: BenefitType) => {
                 const benefitAmount = "564.75";
                 const rentAmount = "200";
                 const rentFrequencyArray = [
@@ -523,8 +496,7 @@ describe("rent calculator reducer tests, each test also checks for correct reduc
                     );
 
                     expected.weeklyShortfall = shortFallState.weeklyShortfall;
-                    expected.fourWeeklyShortfall =
-                        shortFallState.fourWeeklyShortfall;
+                    expected.fourWeeklyShortfall = shortFallState.fourWeeklyShortfall;
                     expected.monthlyShortfall = shortFallState.monthlyShortfall;
 
                     loopState = rentCalculatorReducer(loopState, {

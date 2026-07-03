@@ -1,9 +1,10 @@
+import { afterEach,describe, expect, jest, test } from "@jest/globals";
+
 import {
     getSessionStorageItem,
     removeSessionStorageItem,
     setSessionStorageItem,
 } from "@/src/utils/SessionStorage/sessionStorage";
-import { describe, expect, jest, test, afterEach } from "@jest/globals";
 
 describe("getSessionStorageItem tests", () => {
     afterEach(() => {
@@ -11,9 +12,7 @@ describe("getSessionStorageItem tests", () => {
     });
     test("get item, item found", () => {
         const returnArr = { test: 0 };
-        jest.spyOn(Storage.prototype, "getItem").mockReturnValue(
-            JSON.stringify(returnArr),
-        );
+        jest.spyOn(Storage.prototype, "getItem").mockReturnValue(JSON.stringify(returnArr));
         expect(getSessionStorageItem("test")).toEqual(returnArr);
     });
     test("get item, item not found", () => {
@@ -44,9 +43,7 @@ describe("setSessionStorageItem tests", () => {
             throw error;
         });
 
-        const consoleSpy = jest
-            .spyOn(console, "log")
-            .mockImplementation(() => {});
+        const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
         setSessionStorageItem("user", { test: "test" });
 

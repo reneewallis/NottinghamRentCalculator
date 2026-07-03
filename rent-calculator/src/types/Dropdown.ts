@@ -1,4 +1,5 @@
 export type DropdownItem<TLabel extends string | number> = {
+    id?: string;
     label: TLabel;
     onClick?: () => void;
 };
@@ -26,16 +27,16 @@ type CalcDropdownWidthSmallArgs = CalcDropdownWidthCommonArgs & {
     longestWordLength: number;
 };
 
-export type CalcDropdownWidthArgs =
-    | CalcDropdownWidthDefaultArgs
-    | CalcDropdownWidthSmallArgs;
+export type CalcDropdownWidthArgs = CalcDropdownWidthDefaultArgs | CalcDropdownWidthSmallArgs;
 
-type UncontrolledDropdownBoxProps<TLabel extends string> =
-    CommonDropdownBoxProps<TLabel> & { controlled?: false };
+type UncontrolledDropdownBoxProps<TLabel extends string> = CommonDropdownBoxProps<TLabel> & {
+    controlled?: false;
+};
 
-type ControlledDropdownBoxProps<TLabel extends string> =
-    CommonDropdownBoxProps<TLabel> & { controlled: true; value: string };
+type ControlledDropdownBoxProps<TLabel extends string> = CommonDropdownBoxProps<TLabel> & {
+    controlled: true;
+    value: string;
+};
 
 export type DropdownBoxProps<TLabel extends string> =
-    | UncontrolledDropdownBoxProps<TLabel>
-    | ControlledDropdownBoxProps<TLabel>;
+    UncontrolledDropdownBoxProps<TLabel> | ControlledDropdownBoxProps<TLabel>;

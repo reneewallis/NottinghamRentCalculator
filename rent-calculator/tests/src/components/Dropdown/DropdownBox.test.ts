@@ -1,4 +1,5 @@
-import { expect, describe, test } from "@jest/globals";
+import { describe, expect, test } from "@jest/globals";
+
 import { calcDropdownMinWidth } from "@/src/components/Dropdown/DropdownBox";
 
 describe("calcDropdownMinWidth tests", () => {
@@ -122,9 +123,7 @@ describe("calcDropdownMinWidth tests", () => {
                 longestWordLength: 10,
             });
         }).toThrow(
-            new Error(
-                `longest word length "10" cannot be longer than max label length "5"`,
-            ),
+            new Error(`longest word length "10" cannot be longer than max label length "5"`),
         );
     });
     test("small dropdown test, longest word is negative, should through error", () => {
